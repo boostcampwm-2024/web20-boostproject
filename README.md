@@ -5,7 +5,7 @@
 <a href='https://intelligent-broker-ff0.notion.site/Cam-on-1290201238ac808ebb56d75e07685ae4'>📒 팀 노션</a> | 
 <a href='https://intelligent-broker-ff0.notion.site/410fe8414eee4709b4dc0be015f7cca9'>🖋️ 그라운드 룰</a> | 
 <!-- <a href='https://www.notion.so/af66c77dc0f648ce9317a33a37510f24?pvs=21'>📜 백로그</a> |  -->
-<a href='https://www.figma.com/design/ckY510YXPKJJUoURVxlmYz/Cam'on?node-id=0-1&node-type=canvas&t=BIq7ck3oUBLHea8J-0'>🎨 피그마</a> | 
+<a href='https://www.figma.com/design/ckY510YXPKJJUoURVxlmYz/Cam'on?node-id=0-1&node-type=canvas&t=BIq7ck3oUBLHea8J-0'>🎨 피그마</a> | 
 <!-- <a href='https://github.com/boostcampwm2023/web17_morak/wiki'>🔍 위키</a> -->
 </p>
 
