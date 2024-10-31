@@ -1,0 +1,62 @@
+name: "🔄 Pull Request"
+description: "Pull Request 템플릿입니다."
+title: "[PR] "
+labels: ["PR"]
+assignees:
+  - kyoulee
+projects: ["kyoulee/1"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # Pull Request 개요
+        이 PR은 새로운 기능 추가 및 버그 수정을 포함하고 있습니다.
+        ## 변경 사항
+          - 기능 및 수정 내용을 간단히 요약합니다.
+  - type: input
+    id: pr_title
+    attributes:
+      label: 📣 PR 제목
+      description: 💬 해당 PR의 제목을 작성해주세요.
+      placeholder: 📝 <제목>
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: 📣 PR 설명
+      description: 💬 해당 PR의 변경 내용을 구체적으로 설명해주세요.
+      placeholder: |
+        🔍 <상세 설명>
+        - [기능/버그] <내용>
+    validations:
+      required: true
+  - type: textarea
+    id: changes
+    attributes:
+      label: ✅ 작업 목록
+      description: 📋 작업 항목을 기입하세요.
+      placeholder: |
+        - [ ] <작업 1>
+        - [ ] <작업 2>
+        - [ ] <작업 3>
+      value: |
+        - [ ] <작업 1>
+        - [ ] <작업 2>
+        - [ ] <작업 3>
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 📋 PR 체크리스트
+      description: PR 작성 시 필요한 확인 사항입니다.
+      options:
+        - label: 🔄 모든 테스트를 통과했습니까?
+          required: true
+        - label: 🔄 코드 리뷰 요청을 했습니까?
+          required: true
+        - label: 🔄 문서(README 등)를 업데이트했습니까?
+          required: false
+        - label: 🔄 새로운 종속성을 추가했습니까?
+          required: false
