@@ -1,5 +1,5 @@
 ---
-title: "[#이슈번호][Feat] #0-0 Feature 상세"
+title: "[Feat] Feature 상세"
 
 ---
 
