@@ -2,9 +2,6 @@ name: "🛠️ 수정 보고서"
 description: "수정에 설정에 대한 보고서입니다"
 title: "🛠️ "
 labels: ["🛠️ 수정"]
-projects: ["kyoulee/1"]
-assignees:
-  - kyoulee
 body:
   - type: markdown
     attributes:
@@ -51,17 +48,3 @@ body:
       render: ''
     validations:
       required: true
-  - type: checkboxes
-    id: checkboxes_list
-    attributes:
-      label: 📣 작성자 체크리스트
-      description: 💭 작성자 체크리스트
-      options:
-        - label: 🔱 수정 제목을 적절하게 정하였습니까?
-          required: false
-        - label: 🔱 작업 리스트를 이슈에 맞게 설정하셨습니까?
-          required: false
-        - label: 📍 타이틀에 수정 이름을 추가하였습니까?
-          required: true
-        - label: 📌 작성자는 모든 작업에 대한 정보가 공개됨을 동의함니까?
-          required: true
