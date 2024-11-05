@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+coverage/
+*.config.js
+*.config.ts
+.eslintrc.js
+.prettierrc.js
+jest.config.js
+next-env.d.ts

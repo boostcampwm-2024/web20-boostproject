@@ -1,0 +1,50 @@
+name: "♻️ 리펙토링"
+description: "리펙토링 과정에 대한 보고서입니다"
+title: "♻️ "
+labels: ["♻️ 리펙토링"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # 리펙토링 작성
+        리펙토링 목록 issue 링킹 대한 링크
+        ## 리펙토링 작성 방법
+          - 다음줄에 기입이 가능하며
+          - 깃 허브 마크다운으로 작동합니다
+  - type: input
+    id: input_name
+    attributes:
+      label: 📣 리펙토링 이름
+      description: 💭 리펙토링의 이름을 작성해 주세요
+      placeholder: 🫧 <이름>
+    validations:
+      required: true
+  - type: textarea
+    id: textarea_description
+    attributes:
+      label: 📣 리펙토링 목적
+      description: 💭 리펙토링 목적을 적어주세요
+      placeholder: |
+        🫧 <리펙토링 하는 이유>
+        1. <이유>
+        2. <이유>
+      render: ''
+    validations:
+      required: false
+  - type: textarea
+    id: textarea_work
+    attributes:
+      label: ✅ 리펙토링 리스트
+      description: 💭 리펙토링에 리펙토링 목차를 작성해주세요
+      placeholder: |
+        🫧 <ex. 예시 지문>
+        - [ ] <체크 1>
+        - [ ] <체크 2>
+      value: |
+        - [ ] <#이슈 1> <작업 내용>
+        - [ ] <#이슈 2> <작업 내용>
+        - [ ] <#이슈 3> <작업 내용>
+        - [ ] 더입력 ...
+      render: ''
+    validations:
+      required: true

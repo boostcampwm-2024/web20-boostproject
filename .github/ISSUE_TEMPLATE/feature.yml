@@ -1,0 +1,38 @@
+name: "⚡️ 기능"
+description: "기능 추가 대한 보고서입니다"
+title: "⚡️ "
+labels: ["⚡️ 기능"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # 기능 추가 보고서
+        새로운 기능에 대한 적용 과정 보고서 입니다.
+        ## 기능 작성 방법
+          - 다음줄에 기입이 가능하며
+          - 깃 허브 마크다운으로 작동합니다
+  - type: input
+    id: input_name
+    attributes:
+      label: 📣Task 이름
+      description: 💭Task 이름을 작성해 주세요
+      placeholder: 🫧 <이름>
+    validations:
+      required: true
+  - type: textarea
+    id: textarea_work
+    attributes:
+      label: ✅ 작업 리스트
+      description: 💭 작업에 필요한 목록 작성
+      placeholder: |
+        🫧 <ex. 예시 지문>
+        - [ ] <체크 1>
+        - [ ] <체크 2>
+      value: |
+        - [ ] <작업 1>
+        - [ ] <작업 2>
+        - [ ] <작업 3>
+        - [ ] 더입력 ...
+      render: ''
+    validations:
+      required: true

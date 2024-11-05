@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/husky.sh"
+
+echo "\033[33m🏃‍♂️ Running pre-commit hooks...\033[0m"
+
+echo "\033[34m📝 Running lint-staged...\033[0m"
+pnpm lint-staged
+
+echo "\033[32m✅ Pre-commit checks passed!\033[0m"
