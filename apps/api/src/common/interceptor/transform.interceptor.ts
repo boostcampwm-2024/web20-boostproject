@@ -1,18 +1,22 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SuccessResponseFormat } from '../interfaces/response.interface';
+import { SuccessStatus } from '../responses/bases/successStatus';
+import { SuccessResponse } from '../responses/bases/successResponse';
 
 @Injectable()
-export class TransformInterceptor<T> implements NestInterceptor<T, SuccessResponseFormat<T>> {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<SuccessResponseFormat<T>> {
+export class TransformInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
-      map(data => ({
-        status: '200',
-        success: true,
-        message: 'OK.',
-        data
-      }))
+      map(data => {
+        if (data instanceof SuccessStatus) {
+          return new SuccessResponse(data).toResponse();
+        }
+
+        return new SuccessResponse(
+          new SuccessStatus(true, '200', 'OK.', data)
+        ).toResponse();
+      }),
     );
   }
 }
