@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "pnpm -r test",
+    "test:api": "pnpm --filter @web20-camon/api test && pnpm --filter @web20-camon/api test:e2e",
+    "test:chat": "pnpm --filter @web20-camon/chat test",
+    "test:media": "pnpm --filter @web20-camon/media test"
   },
   "keywords": [],
   "author": "",
