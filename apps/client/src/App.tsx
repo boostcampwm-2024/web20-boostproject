@@ -1,7 +1,9 @@
+import { Outlet } from 'react-router-dom';
+
 function App() {
   return (
     <>
-      Cam'On<div>안녕하세욥</div>
+      <Outlet />
     </>
   );
 }
