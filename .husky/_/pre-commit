@@ -1,9 +1,42 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/husky.sh"
+#!/bin/sh
 
 echo "\033[33m🏃‍♂️ Running pre-commit hooks...\033[0m"
 
+# lint-staged 실행
 echo "\033[34m📝 Running lint-staged...\033[0m"
-pnpm lint-staged
+pnpm lint-staged || {
+    echo "\033[31m❌ Lint-staged failed. Please fix the errors and try again.\033[0m"
+    exit 1
+}
 
-echo "\033[32m✅ Pre-commit checks passed!\033[0m"
+#변경된 파일 워크스페이스 찾기
+CHANGED_FILES=$(git diff --cached --name-only)
+
+# API서버 테스트
+if echo "$CHANGED_FILES" | grep -q "^apps/api/"; then
+    echo "\033[34m🧪 Running API tests...\033[0m"
+    pnpm test:api || {
+        echo "\033[31m❌ API tests failed. Please fix the failing tests and try again.\033[0m"
+        exit 1
+    }
+fi
+
+# Chat서버 테스트
+if echo "$CHANGED_FILES" | grep -q "^apps/chat/"; then
+    echo "\033[34m🧪 Running Chat tests...\033[0m"
+    pnpm test:chat || {
+        echo "\033[31m❌ Chat tests failed. Please fix the failing tests and try again.\033[0m"
+        exit 1
+    }
+fi
+
+# Media서버 테스트
+if echo "$CHANGED_FILES" | grep -q "^apps/media/"; then
+    echo "\033[34m🧪 Running Media tests...\033[0m"
+    pnpm test:media || {
+        echo "\033[31m❌ Media tests failed. Please fix the failing tests and try again.\033[0m"
+        exit 1
+    }
+fi
+
+echo "\033[32m✅ All pre-commit checks passed!\033[0m"
