@@ -3,9 +3,8 @@ on:
   push:
     branches:
       - develop
-      - Ci/83
-#    paths:
-#      - 'apps/client/**'
+    paths:
+      - 'apps/client/**'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -34,23 +33,28 @@ jobs:
         working-directory: apps/client
         run: pnpm build
 
-  deploy-main:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      # GitHub 레포지토리 체크아웃
-      - name: Checkout
-        uses: actions/checkout@v2
+      - name: Verify build output
+        run: ls -la apps/client/dist
 
-      # SSH Key 설정
+      - name: Upload files to server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          source: "apps/client/dist/*"
+          target: "/home/ubuntu/myapp"
+
       - name: Deploy to Server
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_SERVER_KEY }}
           script: |
-            # 배포 디렉토리 생성
-            mkdir -p /var/www/myapp
-            # 빌드된 파일을 서버로 전송
-            rsync -avz --delete apps/client/dist/ /var/www/myapp
+            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S mkdir -p /var/www/myapp
+            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S cp -r /home/ubuntu/myapp/* /var/www/myapp
+            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S chown -R www-data:www-data /var/www/myapp
+            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S rm -rf /home/ubuntu/myapp
+          
+      
