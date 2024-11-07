@@ -1,0 +1,56 @@
+name: Front Ci/Cd
+on:
+  push:
+    branches:
+      - develop
+      - Ci/83
+#    paths:
+#      - 'apps/client/**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # GitHub 레포지토리 체크아웃
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Node.js 환경 설정
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '21'
+
+      # pnpm 설치
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      # 의존성 설치
+      - name: Install dependencies
+        working-directory: apps/client
+        run: pnpm install
+
+      # 빌드 실행
+      - name: Build front-end
+        working-directory: apps/client
+        run: pnpm build
+
+  deploy-main:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      # GitHub 레포지토리 체크아웃
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # SSH Key 설정
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          script: |
+            # 배포 디렉토리 생성
+            mkdir -p /var/www/myapp
+            # 빌드된 파일을 서버로 전송
+            rsync -avz --delete apps/client/dist/ /var/www/myapp
