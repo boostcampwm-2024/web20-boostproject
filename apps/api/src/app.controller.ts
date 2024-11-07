@@ -12,7 +12,7 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-  
+
   @Get('/success/1')
   getSuccessTest1(): SuccessStatus {
     const data = { name: 'KIM', age: 23 };

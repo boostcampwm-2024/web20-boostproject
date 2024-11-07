@@ -13,9 +13,7 @@ export class TransformInterceptor implements NestInterceptor {
           return new SuccessResponse(data).toResponse();
         }
 
-        return new SuccessResponse(
-          new SuccessStatus(true, '200', 'OK.', data)
-        ).toResponse();
+        return new SuccessResponse(new SuccessStatus(true, '200', 'OK.', data)).toResponse();
       }),
     );
   }

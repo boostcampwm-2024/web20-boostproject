@@ -8,7 +8,7 @@ export class CustomException extends HttpException {
         status: errorStatus.status,
         message: errorStatus.message,
       },
-      errorStatus.code
+      errorStatus.code,
     );
   }
 }

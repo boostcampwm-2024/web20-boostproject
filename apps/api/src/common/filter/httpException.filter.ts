@@ -11,24 +11,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     if (exception instanceof CustomException) {
       const errorResponse = exception.getResponse() as any;
-      response
-        .status(status)
-        .json({
-          status: errorResponse.status,
-          success: false,
-          message: errorResponse.message,
-        });
+      response.status(status).json({
+        status: errorResponse.status,
+        success: false,
+        message: errorResponse.message,
+      });
     } else {
       const errorResponse = exception.getResponse() as any;
-      response
-        .status(status)
-        .json({
-          status: status,
-          success: false,
-          message: typeof errorResponse === 'string' 
-            ? errorResponse 
-            : errorResponse.message,
-        });
+      response.status(status).json({
+        status: status,
+        success: false,
+        message: typeof errorResponse === 'string' ? errorResponse : errorResponse.message,
+      });
     }
   }
 }
