@@ -1,0 +1,60 @@
+name: Front Ci/Cd
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'apps/client/**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # GitHub 레포지토리 체크아웃
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Node.js 환경 설정
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '21'
+
+      # pnpm 설치
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      # 의존성 설치
+      - name: Install dependencies
+        working-directory: apps/client
+        run: pnpm install
+
+      # 빌드 실행
+      - name: Build front-end
+        working-directory: apps/client
+        run: pnpm build
+
+      - name: Verify build output
+        run: ls -la apps/client/dist
+
+      - name: Upload files to server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          source: "apps/client/dist/*"
+          target: "/home/ubuntu/myapp"
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          script: |
+            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S mkdir -p /var/www/myapp
+            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S cp -r /home/ubuntu/myapp/* /var/www/myapp
+            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S chown -R www-data:www-data /var/www/myapp
+            echo "${{ secrets.SERVER_USER_PASSWORD }}" | sudo -S rm -rf /home/ubuntu/myapp
+          
+      
