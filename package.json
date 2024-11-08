@@ -7,7 +7,8 @@
     "test": "pnpm -r test",
     "test:api": "pnpm --filter @web20-camon/api test && pnpm --filter @web20-camon/api test:e2e",
     "test:chat": "pnpm --filter @web20-camon/chat test",
-    "test:media": "pnpm --filter @web20-camon/media test"
+    "test:media": "pnpm --filter @web20-camon/media test",
+    "commit": "npx cz"
   },
   "keywords": [],
   "author": "",
@@ -23,10 +24,24 @@
     "prettier": "2.8.8",
     "typescript": "5.3.3"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "sh ./path/to/your-script.sh"
+    }
+  },
   "lint-staged": {
     "*.{js,ts,tsx}": [
       "prettier --write",
       "eslint --fix"
     ]
+  },
+  "dependencies": {
+    "commitizen": "^4.3.1",
+    "cz-customizable": "^7.2.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    }
   }
 }
