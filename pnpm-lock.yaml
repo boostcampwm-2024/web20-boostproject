@@ -207,6 +207,67 @@ importers:
         specifier: ^5.4.10
         version: 5.4.10(@types/node@20.17.6)(terser@5.36.0)
 
+  apps/media:
+    dependencies:
+      '@nestjs/common':
+        specifier: ^10.0.0
+        version: 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core':
+        specifier: ^10.0.0
+        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/platform-express':
+        specifier: ^10.0.0
+        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)
+      reflect-metadata:
+        specifier: ^0.2.0
+        version: 0.2.2
+      rxjs:
+        specifier: ^7.8.1
+        version: 7.8.1
+    devDependencies:
+      '@nestjs/cli':
+        specifier: ^10.0.0
+        version: 10.4.7(@swc/core@1.8.0)
+      '@nestjs/schematics':
+        specifier: ^10.0.0
+        version: 10.2.3(chokidar@3.6.0)(typescript@5.6.3)
+      '@nestjs/testing':
+        specifier: ^10.0.0
+        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-express@10.4.7)
+      '@types/express':
+        specifier: ^5.0.0
+        version: 5.0.0
+      '@types/jest':
+        specifier: ^29.5.2
+        version: 29.5.14
+      '@types/node':
+        specifier: ^20.3.1
+        version: 20.17.6
+      '@types/supertest':
+        specifier: ^6.0.0
+        version: 6.0.2
+      jest:
+        specifier: ^29.5.0
+        version: 29.7.0(@types/node@20.17.6)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3))
+      source-map-support:
+        specifier: ^0.5.21
+        version: 0.5.21
+      supertest:
+        specifier: ^7.0.0
+        version: 7.0.0
+      ts-jest:
+        specifier: ^29.1.0
+        version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@20.17.6)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))(typescript@5.6.3)
+      ts-loader:
+        specifier: ^9.4.3
+        version: 9.5.1(typescript@5.6.3)(webpack@5.96.1(@swc/core@1.8.0))
+      ts-node:
+        specifier: ^10.9.1
+        version: 10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
+
 packages:
 
   '@alloc/quick-lru@5.2.0':
