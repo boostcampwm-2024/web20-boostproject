@@ -18,11 +18,16 @@
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
+    "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/typeorm": "^10.0.2",
+    "dotenv": "^16.4.5",
+    "mysql2": "^3.11.4",
     "nest-winston": "^1.9.7",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
+    "typeorm": "^0.3.20",
     "uuid": "^11.0.2",
     "winston": "^3.16.0",
     "winston-daily-rotate-file": "^5.0.0"
