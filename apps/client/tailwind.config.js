@@ -7,7 +7,6 @@ export default {
     extend: {
       fontFamily: {
         pretendard: ['Pretendard', 'Roboto'],
-        nabla: ['Nabla', 'Roboto'],
       },
       fontWeight: {
         bold: '700',
@@ -36,7 +35,7 @@ export default {
         'surface-default': 'var(--grayscale-black)',
         'surface-alt': 'var(--grayscale-700)',
         'surface-brand-default': 'var(--blue-500)',
-        'surface-brand-alt': 'var(--blue-900)',
+        'surface-brand-alt': 'var(--blue-500-alt)',
         'surface-danger': 'var(--red-500)',
         'border-bold': 'var(--grayscale-white-alt)',
         'bolder-default': 'var(--grayscale-400)',

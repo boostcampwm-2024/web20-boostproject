@@ -9,13 +9,6 @@
   font-style: normal;
 }
 
-@font-face {
-  font-family: 'Nabla';
-  src: url('./assets/fonts/Nabla-Regular-VariableFont_EDPT,EHLT.ttf') format('truetype');
-  font-weight: 100 900;
-  font-style: normal;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -42,7 +35,29 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem
+    --radius: 0.5rem;
+
+    /* Grayscale */
+    --grayscale-white-alt: rgba(255, 255, 255, 0.7);
+    --grayscale-white: #ffffff;
+    --grayscale-50: #f4f6f8;
+    --grayscale-100: #cdd1d6;
+    --grayscale-200: #a3a8af;
+    --grayscale-300: #7f858d;
+    --grayscale-400: #646a73;
+    --grayscale-500: #4e555e;
+    --grayscale-600: #3d444d;
+    --grayscale-700: #31363d;
+    --grayscale-black: #1a2129;
+
+    /* Blue */
+    --blue-100: #99c2ff;
+    --blue-500: #0053ff;
+    --blue-500-alt: rgba(0, 83, 255, 0.5);
+    --blue-900: #001333;
+
+    /* Red */
+    --red-500: #fba459;
   }
   .dark {
     --background: 222.2 84% 4.9%;
@@ -68,7 +83,7 @@
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
 @layer base {
@@ -76,6 +91,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-surface-default text-text-default;
+    @apply font-pretendard;
   }
 }
