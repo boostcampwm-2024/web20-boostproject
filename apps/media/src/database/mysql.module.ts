@@ -16,7 +16,7 @@ import * as net from 'net';
           host: configService.get('BASTION_HOST'),
           port: 22,
           username: configService.get('BASTION_USERNAME'),
-          privateKey: fs.readFileSync(path.resolve(configService.get('BASTION_PRIVATE_KEY_PATH')), 'utf8'),
+          privateKey: configService.get('BASTION_PRIVATE_KEY'),
         };
 
         await new Promise((resolve, reject) => {

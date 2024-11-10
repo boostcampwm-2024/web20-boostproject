@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - develop
-      - Chore/89
     paths:
       - 'apps/media/**'
 
@@ -21,6 +20,11 @@ jobs:
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
+      BASTION_HOST: ${{ secrets.BASTION_HOST }}
+      BASTION_USERNAME: ${{ secrets.BASTION_USERNAME }}
+      BASTION_PRIVATE_KEY: ${{ secrets.BASTION_PRIVATE_KEY }}
+      DB_DATABASE: ${{ secrets.DB_NAME }}
+      DB_SYNC: 'false'
 
     steps:
       - name: Checkout code
@@ -45,6 +49,11 @@ jobs:
             --build-arg DB_USERNAME=$DB_USERNAME \
             --build-arg DB_PASSWORD=$DB_PASSWORD \
             --build-arg DB_NAME=$DB_NAME \
+            --build-arg BASTION_HOST=$BASTION_HOST \
+            --build-arg BASTION_USERNAME=$BASTION_USERNAME \
+            --build-arg BASTION_PRIVATE_KEY="$BASTION_PRIVATE_KEY" \
+            --build-arg DB_DATABASE=$DB_DATABASE \
+            --build-arg DB_SYNC=$DB_SYNC \
             .
 
       - name: Push to Ncloud Container Registry
