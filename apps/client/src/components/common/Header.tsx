@@ -38,7 +38,7 @@ function Header() {
       {isLogIn ? (
         <div className="flex gap-2">
           <Button
-            className={isCheckedIn ? '' : 'bg-surface-brand-default hover:bg-surface-brand-alt'}
+            className={isCheckedIn && 'bg-surface-brand-default hover:bg-surface-brand-alt'}
             onClick={onClickCheckIn}
           >
             체크인
