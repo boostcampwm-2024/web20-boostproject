@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import App from './App';
 import Home from '@pages/Home';
 import Profile from '@pages/Profile';
-import Streaming from '@pages/Streaming';
+import Live from '@pages/Live';
 
 const router = createBrowserRouter([
   {
@@ -18,8 +18,8 @@ const router = createBrowserRouter([
         element: <Profile />,
       },
       {
-        path: 'streaming',
-        element: <Streaming />,
+        path: 'live',
+        element: <Live />,
       },
     ],
   },
