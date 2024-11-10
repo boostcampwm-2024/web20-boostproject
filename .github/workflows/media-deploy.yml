@@ -1,0 +1,85 @@
+name: Media Server CI/CD
+on:
+  push:
+    branches:
+      - develop
+      - Chore/89
+    paths:
+      - 'apps/media/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: media-camon
+      MEDIA_PORT: 3001
+      # REDIS_HOST: ${{ secrets.REDIS_HOST }}
+      # REDIS_PORT: ${{ secrets.REDIS_PORT }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to Ncloud Container Registry
+        env:
+          USERNAME: ${{ secrets.NCLOUD_ACCESS_KEY }}
+          PASSWORD: ${{ secrets.NCLOUD_SECRET_KEY }}
+          REGISTRY_URL: ${{ secrets.NCLOUD_REGISTRY_URL }}
+        run: |
+          echo "$PASSWORD" | docker login -u "$USERNAME" "$REGISTRY_URL" --password-stdin
+
+      - name: Build Docker image
+        run: |
+          docker build -f ./apps/media/Dockerfile -t ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest \
+            --build-arg MEDIA_PORT=$MEDIA_PORT \
+            --build-arg REDIS_HOST=$REDIS_HOST \
+            --build-arg REDIS_PORT=$REDIS_PORT \
+            --build-arg DB_HOST=$DB_HOST \
+            --build-arg DB_PORT=$DB_PORT \
+            --build-arg DB_USERNAME=$DB_USERNAME \
+            --build-arg DB_PASSWORD=$DB_PASSWORD \
+            --build-arg DB_NAME=$DB_NAME \
+            .
+
+      - name: Push to Ncloud Container Registry
+        run: |
+          docker push ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest
+      
+  deploy-and-run:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: SSH and deploy
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          port: 22
+          script: |
+            sudo docker login -u ${{secrets.NCLOUD_ACCESS_KEY}} -p ${{ secrets.NCLOUD_SECRET_KEY }} ${{ secrets.NCLOUD_REGISTRY_URL }}
+            sudo docker stop media-camon || true
+            sudo docker rm media-camon || true
+            sudo docker rmi ${{ secrets.NCLOUD_REGISTRY_URL }}/media-camon:latest || true
+            sudo docker pull ${{ secrets.NCLOUD_REGISTRY_URL }}/media-camon:latest
+            sudo docker run -d --name media-camon \
+              -p 3001:3001 \
+              --network=host \
+              ${{ secrets.NCLOUD_REGISTRY_URL }}/media-camon:latest
+            sudo docker image prune -f
+
+      - name: Check container status
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          port: 22
+          script: |
+            sudo docker ps -f name=media-camon
