@@ -78,4 +78,4 @@ import * as net from 'net';
     }),
   ],
 })
-export class DatabaseModule {}
+export class MysqlDatabaseModule {}
