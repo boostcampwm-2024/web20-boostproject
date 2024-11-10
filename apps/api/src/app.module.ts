@@ -7,9 +7,25 @@ import { AttendanceModule } from './attendance/attendance.module';
 import { WinstonModule } from 'nest-winston';
 import { winstonConfig } from './config/winston.config';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { typeormConfig } from './config/typeorm.config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [WinstonModule.forRoot(winstonConfig), MemberModule, BroadcastModule, AttendanceModule],
+  imports: [
+    WinstonModule.forRoot(winstonConfig),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => typeormConfig(configService),
+      inject: [ConfigService],
+    }),
+    MemberModule,
+    BroadcastModule,
+    AttendanceModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
