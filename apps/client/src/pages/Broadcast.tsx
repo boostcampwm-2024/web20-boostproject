@@ -1,3 +1,5 @@
+import { useMediaControls } from '@/hooks/useMediaControls';
+import { useMediaStream } from '@/hooks/useMediaStream';
 import ChatIcon from '@components/icons/ChatIcon';
 import MicrophoneOffIcon from '@components/icons/MicrophoneOffIcon';
 import MicrophoneOnIcon from '@components/icons/MicrophoneOnIcon';
@@ -5,71 +7,24 @@ import MonitorShareIcon from '@components/icons/MonitorShareIcon';
 import VideoOffIcon from '@components/icons/VideoOffIcon';
 import VideoOnIcon from '@components/icons/VideoOnIcon';
 import { Button } from '@components/ui/button';
-import { useEffect, useRef, useState } from 'react';
-
-type MediaStreamCallback = (mediaStream: MediaStream) => void;
 
 function Broadcast() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-
-  const [isVideoEnabled, setIsVideoEnabled] = useState(false);
-  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
-
-  useEffect(() => {
-    getUserVideo((mediaStream: MediaStream) => {
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        streamRef.current = mediaStream;
-
-        const audioTrack = mediaStream.getAudioTracks()[0];
-        const videoTrack = mediaStream.getVideoTracks()[0];
-        setIsAudioEnabled(audioTrack.enabled);
-        setIsVideoEnabled(videoTrack.enabled);
-      }
-    });
-  }, []);
-
-  const getUserVideo = async (callback: MediaStreamCallback) => {
-    try {
-      const constraints = {
-        video: true,
-        audio: true,
-      };
-
-      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
-
-      callback(mediaStream);
-    } catch (err) {
-      console.error(err);
-      return undefined;
-    }
-  };
-
-  const toggleAudio = () => {
-    if (streamRef.current) {
-      const audioTrack = streamRef.current.getAudioTracks()[0];
-      if (audioTrack) {
-        audioTrack.enabled = !audioTrack.enabled;
-        setIsAudioEnabled(audioTrack.enabled);
-      }
-    }
-  };
-
-  const toggleVideo = () => {
-    if (streamRef.current) {
-      const videoTrack = streamRef.current.getVideoTracks()[0];
-      if (videoTrack) {
-        videoTrack.enabled = !videoTrack.enabled;
-        setIsVideoEnabled(videoTrack.enabled);
-      }
-    }
-  };
+  const { mediaStream, error, videoRef } = useMediaStream();
+  const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
 
   const handleCheckout = () => {
     // TODO: 연결 끊기
     window.close();
   };
+
+  if (error) {
+    return (
+      <div className="flex flex-col">
+        <h2 className="text-display-bold24 text-text-danger">미디어 스트림을 불러오는데 실패했습니다.</h2>
+        <div className="text-display-medium16 text-text-danger">error</div>
+      </div>
+    );
+  }
 
   return (
     <div className="">
