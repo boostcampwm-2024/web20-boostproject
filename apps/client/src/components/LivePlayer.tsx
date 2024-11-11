@@ -15,14 +15,10 @@ function LivePlayer() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const handlePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(prev => !prev);
-    }
+    if (!videoRef.current) return;
+
+    videoRef.current.paused ? videoRef.current.play() : videoRef.current.pause();
+    setIsPlaying(!videoRef.current.paused);
   };
 
   const handleMute = () => {
