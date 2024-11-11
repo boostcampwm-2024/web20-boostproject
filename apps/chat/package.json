@@ -17,15 +17,13 @@
     "test:e2e": "jest --config ./test/config/jest-e2e.config.json"
   },
   "dependencies": {
-    "@nestjs/cache-manager": "^2.3.0",
+    "@nestjs-modules/ioredis": "^2.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^10.0.2",
     "@nestjs/websockets": "^10.4.7",
-    "@socket.io/redis-adapter": "^8.3.0",
-    "cache-manager": "^5.7.6",
     "ioredis": "^5.4.1",
     "redis": "^4.7.0",
     "reflect-metadata": "^0.2.0",
