@@ -3,7 +3,7 @@ name: Chat Server CI/CD
 on:
   push:
     branches:
-      - Chore/92
+      - develop
     paths:
       - 'apps/chat/**'
 
