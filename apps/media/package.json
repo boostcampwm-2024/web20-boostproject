@@ -17,14 +17,16 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/config/jest-e2e.config.json"
   },
   "dependencies": {
+    "@nestjs-modules/ioredis": "^2.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.3.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^10.0.2",
+    "ioredis": "^5.4.1",
     "mysql2": "^3.11.4",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
@@ -37,6 +39,7 @@
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
     "@types/express": "^5.0.0",
+    "@types/ioredis": "^5.0.0",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.3.1",
     "@types/ssh2": "^1.15.1",

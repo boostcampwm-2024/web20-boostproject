@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - develop
+      - Chore/89
     paths:
       - 'apps/media/**'
 
@@ -13,18 +14,14 @@ jobs:
     env:
       IMAGE_NAME: media-camon
       MEDIA_PORT: 3001
-      # REDIS_HOST: ${{ secrets.REDIS_HOST }}
-      # REDIS_PORT: ${{ secrets.REDIS_PORT }}
+      REDIS_HOST: ${{ secrets.REDIS_HOST }}
+      REDIS_PORT: ${{ secrets.REDIS_PORT }}
+      REDIS_MEDIA: ${{ secrets.REDIS_MEDIA }}
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_PORT: ${{ secrets.DB_PORT }}
       DB_USERNAME: ${{ secrets.DB_USERNAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-      BASTION_HOST: ${{ secrets.BASTION_HOST }}
-      BASTION_USERNAME: ${{ secrets.BASTION_USERNAME }}
-      BASTION_PRIVATE_KEY: ${{ secrets.BASTION_PRIVATE_KEY }}
-      DB_DATABASE: ${{ secrets.DB_NAME }}
-      DB_SYNC: 'false'
 
     steps:
       - name: Checkout code
@@ -40,20 +37,17 @@ jobs:
 
       - name: Build Docker image
         run: |
+          echo $MEDIA_HOST
           docker build -f ./apps/media/Dockerfile -t ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest \
             --build-arg MEDIA_PORT=$MEDIA_PORT \
             --build-arg REDIS_HOST=$REDIS_HOST \
             --build-arg REDIS_PORT=$REDIS_PORT \
+            --build-arg REDIS_MEDIA=$REDIS_MEDIA \
             --build-arg DB_HOST=$DB_HOST \
             --build-arg DB_PORT=$DB_PORT \
             --build-arg DB_USERNAME=$DB_USERNAME \
             --build-arg DB_PASSWORD=$DB_PASSWORD \
             --build-arg DB_NAME=$DB_NAME \
-            --build-arg BASTION_HOST=$BASTION_HOST \
-            --build-arg BASTION_USERNAME=$BASTION_USERNAME \
-            --build-arg BASTION_PRIVATE_KEY="$BASTION_PRIVATE_KEY" \
-            --build-arg DB_DATABASE=$DB_DATABASE \
-            --build-arg DB_SYNC=$DB_SYNC \
             .
 
       - name: Push to Ncloud Container Registry

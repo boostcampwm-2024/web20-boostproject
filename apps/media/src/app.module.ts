@@ -1,20 +1,36 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MysqlDatabaseModule } from './database/mysql.module';
-// import { RedisCacheModule } from './database/redis.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { typeormConfig } from './config/typeorm.config';
+import { RedisModule } from '@nestjs-modules/ioredis';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['../../.env', `../../.env.${process.env.NODE_ENV || 'development'}`],
     }),
-    MysqlDatabaseModule,
-    // RedisCacheModule,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => typeormConfig(configService),
+      inject: [ConfigService],
+    }),
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        type: 'single',
+        config: {
+          host: configService.get('REDIS_HOST'),
+          port: configService.get('REDIS_PORT'),
+          db: configService.get('REDIS_MEDIA'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
+// hello
