@@ -1,10 +1,50 @@
 import { SfuGateway } from './sfu.gateway';
-import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { RtpCapabilities } from 'mediasoup/node/lib/RtpParameters';
+import { Router } from 'mediasoup/node/lib/Router';
 
 @WebSocketGateway()
 export class RouterGateway {
   @WebSocketServer()
   server: Server;
+  private rtpCapabilities: RtpCapabilities = {
+    codecs: [
+      {
+        mimeType: 'audio/opus',
+        kind: 'audio',
+        clockRate: 48000,
+        channels: 2,
+      },
+      {
+        mimeType: 'video/VP8',
+        kind: 'video',
+        clockRate: 90000,
+      },
+    ],
+    headerExtensions: [],
+  };
+  private routers = new Map<string, Router>();
   constructor(private readonly sfuGateway: SfuGateway) {}
+
+  @SubscribeMessage('getRtpCapabilities')
+  handleGetRtpCapabilities() {
+    return { rtpCapabilities: this.rtpCapabilities };
+  }
+
+  @SubscribeMessage('createRouter')
+  async handleCreateRouter() {
+    const worker = this.sfuGateway.getWorker();
+    const router = await worker.createRouter({ mediaCodecs: this.rtpCapabilities.codecs });
+    this.routers.set(router.id, router);
+    return { roomId: router.id };
+  }
+
+  getRouter(routerId: string) {
+    return this.routers.get(routerId);
+  }
+
+  deleteRouter(routerId: string) {
+    this.routers.delete(routerId);
+  }
 }
