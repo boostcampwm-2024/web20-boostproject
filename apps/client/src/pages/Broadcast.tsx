@@ -1,4 +1,10 @@
-import { Button } from '@/components/ui/button';
+import ChatIcon from '@components/icons/ChatIcon';
+import MicrophoneOffIcon from '@components/icons/MicrophoneOffIcon';
+import MicrophoneOnIcon from '@components/icons/MicrophoneOnIcon';
+import MonitorShareIcon from '@components/icons/MonitorShareIcon';
+import VideoOffIcon from '@components/icons/VideoOffIcon';
+import VideoOnIcon from '@components/icons/VideoOnIcon';
+import { Button } from '@components/ui/button';
 import { useEffect, useRef, useState } from 'react';
 
 type MediaStreamCallback = (mediaStream: MediaStream) => void;
@@ -15,6 +21,11 @@ function Broadcast() {
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
         streamRef.current = mediaStream;
+
+        const audioTrack = mediaStream.getAudioTracks()[0];
+        const videoTrack = mediaStream.getVideoTracks()[0];
+        setIsAudioEnabled(audioTrack.enabled);
+        setIsVideoEnabled(videoTrack.enabled);
       }
     });
   }, []);
@@ -27,6 +38,7 @@ function Broadcast() {
       };
 
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+
       callback(mediaStream);
     } catch (err) {
       console.error(err);
@@ -54,6 +66,11 @@ function Broadcast() {
     }
   };
 
+  const handleCheckout = () => {
+    // TODO: 연결 끊기
+    window.close();
+  };
+
   return (
     <div className="">
       <div className="w-full aspect-video p-4">
@@ -61,17 +78,24 @@ function Broadcast() {
         <audio />
       </div>
       <div className="w-full">
-        <div className="flex flex-row justify-between">
-          <div>방송 제목</div>
+        <div className="flex flex-row justify-between p-4">
+          <div className="text-text-default text-display-medium16">방송 제목</div>
           <Button className="bg-transparent border border-border-default">수정</Button>
         </div>
-        <div className="flex justify-end">
-          <button onClick={toggleVideo} className="border">
-            비디오 {isVideoEnabled ? '끄기' : '켜기'}
-          </button>
-          <button onClick={toggleAudio} className="border">
-            오디오 {isAudioEnabled ? '끄기' : '켜기'}
-          </button>
+        <div className="flex justify-between items-center m-4">
+          <Button onClick={handleCheckout} className="bg-surface-brand-default hover:hover:bg-surface-brand-alt">
+            체크아웃
+          </Button>
+          <div className="flex items-center gap-4">
+            <button onClick={toggleVideo}>{isVideoEnabled ? <VideoOnIcon /> : <VideoOffIcon />}</button>
+            <button onClick={toggleAudio}>{isAudioEnabled ? <MicrophoneOnIcon /> : <MicrophoneOffIcon />}</button>
+            <button>
+              <MonitorShareIcon />
+            </button>
+            <button>
+              <ChatIcon />
+            </button>
+          </div>
         </div>
       </div>
       <div className="border border-border-default rounded-xl"></div>
