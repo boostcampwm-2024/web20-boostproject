@@ -1,5 +1,6 @@
-import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
+import { CreateProducerDto } from './create-producer.dto';
 import { ICreateProducerParams } from './producer.interface';
 import { Producer } from 'mediasoup/node/lib/Producer';
 import { RouterGateway } from '../router.gateway';
@@ -11,6 +12,27 @@ export class ProducerGateway {
   private producers: Map<string, Producer[]>;
 
   constructor(private readonly routerGateway: RouterGateway) {}
+
+  @SubscribeMessage('createProducer')
+  async handleCreateProducer(@MessageBody() data: CreateProducerDto) {
+    try {
+      const { transportId, kind, rtpParameters } = data;
+
+      const producer = await this.createProducer({
+        transportId,
+        kind,
+        rtpParameters,
+      });
+
+      return {
+        producerId: producer.id,
+      };
+    } catch (error) {
+      //TODO: 에러처리 통일
+      console.error('Create Producer Error:', error);
+      return { error };
+    }
+  }
 
   async createProducer(params: ICreateProducerParams): Promise<Producer> {
     const { transportId, kind, rtpParameters } = params;
