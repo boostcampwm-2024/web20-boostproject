@@ -1,19 +1,18 @@
 import { Module } from '@nestjs/common';
-import { RedisModule } from '@nestjs-modules/ioredis';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Redis } from 'ioredis';
+import { redisConfig } from '../config/redis.config';
 
 @Module({
-  imports: [
-    RedisModule.forRootAsync({
+  imports: [ConfigModule],
+  providers: [
+    {
+      provide: 'REDIS_CLIENT',
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'single',
-        host: configService.get<string>('REDIS_HOST'),
-        port: configService.get<number>('REDIS_PORT'),
-        db: configService.get<number>('REDIS_DB'),
-      }),
-    }),
+      useFactory: (configService: ConfigService) =>
+        new Redis(redisConfig(configService)),
+    },
   ],
-  exports: [RedisModule],
+  exports: ['REDIS_CLIENT'],
 })
-export class RedisModuleConfig {}
+export class RedisModule {}
