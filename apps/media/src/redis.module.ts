@@ -18,7 +18,7 @@ import Redis from 'ioredis';
           },
         };
 
-        console.log('Creating Redis connection with:', redisConfig);
+        #console.log('Creating Redis connection with:', redisConfig);
 
         const client = new Redis(redisConfig);
 
