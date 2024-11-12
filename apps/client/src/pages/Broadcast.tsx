@@ -10,7 +10,7 @@ import { Button } from '@components/ui/button';
 import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-const SERVER_URL = 'ws://localhost:3001';
+const socketUrl = import.meta.env.VITE_APP_MEDIASEVER_URL;
 
 function Broadcast() {
   const socketRef = useRef<Socket | null>(null);
@@ -18,7 +18,7 @@ function Broadcast() {
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
 
   useEffect(() => {
-    const newSocket = io(SERVER_URL);
+    const newSocket = io(socketUrl);
     socketRef.current = newSocket;
 
     newSocket.on('connect_error', error => {
