@@ -1,0 +1,86 @@
+name: Chat Server CI/CD
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'apps/chat/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: chat-camon
+      CHAT_PORT: ${{ secrets.CHAT_PORT }}
+      REDIS_HOST: ${{ secrets.REDIS_HOST }}
+      REDIS_PORT: ${{ secrets.REDIS_PORT }}
+      REDIS_CHAT: ${{ secrets.REDIS_CHAT }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      # ncloud 로그인
+      - name: Log in to Ncloud Container Registry
+        env:
+          USERNAME: ${{ secrets.NCLOUD_ACCESS_KEY }}
+          PASSWORD: ${{ secrets.NCLOUD_SECRET_KEY }}
+          REGISTRY_URL: ${{ secrets.NCLOUD_REGISTRY_URL }}
+        run: |
+          echo "$PASSWORD" | docker login -u "$USERNAME" "$REGISTRY_URL" --password-stdin
+
+      # 도커 이미지 빌드
+      - name: Build Docker image
+        run: docker build --build-arg CHAT_PORT=$CHAT_PORT --build-arg REDIS_HOST=$REDIS_HOST --build-arg REDIS_PORT=$REDIS_PORT --build-arg REDIS_CHAT=$REDIS_CHAT -f ./apps/chat/Dockerfile -t ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest .
+
+      #이미지 ncloud에 업로드
+      - name: Push to Ncloud Container Registry
+        run: |
+          docker push ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest
+      
+  deploy-and-run:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    env:
+      IMAGE_NAME: chat-camon
+      CHAT_PORT: ${{ secrets.CHAT_PORT }}
+      REDIS_HOST: ${{ secrets.REDIS_HOST }}
+      REDIS_PORT: ${{ secrets.REDIS_PORT }}
+      REDIS_CHAT: ${{ secrets.REDIS_CHAT }}
+
+    steps:
+      - name: SSH and deploy
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          port: 22
+          envs: CHAT_PORT,REDIS_HOST,REDIS_PORT,REDIS_CHAT
+          script: |
+            sudo docker login -u ${{secrets.NCLOUD_ACCESS_KEY}} -p ${{ secrets.NCLOUD_SECRET_KEY }} ${{ secrets.NCLOUD_REGISTRY_URL }}
+            sudo docker stop chat-camon || true
+            sudo docker rm chat-camon || true
+            sudo docker rmi ${{ secrets.NCLOUD_REGISTRY_URL }}/chat-camon:latest || true
+            sudo docker pull ${{ secrets.NCLOUD_REGISTRY_URL }}/chat-camon:latest
+            sudo docker run -d --name chat-camon \
+              -p ${CHAT_PORT}:${CHAT_PORT} \
+              -e CHAT_PORT=${CHAT_PORT} \
+              -e REDIS_HOST=${REDIS_HOST} \
+              -e REDIS_PORT=${REDIS_PORT} \
+              -e REDIS_CHAT=${REDIS_CHAT} \
+              ${{ secrets.NCLOUD_REGISTRY_URL }}/chat-camon:latest
+            sudo docker image prune -f
+
+      - name: Check container status
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          port: 22
+          script: |
+            sudo docker ps -f name=chat-camon
+            sudo docker logs chat-camon
