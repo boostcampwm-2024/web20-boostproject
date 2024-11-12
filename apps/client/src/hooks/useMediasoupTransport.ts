@@ -12,7 +12,7 @@ interface RtpCapabilitiesResponse {
   };
 }
 
-export const useMediasoupDevice = () => {
+export const useMediasoupTransport = () => {
   const socketRef = useRef<Socket | null>(null);
   const rtpCapabilitiesRef = useRef<RtpCapabilities | null>(null);
   const deviceRef = useRef<mediasoupClient.Device | null>(null);
