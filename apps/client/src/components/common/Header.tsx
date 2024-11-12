@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
 
 function Header() {
   const [isLogIn, setIsLogIn] = useState(true);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
+  const broadcastRef = useRef<Window | null>(null);
   const navigate = useNavigate();
 
   const handleLogoClick = () => {
@@ -25,9 +26,36 @@ function Header() {
   };
 
   const handleCheckInClick = () => {
-    // TODO: 방송 시작 구현
-    setIsCheckedIn(prev => !prev);
-    alert('체크인!');
+    if (broadcastRef.current && !broadcastRef.current.closed) {
+      broadcastRef.current.focus();
+      return;
+    }
+    const newTapFeature = [
+      `width=580`,
+      `height=1024`,
+      `bottom=0`,
+      `right=0`,
+      `resizable=yes`,
+      `scrollbars=no`,
+      'status=no',
+      'location=no',
+      'toolbar=no',
+      'menubar=no',
+    ].join(',');
+    const broadcastUrl = `${window.location.origin}/broadcast`;
+    const newWindow = window.open(broadcastUrl, '_blank', newTapFeature);
+
+    if (newWindow) {
+      setIsCheckedIn(true);
+      broadcastRef.current = newWindow;
+
+      newWindow.addEventListener('load', () => {
+        newWindow.addEventListener('unload', () => {
+          setIsCheckedIn(false);
+          broadcastRef.current = null;
+        });
+      });
+    }
   };
 
   return (
@@ -38,7 +66,7 @@ function Header() {
       {isLogIn ? (
         <div className="flex gap-2">
           <Button
-            className={isCheckedIn && 'bg-surface-brand-default hover:bg-surface-brand-alt'}
+            className={!isCheckedIn && 'bg-surface-brand-default hover:bg-surface-brand-alt'}
             onClick={handleCheckInClick}
           >
             체크인

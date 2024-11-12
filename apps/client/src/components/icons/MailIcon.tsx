@@ -4,10 +4,9 @@ function MailIcon() {
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
-      strokeWidth="1.5"
+      strokeWidth={1.5}
       stroke="currentColor"
-      width="24"
-      height="24"
+      className="size-6"
     >
       <path
         strokeLinecap="round"

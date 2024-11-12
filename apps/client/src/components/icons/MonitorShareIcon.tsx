@@ -1,4 +1,4 @@
-function ExpandIcon() {
+function MonitorShareIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -11,9 +11,10 @@ function ExpandIcon() {
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"
+        d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125Z"
       />
     </svg>
   );
 }
-export default ExpandIcon;
+
+export default MonitorShareIcon;

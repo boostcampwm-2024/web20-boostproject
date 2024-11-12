@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react';
-import ExpandIcon from './icons/ExpandIcon';
-import PlayIcon from './icons/PlayIcon';
-import SoundIcon from './icons/SoundIcon';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
-import { PauseIcon } from 'lucide-react';
-import SoundXIcon from './icons/SoundXIcon';
+import PlayIcon from './icons/PlayIcon';
+import PauseIcon from './icons/PauseIcon';
+import VolumeOnIcon from './icons/VolumeOnIcon';
+import VolumeOffIcon from './icons/VolumeOffIcon';
+import ExpandIcon from './icons/ExpandIcon';
 
 type VideoQuality = '480' | '720' | '1080';
 
@@ -41,7 +41,7 @@ function LivePlayer() {
       <div className="absolute bottom-4 left-0 right-0 px-6 text-text-default h-6 flex flex-row justify-between items-center">
         <div className="flex flex-row space-x-6 items-center">
           <button onClick={handlePlayPause}>{isPlaying ? <PauseIcon /> : <PlayIcon />}</button>
-          <button onClick={handleMute}>{isMute ? <SoundXIcon /> : <SoundIcon />}</button>
+          <button onClick={handleMute}>{isMute ? <VolumeOffIcon /> : <VolumeOnIcon />}</button>
         </div>
         <div className="flex flex-row space-x-6 items-center">
           <Select onValueChange={value => handleVideoQuality(value as VideoQuality)}>
