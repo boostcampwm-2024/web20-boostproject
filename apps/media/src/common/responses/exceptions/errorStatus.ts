@@ -9,7 +9,7 @@ export class ErrorStatus {
   static readonly UNAUTHORIZED = new ErrorStatus(400, 'COMMON_4001', '인증되지 않은 요청입니다.');
 
   // User Errors
-  static readonly USER_NOT_FOUND = new ErrorStatus(400, 'MEMBER_4000', '사용자를 찾을 수 없습니다.');
+  static readonly USER_NOT_FOUND = new ErrorStatus(404, 'MEMBER_4000', '사용자를 찾을 수 없습니다.');
 
   static readonly INVALID_PASSWORD = new ErrorStatus(400, 'MEMBER_4001', '잘못된 비밀번호입니다.');
 
@@ -23,4 +23,7 @@ export class ErrorStatus {
     '방에 방송자가 이미 존재 합니다.',
   );
   static readonly TRANSPORT_NOT_FOUND = new ErrorStatus(404, 'MEDIA_4002', 'TRANSPORT 정보가 존재하지 않습니다.');
+
+  // Broadcast Errors
+  static readonly BROADCAST_NOT_FOUND = new ErrorStatus(404, 'BROADCAST_4000', '방송 정보가 존재하지 않습니다.');
 }

@@ -3,6 +3,8 @@ import { Broadcast } from './broadcast.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateBroadcastDto } from './dto/createBroadcast.dto';
+import { CustomException } from 'src/common/responses/exceptions/custom.exception';
+import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 
 @Injectable()
 export class BroadcastService {
@@ -26,6 +28,45 @@ export class BroadcastService {
       startTime: new Date(),
       member: null, // 현재 방송자에 대한 부분은 논의 후 로직 적용
     });
+
+    return await this.broadcastRepository.save(broadcast);
+  }
+
+  /**
+   * 방송의 시청자 수를 증가시킵니다.
+   * @param broadcastId 방송 UUID
+   * @returns 업데이트된 방송 정보
+   */
+  async incrementViewers(broadcastId: string): Promise<Broadcast> {
+    const broadcast = await this.broadcastRepository.findOne({
+      where: { id: broadcastId },
+    });
+
+    if (!broadcast) {
+      throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
+    }
+
+    broadcast.viewers += 1;
+    return await this.broadcastRepository.save(broadcast);
+  }
+
+  /**
+   * 방송의 시청자 수를 감소시킵니다.
+   * @param broadcastId 방송 UUID
+   * @returns 업데이트된 방송 정보
+   */
+  async decrementViewers(broadcastId: string): Promise<Broadcast> {
+    const broadcast = await this.broadcastRepository.findOne({
+      where: { id: broadcastId },
+    });
+
+    if (!broadcast) {
+      throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
+    }
+
+    if (broadcast.viewers > 0) {
+      broadcast.viewers -= 1;
+    }
 
     return await this.broadcastRepository.save(broadcast);
   }
