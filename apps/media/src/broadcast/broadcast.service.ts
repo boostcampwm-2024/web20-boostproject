@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Broadcast } from './broadcast.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { CreateBroadcastDto } from './dto/createBroadcast.dto';
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
@@ -24,8 +24,6 @@ export class BroadcastService {
     const broadcast = this.broadcastRepository.create({
       id,
       title,
-      viewers: 0,
-      startTime: new Date(),
       member: null, // 현재 방송자에 대한 부분은 논의 후 로직 적용
     });
 
@@ -37,7 +35,7 @@ export class BroadcastService {
    * @param broadcastId 방송 UUID
    * @returns 업데이트된 방송 정보
    */
-  async incrementViewers(broadcastId: string): Promise<Broadcast> {
+  async incrementViewers(broadcastId: string): Promise<void> {
     const broadcast = await this.broadcastRepository.findOne({
       where: { id: broadcastId },
     });
@@ -46,8 +44,7 @@ export class BroadcastService {
       throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
     }
 
-    broadcast.viewers += 1;
-    return await this.broadcastRepository.save(broadcast);
+    await this.broadcastRepository.update({ id: broadcastId }, { viewers: () => 'viewers + 1' });
   }
 
   /**
@@ -55,7 +52,7 @@ export class BroadcastService {
    * @param broadcastId 방송 UUID
    * @returns 업데이트된 방송 정보
    */
-  async decrementViewers(broadcastId: string): Promise<Broadcast> {
+  async decrementViewers(broadcastId: string): Promise<void> {
     const broadcast = await this.broadcastRepository.findOne({
       where: { id: broadcastId },
     });
@@ -64,10 +61,6 @@ export class BroadcastService {
       throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
     }
 
-    if (broadcast.viewers > 0) {
-      broadcast.viewers -= 1;
-    }
-
-    return await this.broadcastRepository.save(broadcast);
+    await this.broadcastRepository.update({ id: broadcastId, viewers: MoreThan(0) }, { viewers: () => 'viewers - 1' });
   }
 }
