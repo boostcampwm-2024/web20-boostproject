@@ -14,4 +14,13 @@ export class ErrorStatus {
   static readonly INVALID_PASSWORD = new ErrorStatus(400, 'MEMBER_4001', '잘못된 비밀번호입니다.');
 
   static readonly INVALID_TOKEN = new ErrorStatus(400, 'MEMBER_4002', '유효하지 않은 토큰입니다.');
+
+  // Media Errors
+  static readonly ROOM_NOT_FOUND = new ErrorStatus(404, 'MEDIA_4000', '방 정보가 존재하지 않습니다.');
+  static readonly PRODUCER_ALREADY_EXISTS_IN_ROOM = new ErrorStatus(
+    400,
+    'MEDIA_4001',
+    '방에 방송자가 이미 존재 합니다.',
+  );
+  static readonly TRANSPORT_NOT_FOUND = new ErrorStatus(404, 'MEDIA_4002', 'TRANSPORT 정보가 존재하지 않습니다.');
 }

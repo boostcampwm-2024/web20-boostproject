@@ -1,10 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { Worker } from 'mediasoup/node/lib/Worker';
 import * as mediasoup from 'mediasoup';
 
 @Injectable()
 export class SfuGateway implements OnModuleInit {
-  private worker: Worker;
+  private worker: mediasoup.types.Worker;
   async onModuleInit() {
     this.worker = await mediasoup.createWorker({
       logLevel: 'debug',
