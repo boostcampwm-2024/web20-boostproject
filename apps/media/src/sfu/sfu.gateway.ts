@@ -5,9 +5,10 @@ import { Server } from 'socket.io';
 import * as mediasoup from 'mediasoup';
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
-import { TransportParams } from './interfaces/transport-params.interface';
+import { ConnectTransportDto } from './dto/transport-params.interface';
 import { CreateProducerDto } from './dto/create-producer.dto';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
+import { CreateTransportDto } from './dto/create-transport.dto';
 
 @WebSocketGateway({ cors: { origin: '*', methods: ['GET', 'POST'] } })
 export class SfuGateway {
@@ -48,8 +49,10 @@ export class SfuGateway {
   }
 
   @SubscribeMessage('createTransport')
-  async handleCreateTransport(roomId: string, isProducer: boolean = false) {
+  async handleCreateTransport(@MessageBody() params: CreateTransportDto) {
     try {
+      const { roomId, isProducer } = params;
+
       const room = this.sfuService.getRoom(roomId);
       if (!room) {
         throw new CustomException(ErrorStatus.ROOM_NOT_FOUND);
@@ -70,7 +73,7 @@ export class SfuGateway {
   }
 
   @SubscribeMessage('connectTransport')
-  async handleConnectTransport(params: TransportParams) {
+  async handleConnectTransport(@MessageBody() params: ConnectTransportDto) {
     try {
       const isProducer = await this.sfuService.connectTransport(params);
 
@@ -85,16 +88,9 @@ export class SfuGateway {
   }
 
   @SubscribeMessage('createProducer')
-  async handleCreateProducer(@MessageBody() data: CreateProducerDto) {
+  async handleCreateProducer(@MessageBody() params: CreateProducerDto) {
     try {
-      const { roomId, transportId, kind, rtpParameters } = data;
-
-      const producer = await this.sfuService.createProducer({
-        roomId,
-        transportId,
-        kind,
-        rtpParameters,
-      });
+      const producer = await this.sfuService.createProducer(params);
 
       return {
         producerId: producer.id,
@@ -107,9 +103,9 @@ export class SfuGateway {
   }
 
   @SubscribeMessage('createConsumer')
-  async handleCreateConsumer(@MessageBody() data: CreateConsumerDto) {
+  async handleCreateConsumer(@MessageBody() params: CreateConsumerDto) {
     try {
-      const { transportId, rtpCapabilities, roomId } = data;
+      const { transportId, rtpCapabilities, roomId } = params;
 
       const room = this.sfuService.getRoom(roomId);
 

@@ -1,6 +1,6 @@
 import * as mediasoup from 'mediasoup';
 
-export interface TransportParams {
+export class ConnectTransportDto {
   roomId: string;
   transportId: string;
   dtlsParameters: mediasoup.types.DtlsParameters;

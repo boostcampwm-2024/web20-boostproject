@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import * as mediasoup from 'mediasoup';
-import { RoomTransportInfo } from './interfaces/room-transport-info.interface';
+import { IRoomTransportInfo } from './interfaces/room-transport-info.interface';
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 
 @Injectable()
 export class SfuService {
   private rooms = new Map<string, mediasoup.types.Router>();
-  private roomTransports = new Map<string, RoomTransportInfo>();
+  private roomTransports = new Map<string, IRoomTransportInfo>();
   private producers: Map<string, mediasoup.types.Producer[]>;
   private consumers: Map<string, mediasoup.types.Consumer[]>;
 
