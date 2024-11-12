@@ -7,10 +7,30 @@ import MonitorShareIcon from '@components/icons/MonitorShareIcon';
 import VideoOffIcon from '@components/icons/VideoOffIcon';
 import VideoOnIcon from '@components/icons/VideoOnIcon';
 import { Button } from '@components/ui/button';
+import { useEffect, useRef } from 'react';
+import { io, Socket } from 'socket.io-client';
+
+const SERVER_URL = 'ws://localhost:3001';
 
 function Broadcast() {
+  const socketRef = useRef<Socket | null>(null);
   const { mediaStream, error, videoRef } = useMediaStream();
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
+
+  useEffect(() => {
+    const newSocket = io(SERVER_URL);
+    socketRef.current = newSocket;
+
+    newSocket.on('connect_error', error => {
+      throw Error(`WebSocket 연결 실패: ${error}`);
+    });
+
+    return () => {
+      if (newSocket.connected) {
+        newSocket.disconnect();
+      }
+    };
+  });
 
   const handleCheckout = () => {
     // TODO: 연결 끊기
