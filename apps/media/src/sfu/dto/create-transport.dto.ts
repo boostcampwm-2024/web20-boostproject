@@ -1,4 +1,4 @@
 export class CreateTransportDto {
   roomId: string;
-  isProducer: boolean;
+  isProducer?: boolean = true;
 }
