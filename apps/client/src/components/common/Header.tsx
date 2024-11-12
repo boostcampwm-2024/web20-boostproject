@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 function Header() {
   const [isLogIn, setIsLogIn] = useState(true);
@@ -66,7 +67,9 @@ function Header() {
       {isLogIn ? (
         <div className="flex gap-2">
           <Button
-            className={!isCheckedIn && 'bg-surface-brand-default hover:bg-surface-brand-alt'}
+            className={cn({
+              'bg-surface-brand-default hover:bg-surface-brand-alt': !isCheckedIn,
+            })}
             onClick={handleCheckInClick}
           >
             체크인

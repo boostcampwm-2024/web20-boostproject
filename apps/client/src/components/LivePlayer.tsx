@@ -30,9 +30,7 @@ function LivePlayer() {
   };
 
   const handleExpand = () => {
-    if (videoRef.current.requestFullscreen) {
-      videoRef.current.requestFullscreen();
-    }
+    videoRef.current?.requestFullscreen?.();
   };
 
   return (
