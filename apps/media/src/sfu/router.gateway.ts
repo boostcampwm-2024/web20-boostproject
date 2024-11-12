@@ -1,14 +1,15 @@
 import { SfuGateway } from './sfu.gateway';
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-import { RtpCapabilities } from 'mediasoup/node/lib/RtpParameters';
-import { Router } from 'mediasoup/node/lib/Router';
+// import { RtpCapabilities } from 'mediasoup/node/lib/RtpParameters';
+// import { Router } from 'mediasoup/node/lib/Router';
+import * as mediasoup from 'mediasoup';
 
 @WebSocketGateway()
 export class RouterGateway {
   @WebSocketServer()
   server: Server;
-  private rtpCapabilities: RtpCapabilities = {
+  private rtpCapabilities: mediasoup.types.RtpCapabilities = {
     codecs: [
       {
         mimeType: 'audio/opus',
@@ -24,7 +25,7 @@ export class RouterGateway {
     ],
     headerExtensions: [],
   };
-  private routers = new Map<string, Router>();
+  private routers = new Map<string, mediasoup.types.Router>();
   constructor(private readonly sfuGateway: SfuGateway) {}
 
   @SubscribeMessage('getRtpCapabilities')

@@ -18,5 +18,13 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_', // _ 로 시작하는 변수는 무시
+        varsIgnorePattern: '^_', // _ 로 시작하는 변수는 무시
+        ignoreRestSiblings: true,
+      },
+    ],
   },
 };
