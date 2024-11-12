@@ -39,17 +39,22 @@ export class SfuGateway {
 
   @SubscribeMessage('createRoom')
   async handleCreateRoom() {
-    const worker = this.workerService.getWorker();
-    const room = await worker.createRouter({ mediaCodecs: this.rtpCapabilities.codecs });
-    this.sfuService.setRoom(room.id, room);
+    try {
+      const worker = this.workerService.getWorker();
+      const room = await worker.createRouter({ mediaCodecs: this.rtpCapabilities.codecs });
+      this.sfuService.setRoom(room.id, room);
 
-    return { roomId: room.id };
+      return { roomId: room.id };
+    } catch (error) {
+      return error;
+    }
   }
 
   @SubscribeMessage('createTransport')
   async handleCreateTransport(@MessageBody() params: CreateTransportDto) {
     try {
       const { isProducer } = params;
+
       const transport = await this.sfuService.createTransport(params);
 
       return {
@@ -60,8 +65,7 @@ export class SfuGateway {
         dtlsParameters: transport.dtlsParameters,
       };
     } catch (error) {
-      console.error('Transport creation failed:', error);
-      throw error;
+      return error;
     }
   }
 
@@ -75,8 +79,7 @@ export class SfuGateway {
         isProducer,
       };
     } catch (error) {
-      console.error('Transport connection failed:', error);
-      throw error;
+      return error;
     }
   }
 
@@ -89,8 +92,7 @@ export class SfuGateway {
         producerId: producer.id,
       };
     } catch (error) {
-      console.error('Create Producer Error:', error);
-      return { error };
+      return error;
     }
   }
 
@@ -103,8 +105,7 @@ export class SfuGateway {
         consumers,
       };
     } catch (error) {
-      console.error('Create Consumer Error:', error);
-      return { error: error };
+      return error;
     }
   }
 }

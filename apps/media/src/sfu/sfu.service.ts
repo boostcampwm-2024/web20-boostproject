@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import * as mediasoup from 'mediasoup';
 import { IRoomTransportInfo } from './interfaces/room-transport-info.interface';
-import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
+import { CustomWsException } from 'src/common/responses/exceptions/custom-ws.exception';
 
 @Injectable()
 export class SfuService {
@@ -31,7 +31,7 @@ export class SfuService {
     const room = this.getRoom(roomId);
 
     if (!room) {
-      throw new CustomException(ErrorStatus.ROOM_NOT_FOUND);
+      throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
     }
 
     const roomTransportInfo = this.roomTransports.get(roomId);
@@ -42,7 +42,7 @@ export class SfuService {
     }
 
     if (isProducer && roomTransportInfo.producerTransportId) {
-      throw new CustomException(ErrorStatus.PRODUCER_ALREADY_EXISTS_IN_ROOM);
+      throw new CustomWsException(ErrorStatus.PRODUCER_ALREADY_EXISTS_IN_ROOM);
     }
 
     const transport = await room.createWebRtcTransport({
@@ -71,13 +71,13 @@ export class SfuService {
     const roomInfo = this.roomTransports.get(params.roomId);
 
     if (!roomInfo) {
-      throw new CustomException(ErrorStatus.ROOM_NOT_FOUND);
+      throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
     }
 
     const transport = roomInfo.transports.get(params.transportId);
 
     if (!transport) {
-      throw new CustomException(ErrorStatus.TRANSPORT_NOT_FOUND);
+      throw new CustomWsException(ErrorStatus.TRANSPORT_NOT_FOUND);
     }
 
     await transport.connect({ dtlsParameters: params.dtlsParameters });
@@ -125,14 +125,14 @@ export class SfuService {
     const room = this.getRoom(roomId);
 
     if (!room) {
-      throw new Error(`Room not found: ${roomId}`);
+      throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
     }
 
     const transport = this.getTransport(roomId, transportId);
 
     if (!transport) {
-      // CustomException 구현 필요
-      throw new Error(`Transport not found: ${transportId}`);
+      // CustomWsException 구현 필요
+      throw new CustomWsException(ErrorStatus.TRANSPORT_NOT_FOUND);
     }
 
     const producer = await transport.produce({
@@ -158,19 +158,19 @@ export class SfuService {
     const room = this.getRoom(roomId);
 
     if (!room) {
-      throw new CustomException(ErrorStatus.ROOM_NOT_FOUND);
+      throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
     }
 
     const canConsume = await this.canConsume(room, rtpCapabilities);
 
     if (!canConsume) {
-      throw new CustomException(ErrorStatus.CANNOT_CONSUME_PRODUCER);
+      throw new CustomWsException(ErrorStatus.CANNOT_CONSUME_PRODUCER);
     }
 
     const transport = this.getTransport(roomId, transportId);
 
     if (!transport) {
-      throw new CustomException(ErrorStatus.TRANSPORT_NOT_FOUND);
+      throw new CustomWsException(ErrorStatus.TRANSPORT_NOT_FOUND);
     }
 
     const producers = this.getProducersByRoomId(roomId);
