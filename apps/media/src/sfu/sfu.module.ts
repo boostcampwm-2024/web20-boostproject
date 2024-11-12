@@ -1,11 +1,8 @@
 import { Module } from '@nestjs/common';
-import { SfuGateway } from './sfu.gateway';
-import { RouterGateway } from './router.gateway';
-import { TransportGateway } from './transport.gateway';
-import { ProducerGateway } from './producer/producer.gateway';
-import { ConsumerGateway } from './consumer/consumer.gateway';
+import { WorkerService } from './worker/worker.service';
+import { SfuService } from './sfu.service';
 
 @Module({
-  providers: [SfuGateway, RouterGateway, TransportGateway, ProducerGateway, ConsumerGateway],
+  providers: [WorkerService, SfuService],
 })
 export class SfuModule {}
