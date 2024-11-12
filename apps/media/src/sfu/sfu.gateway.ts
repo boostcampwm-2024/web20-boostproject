@@ -3,8 +3,6 @@ import { WorkerService } from './worker/worker.service';
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import * as mediasoup from 'mediasoup';
-import { CustomException } from 'src/common/responses/exceptions/custom.exception';
-import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { ConnectTransportDto } from './dto/transport-params.interface';
 import { CreateProducerDto } from './dto/create-producer.dto';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
@@ -51,13 +49,8 @@ export class SfuGateway {
   @SubscribeMessage('createTransport')
   async handleCreateTransport(@MessageBody() params: CreateTransportDto) {
     try {
-      const { roomId, isProducer } = params;
-
-      const room = this.sfuService.getRoom(roomId);
-      if (!room) {
-        throw new CustomException(ErrorStatus.ROOM_NOT_FOUND);
-      }
-      const transport = await this.sfuService.createTransport(roomId, room, isProducer);
+      const { isProducer } = params;
+      const transport = await this.sfuService.createTransport(params);
 
       return {
         transportId: transport.id,
@@ -96,7 +89,6 @@ export class SfuGateway {
         producerId: producer.id,
       };
     } catch (error) {
-      //TODO: 에러처리 통일
       console.error('Create Producer Error:', error);
       return { error };
     }
@@ -105,26 +97,12 @@ export class SfuGateway {
   @SubscribeMessage('createConsumer')
   async handleCreateConsumer(@MessageBody() params: CreateConsumerDto) {
     try {
-      const { transportId, rtpCapabilities, roomId } = params;
+      const consumers = await this.sfuService.createConsumer(params);
 
-      const room = this.sfuService.getRoom(roomId);
-
-      if (!room) {
-        throw new Error(`Room not found: ${roomId}`);
-      }
-
-      // producerId로 해당 방의 producer가 있는지 확인
-      const canConsume = await this.sfuService.canConsume(room, rtpCapabilities);
-
-      if (!canConsume) {
-        throw new Error('Cannot consume this producer');
-      }
-      const consumers = await this.sfuService.createConsumer(roomId, transportId, rtpCapabilities);
       return {
         consumers,
       };
     } catch (error) {
-      //TODO: 에러처리 통일
       console.error('Create Consumer Error:', error);
       return { error: error };
     }

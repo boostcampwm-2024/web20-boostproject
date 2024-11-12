@@ -25,8 +25,15 @@ export class SfuService {
   }
 
   //transport
+  async createTransport(params) {
+    const { roomId, isProducer } = params;
 
-  async createTransport(roomId: string, room: mediasoup.types.Router, isProducer: boolean) {
+    const room = this.getRoom(roomId);
+
+    if (!room) {
+      throw new CustomException(ErrorStatus.ROOM_NOT_FOUND);
+    }
+
     const roomTransportInfo = this.roomTransports.get(roomId);
 
     if (!roomTransportInfo) {
@@ -145,14 +152,25 @@ export class SfuService {
   }
 
   //consumer
-  async createConsumer(roomId: string, transportId: string, rtpCapabilities: any) {
-    // const { transportId, producerId, rtpCapabilities } = params;
+  async createConsumer(params) {
+    const { transportId, rtpCapabilities, roomId } = params;
 
-    // TODO: transport쪽에서 transport를 가져오는 로직 필요
+    const room = this.getRoom(roomId);
+
+    if (!room) {
+      throw new CustomException(ErrorStatus.ROOM_NOT_FOUND);
+    }
+
+    const canConsume = await this.canConsume(room, rtpCapabilities);
+
+    if (!canConsume) {
+      throw new CustomException(ErrorStatus.CANNOT_CONSUME_PRODUCER);
+    }
+
     const transport = this.getTransport(roomId, transportId);
 
     if (!transport) {
-      throw new Error(`Transport not found: ${transportId}`);
+      throw new CustomException(ErrorStatus.TRANSPORT_NOT_FOUND);
     }
 
     const producers = this.getProducersByRoomId(roomId);
@@ -170,7 +188,9 @@ export class SfuService {
     if (!this.consumers.has(transportId)) {
       this.consumers.set(transportId, []);
     }
+
     this.consumers.get(transportId).push(...consumers);
+
     return consumers;
   }
 
