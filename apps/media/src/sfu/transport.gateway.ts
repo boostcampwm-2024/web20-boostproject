@@ -1,6 +1,5 @@
 import { WebSocketGateway, WebSocketServer, SubscribeMessage } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-import { SfuGateway } from './sfu.gateway';
 import { RouterGateway } from './router.gateway';
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
@@ -8,6 +7,7 @@ import * as mediasoup from 'mediasoup';
 
 interface TransportParams {
   roomId: string;
+  transportId: string;
   dtlsParameters: mediasoup.types.DtlsParameters;
 }
 
@@ -23,27 +23,27 @@ export class TransportGateway {
 
   private roomTransports = new Map<string, RoomTransportInfo>();
 
-  constructor(private readonly sfuGateway: SfuGateway, private readonly routerGateway: RouterGateway) {}
+  constructor(private readonly routerGateway: RouterGateway) {}
 
   @SubscribeMessage('createTransport')
   async handleCreateTransport(roomId: string, isProducer: boolean = false) {
     try {
-      const router = this.routerGateway.getRouter(roomId);
-      if (!router) {
+      const room = this.routerGateway.getRoom(roomId);
+      if (!room) {
         throw new CustomException(ErrorStatus.ROOM_NOT_FOUND);
       }
 
-      const roomInfo = this.roomTransports.get(roomId);
-      if (!roomInfo) {
-        roomInfo.transports = new Map();
-        this.roomTransports.set(roomId, roomInfo);
+      const roomTransportInfo = this.roomTransports.get(roomId);
+      if (!roomTransportInfo) {
+        roomTransportInfo.transports = new Map();
+        this.roomTransports.set(roomId, roomTransportInfo);
       }
 
-      if (isProducer && roomInfo.producerTransportId) {
+      if (isProducer && roomTransportInfo.producerTransportId) {
         throw new CustomException(ErrorStatus.PRODUCER_ALREADY_EXISTS_IN_ROOM);
       }
 
-      const transport = await router.createWebRtcTransport({
+      const transport = await room.createWebRtcTransport({
         listenIps: [
           {
             ip: '0.0.0.0',
@@ -56,10 +56,10 @@ export class TransportGateway {
         initialAvailableOutgoingBitrate: isProducer ? 1000000 : undefined,
       });
 
-      roomInfo.transports.set(transport.id, transport);
+      roomTransportInfo.transports.set(transport.id, transport);
 
       if (isProducer) {
-        roomInfo.producerTransportId = transport.id;
+        roomTransportInfo.producerTransportId = transport.id;
       }
 
       return {
@@ -76,7 +76,7 @@ export class TransportGateway {
   }
 
   @SubscribeMessage('connectTransport')
-  async handleConnectTransport(params: TransportParams & { transportId: string }) {
+  async handleConnectTransport(params: TransportParams) {
     try {
       const roomInfo = this.roomTransports.get(params.roomId);
       if (!roomInfo) {

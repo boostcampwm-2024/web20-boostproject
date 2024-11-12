@@ -2,15 +2,15 @@ import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from
 import { Server } from 'socket.io';
 import { CreateProducerDto } from './create-producer.dto';
 import { ICreateProducerParams } from './producer.interface';
-import { Producer } from 'mediasoup/node/lib/Producer';
 import { RouterGateway } from '../router.gateway';
 import { TransportGateway } from '../transport.gateway';
+import * as mediasoup from 'mediasoup';
 
 @WebSocketGateway()
 export class ProducerGateway {
   @WebSocketServer()
   server: Server;
-  private producers: Map<string, Producer[]>;
+  private producers: Map<string, mediasoup.types.Producer[]>;
 
   constructor(private readonly routerGateway: RouterGateway, private readonly transportGateway: TransportGateway) {}
 
@@ -36,17 +36,16 @@ export class ProducerGateway {
     }
   }
 
-  async createProducer(params: ICreateProducerParams): Promise<Producer> {
+  async createProducer(params: ICreateProducerParams) {
     const { roomId, transportId, kind, rtpParameters } = params;
 
-    const router = this.routerGateway.getRouter(roomId);
+    const room = this.routerGateway.getRoom(roomId);
 
-    if (!router) {
+    if (!room) {
       throw new Error(`Room not found: ${roomId}`);
     }
 
-    // TODO: transport쪽에서 transport를 가져오는 로직 필요
-    const transport = await this.transportGateway.getTransport(transportId);
+    const transport = this.transportGateway.getTransport(roomId, transportId);
 
     if (!transport) {
       // CustomException 구현 필요
@@ -62,11 +61,10 @@ export class ProducerGateway {
       this.producers.set(roomId, []);
     }
     this.producers.get(roomId).push(producer);
-
     return producer;
   }
 
-  getProducersByRoomId(roomId: string) {
+  getProducersByRoomId(roomId: string): mediasoup.types.Producer[] {
     return this.producers[roomId];
   }
 }

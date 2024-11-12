@@ -1,8 +1,6 @@
 import { SfuGateway } from './sfu.gateway';
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-// import { RtpCapabilities } from 'mediasoup/node/lib/RtpParameters';
-// import { Router } from 'mediasoup/node/lib/Router';
 import * as mediasoup from 'mediasoup';
 
 @WebSocketGateway()
@@ -25,7 +23,7 @@ export class RouterGateway {
     ],
     headerExtensions: [],
   };
-  private routers = new Map<string, mediasoup.types.Router>();
+  private rooms = new Map<string, mediasoup.types.Router>();
   constructor(private readonly sfuGateway: SfuGateway) {}
 
   @SubscribeMessage('getRtpCapabilities')
@@ -33,19 +31,20 @@ export class RouterGateway {
     return { rtpCapabilities: this.rtpCapabilities };
   }
 
-  @SubscribeMessage('createRouter')
-  async handleCreateRouter() {
+  @SubscribeMessage('createRoom')
+  async handleCreateRoom() {
     const worker = this.sfuGateway.getWorker();
-    const router = await worker.createRouter({ mediaCodecs: this.rtpCapabilities.codecs });
-    this.routers.set(router.id, router);
-    return { roomId: router.id };
+    const room = await worker.createRouter({ mediaCodecs: this.rtpCapabilities.codecs });
+    this.rooms.set(room.id, room);
+
+    return { roomId: room.id };
   }
 
-  getRouter(routerId: string) {
-    return this.routers.get(routerId);
+  getRoom(roomId: string) {
+    return this.rooms.get(roomId);
   }
 
-  deleteRouter(routerId: string) {
-    this.routers.delete(routerId);
+  deleteRoom(roomId: string) {
+    this.rooms.delete(roomId);
   }
 }
