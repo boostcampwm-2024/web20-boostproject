@@ -65,4 +65,8 @@ export class ProducerGateway {
 
     return producer;
   }
+
+  getProducersByRoomId(roomId: string) {
+    return this.producers[roomId];
+  }
 }
