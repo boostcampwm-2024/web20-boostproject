@@ -15,6 +15,7 @@ export class Broadcast {
   @Column({ default: 0 })
   viewers: number;
 
+  // startTime과 createdAt이 시간과 날짜를 분리해서 나타내는 거라면, 하나의 변수로 합치는 건 어떨까?
   @Column()
   startTime: Date;
 
