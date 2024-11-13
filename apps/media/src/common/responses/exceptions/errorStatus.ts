@@ -26,4 +26,9 @@ export class ErrorStatus {
 
   // Broadcast Errors
   static readonly BROADCAST_NOT_FOUND = new ErrorStatus(404, 'BROADCAST_4000', '방송 정보가 존재하지 않습니다.');
+  static readonly CANNOT_CONSUME_PRODUCER = new ErrorStatus(
+    400,
+    'MEDIA_4003',
+    'CONSUME할 수 있는 PRODUCER가 없습니다.',
+  );
 }
