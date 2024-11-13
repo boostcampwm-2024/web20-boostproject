@@ -21,7 +21,9 @@ export class SfuService {
     return this.rooms.get(roomId);
   }
 
-  deleteRoom(roomId: string) {
+  async cleanupRoom(roomId: string) {
+    const room = this.rooms.get(roomId);
+    room.close();
     this.rooms.delete(roomId);
   }
 
@@ -59,6 +61,11 @@ export class SfuService {
       enableTcp: true,
       preferUdp: true,
       initialAvailableOutgoingBitrate: isProducer ? 1000000 : undefined,
+    });
+
+    transport.on('routerclose', () => {
+      transport.close();
+      //TODO: transport 객체 삭제 로직 구현
     });
 
     roomTransportInfo.transports.set(transport.id, transport);
@@ -110,17 +117,6 @@ export class SfuService {
       .map(([_, transport]) => transport);
   }
 
-  // ROOM 삭제 시, 호출 필요
-  async cleanupRoom(roomId: string) {
-    const roomInfo = this.roomTransports.get(roomId);
-    if (roomInfo) {
-      for (const transport of roomInfo.transports.values()) {
-        transport.close();
-      }
-      this.roomTransports.delete(roomId);
-    }
-  }
-
   //producer
   async createProducer(params) {
     const { roomId, transportId, kind, rtpParameters } = params;
@@ -141,6 +137,11 @@ export class SfuService {
     const producer = await transport.produce({
       kind,
       rtpParameters,
+    });
+
+    producer.on('transportclose', () => {
+      producer.close();
+      //TODO: producer 객체 삭제 로직 구현
     });
 
     if (!this.producers.has(roomId)) {
@@ -179,13 +180,25 @@ export class SfuService {
     const producers = this.getProducersByRoomId(roomId);
 
     const consumers = await Promise.all(
-      producers.map(producer =>
-        transport.consume({
+      producers.map(async producer => {
+        const consumer = await transport.consume({
           producerId: producer.id,
           rtpCapabilities,
           paused: true,
-        }),
-      ),
+        });
+
+        consumer.on('transportclose', () => {
+          consumer.close();
+          //TODO: consumer 객체 삭제 로직 구현
+        });
+
+        consumer.on('producerclose', () => {
+          consumer.close();
+          //TODO: consumer 객체 삭제 로직 구현
+        });
+
+        return consumer;
+      }),
     );
 
     if (!this.consumers.has(transportId)) {
