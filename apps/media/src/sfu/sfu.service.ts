@@ -34,10 +34,12 @@ export class SfuService {
       throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
     }
 
-    const roomTransportInfo = this.roomTransports.get(roomId);
+    let roomTransportInfo = this.roomTransports.get(roomId);
 
     if (!roomTransportInfo) {
-      roomTransportInfo.transports = new Map();
+      roomTransportInfo = {
+        transports: new Map(),
+      };
       this.roomTransports.set(roomId, roomTransportInfo);
     }
 
