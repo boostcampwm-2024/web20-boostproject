@@ -2,7 +2,6 @@ import { SfuService } from './sfu.service';
 import { WorkerService } from './worker/worker.service';
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
-import * as mediasoup from 'mediasoup';
 import { ConnectTransportDto } from './dto/transport-params.interface';
 import { CreateProducerDto } from './dto/create-producer.dto';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
@@ -13,36 +12,18 @@ export class SfuGateway {
   @WebSocketServer()
   server: Server;
 
-  private rtpCapabilities: mediasoup.types.RtpCapabilities = {
-    codecs: [
-      {
-        mimeType: 'audio/opus',
-        kind: 'audio',
-        clockRate: 48000,
-        channels: 2,
-      },
-      {
-        mimeType: 'video/VP8',
-        kind: 'video',
-        clockRate: 90000,
-      },
-    ],
-    headerExtensions: [],
-  };
-
   constructor(private readonly workerService: WorkerService, private readonly sfuService: SfuService) {}
 
   @SubscribeMessage('getRtpCapabilities')
   handleGetRtpCapabilities() {
-    return { rtpCapabilities: this.rtpCapabilities };
+    return { rtpCapabilities: this.workerService.getRtpCapabilities() };
   }
 
   @SubscribeMessage('createRoom')
   async handleCreateRoom() {
     try {
-      const worker = this.workerService.getWorker();
-      const room = await worker.createRouter({ mediaCodecs: this.rtpCapabilities.codecs });
-      this.sfuService.setRoom(room.id, room);
+      const room = await this.workerService.createRoom();
+      this.sfuService.setRoom(room);
 
       return { roomId: room.id };
     } catch (error) {
@@ -108,4 +89,7 @@ export class SfuGateway {
       return error;
     }
   }
+
+  //TODO: 방송종료
+  //TODO: deleteConsumer (시청자가 나간 상황)
 }

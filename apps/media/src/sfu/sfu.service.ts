@@ -3,6 +3,7 @@ import * as mediasoup from 'mediasoup';
 import { IRoomTransportInfo } from './interfaces/room-transport-info.interface';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { CustomWsException } from 'src/common/responses/exceptions/custom-ws.exception';
+import { ConnectTransportDto } from './dto/transport-params.interface';
 
 @Injectable()
 export class SfuService {
@@ -12,8 +13,8 @@ export class SfuService {
   private consumers: Map<string, mediasoup.types.Consumer[]>;
 
   //Room
-  setRoom(roomId: string, room: mediasoup.types.Router) {
-    this.rooms.set(roomId, room);
+  setRoom(room: mediasoup.types.Router) {
+    this.rooms.set(room.id, room);
   }
 
   getRoom(roomId: string) {
@@ -69,7 +70,7 @@ export class SfuService {
     return transport;
   }
 
-  async connectTransport(params) {
+  async connectTransport(params: ConnectTransportDto) {
     const roomInfo = this.roomTransports.get(params.roomId);
 
     if (!roomInfo) {
