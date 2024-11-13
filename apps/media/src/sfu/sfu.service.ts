@@ -8,6 +8,8 @@ import { ConsumerService } from './services/consumer.service';
 import { CreateTransportDto } from './dto/create-transport.dto';
 import { CreateProducerDto } from './dto/create-producer.dto';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
+import { BroadcastService } from '../broadcast/broadcast.service';
+import { CreateBroadcastDto } from '../broadcast/dto/createBroadcast.dto';
 
 @Injectable()
 export class SfuService {
@@ -16,10 +18,13 @@ export class SfuService {
     private readonly transportService: TransportService,
     private readonly producerService: ProducerService,
     private readonly consumerService: ConsumerService,
+    private readonly broadcasterService: BroadcastService,
   ) {}
 
-  createRoom() {
-    return this.roomService.createRoom();
+  async createRoom() {
+    const room = await this.roomService.createRoom();
+    await this.broadcasterService.createBroadcast(CreateBroadcastDto.of(room.id, 'title', null));
+    return room;
   }
 
   getRtpCapabilities(roomId: string) {
@@ -52,6 +57,7 @@ export class SfuService {
     await this.canConsume(room, producers);
     const consumerTransport = this.transportService.getTransport(roomId, transportId);
     const consumers = await this.consumerService.createConsumers(consumerTransport, producers, room.rtpCapabilities);
+    await this.broadcasterService.incrementViewers(roomId);
     return consumers.map(consumer => {
       return {
         consumerId: consumer.id,
@@ -66,7 +72,8 @@ export class SfuService {
     this.roomService.deleteRoom(roomId);
   }
 
-  leaveBroadcast(roomId: string, transportId: string) {
+  async leaveBroadcast(roomId: string, transportId: string) {
+    await this.broadcasterService.decrementViewers(roomId);
     this.transportService.getTransport(roomId, transportId).close();
   }
 
