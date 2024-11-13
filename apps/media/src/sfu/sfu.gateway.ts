@@ -6,7 +6,6 @@ import { ConnectTransportDto } from './dto/transport-params.interface';
 import { CreateProducerDto } from './dto/create-producer.dto';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
 import { CreateTransportDto } from './dto/create-transport.dto';
-
 @WebSocketGateway({ cors: { origin: '*', methods: ['GET', 'POST'] } })
 export class SfuGateway {
   @WebSocketServer()
@@ -90,6 +89,20 @@ export class SfuGateway {
     }
   }
 
-  //TODO: 방송종료
-  //TODO: deleteConsumer (시청자가 나간 상황)
+  //방송종료
+  @SubscribeMessage('stopBroadcast')
+  handleStopBroadcast(@MessageBody('roomId') roomId: string) {
+    try {
+      this.sfuService.cleanupRoom(roomId);
+
+      return {
+        isCleaned: true,
+        roomId,
+      };
+    } catch (error) {
+      return error;
+    }
+  }
+
+  //스트림 일시 중단
 }

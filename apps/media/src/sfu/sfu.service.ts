@@ -21,7 +21,7 @@ export class SfuService {
     return this.rooms.get(roomId);
   }
 
-  async cleanupRoom(roomId: string) {
+  cleanupRoom(roomId: string) {
     const room = this.rooms.get(roomId);
     room.close();
     this.rooms.delete(roomId);
@@ -187,15 +187,7 @@ export class SfuService {
           paused: true,
         });
 
-        consumer.on('transportclose', () => {
-          consumer.close();
-          //TODO: consumer 객체 삭제 로직 구현
-        });
-
-        consumer.on('producerclose', () => {
-          consumer.close();
-          //TODO: consumer 객체 삭제 로직 구현
-        });
+        this.addConsumerEvent(consumer);
 
         return consumer;
       }),
@@ -215,6 +207,26 @@ export class SfuService {
     if (!producers) return false;
     return producers.every(producer => {
       return room.canConsume({ producerId: producer.id, rtpCapabilities });
+    });
+  }
+
+  addConsumerEvent(consumer: mediasoup.types.Consumer) {
+    consumer.on('transportclose', () => {
+      consumer.close();
+      //TODO: consumer 객체 삭제 로직 구현
+    });
+
+    consumer.on('producerclose', () => {
+      consumer.close();
+      //TODO: consumer 객체 삭제 로직 구현
+    });
+
+    consumer.on('producerpause', () => {
+      consumer.pause();
+    });
+
+    consumer.on('producerresume', () => {
+      consumer.resume();
     });
   }
 }
