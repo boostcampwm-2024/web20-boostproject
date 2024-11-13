@@ -2,6 +2,14 @@
 import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
 import { Device, Transport, DtlsParameters, IceCandidate, IceParameters } from 'mediasoup-client/lib/types';
 
+export interface useMediasoupProps {
+  socketUrl: string;
+  liveId: string | undefined;
+  mediastream: MediaStream | null;
+  isMediastreamReady: boolean;
+  isProducer: boolean;
+}
+
 export interface RtpCapabilitiesResponse {
   rtpCapabilities: RtpCapabilities;
 }
@@ -43,4 +51,9 @@ export interface MediasoupDeviceActions {
 
 export interface MediasoupTransportActions {
   createTransport: () => Promise<void>;
+}
+
+export interface ConnectTransportResponse {
+  connected: boolean;
+  isProducer: boolean;
 }

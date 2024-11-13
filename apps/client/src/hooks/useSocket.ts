@@ -24,7 +24,7 @@ export const useSocket = (url: string) => {
         socket.disconnect();
       }
     };
-  });
+  }, []);
 
   return {
     socket: socketRef.current,

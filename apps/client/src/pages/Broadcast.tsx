@@ -12,11 +12,19 @@ import { Button } from '@components/ui/button';
 const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
 function Broadcast() {
-  const { mediaStream, mediaStreamError, videoRef } = useMediaStream();
-  console.log(mediaStream);
+  const { mediaStream, mediaStreamError, isMediastreamReady, videoRef } = useMediaStream();
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
-  const { transport, error: mediasoupError } = useMediasoup({ url: socketUrl, isProducer: true });
-  console.log('transport:', transport);
+  const {
+    transport: _t,
+    mediastream: _m,
+    error: mediasoupError,
+  } = useMediasoup({
+    socketUrl: socketUrl,
+    liveId: undefined,
+    mediastream: mediaStream,
+    isMediastreamReady: isMediastreamReady,
+    isProducer: true,
+  });
 
   const handleCheckout = () => {
     // TODO: 연결 끊기

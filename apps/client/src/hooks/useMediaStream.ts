@@ -4,6 +4,7 @@ export const useMediaStream = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [mediaStreamError, setMediaStreamError] = useState<Error | null>(null);
+  const [isMediastreamReady, setIsMediastreamReady] = useState(false);
 
   const initializeStream = async () => {
     try {
@@ -13,6 +14,7 @@ export const useMediaStream = () => {
       };
 
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+      setIsMediastreamReady(true);
 
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
@@ -24,14 +26,15 @@ export const useMediaStream = () => {
   };
 
   useEffect(() => {
+    const videoElement = videoRef.current;
     initializeStream();
 
     return () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
-      if (videoRef.current) {
-        videoRef.current.srcObject = null;
+      if (videoElement) {
+        videoElement.srcObject = null;
       }
     };
   }, []);
@@ -39,6 +42,7 @@ export const useMediaStream = () => {
   return {
     mediaStream: streamRef.current,
     mediaStreamError,
+    isMediastreamReady,
     videoRef,
   };
 };

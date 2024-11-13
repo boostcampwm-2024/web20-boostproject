@@ -28,6 +28,15 @@
   "rules": {
     "react/react-in-jsx-scope": "off",
     "react/no-unescaped-entities": "off",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "react-hooks/exhaustive-deps": "warn",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_", // _ 로 시작하는 변수는 무시
+        "varsIgnorePattern": "^_", // _ 로 시작하는 변수는 무시
+        "ignoreRestSiblings": true
+      }
+    ]
   }
 }

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import PlayIcon from './icons/PlayIcon';
 import PauseIcon from './icons/PauseIcon';
@@ -8,11 +8,16 @@ import ExpandIcon from './icons/ExpandIcon';
 
 type VideoQuality = '480' | '720' | '1080';
 
-function LivePlayer() {
+function LivePlayer(props: { mediastream: MediaStream | null }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMute, setIsMute] = useState(false);
   const [videoQuality, setVideoQuality] = useState<VideoQuality>('480');
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (!videoRef.current) return;
+    videoRef.current.srcObject = props.mediastream;
+  });
 
   const handlePlayPause = () => {
     if (!videoRef.current) return;

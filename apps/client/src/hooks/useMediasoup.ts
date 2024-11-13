@@ -1,8 +1,9 @@
 import * as mediasoupClient from 'mediasoup-client';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
-import { Transport, Device } from 'mediasoup-client/lib/types';
+import { Transport, Device, Consumer } from 'mediasoup-client/lib/types';
 import {
+  useMediasoupProps,
   RtpCapabilitiesResponse,
   CreateRoomResponse,
   CreateTransportResponse,
@@ -10,13 +11,19 @@ import {
 } from '../types/mediasoupTypes';
 import { useSocket } from './useSocket';
 
-export const useMediasoup = ({ url, isProducer = true }: { url: string; isProducer: boolean }) => {
+export const useMediasoup = ({
+  socketUrl,
+  liveId = '',
+  mediastream,
+  isMediastreamReady,
+  isProducer = true,
+}: useMediasoupProps) => {
   const rtpCapabilitiesRef = useRef<RtpCapabilities | null>(null);
   const transport = useRef<Transport | null>(null);
   const [error, setError] = useState<Error | null>(null);
-  const { socket, isConnected, socketError } = useSocket(url);
+  const { socket, isConnected, socketError } = useSocket(socketUrl);
 
-  const getRtpCapabilities = useCallback(async () => {
+  const getRtpCapabilities = async () => {
     if (!socket) return null;
 
     try {
@@ -36,9 +43,9 @@ export const useMediasoup = ({ url, isProducer = true }: { url: string; isProduc
       setError(error);
       return null;
     }
-  }, [socket]);
+  };
 
-  const createDevice = useCallback(async () => {
+  const createDevice = async () => {
     try {
       if (!rtpCapabilitiesRef.current) return null;
 
@@ -54,79 +61,103 @@ export const useMediasoup = ({ url, isProducer = true }: { url: string; isProduc
       setError(error);
       return null;
     }
-  }, []);
+  };
 
-  const createTransport = useCallback(
-    async (device: Device, roomId: string) => {
-      if (!socket || !device || !roomId) return;
+  const createTransport = async (device: Device, roomId: string) => {
+    if (!socket || !device || !roomId) return;
 
-      try {
-        const transportResponse: CreateTransportResponse = await new Promise(resolve => {
-          socket.emit('createTransport', { roomId, isProducer }, (response: CreateTransportResponse) => {
-            console.log('transport 생성');
-            resolve(response);
+    try {
+      const transportResponse: CreateTransportResponse = await new Promise(resolve => {
+        socket.emit('createTransport', { roomId, isProducer }, (response: CreateTransportResponse) => {
+          console.log('transport 생성');
+          resolve(response);
+        });
+      });
+
+      const newTransport = isProducer
+        ? device.createSendTransport({
+            id: transportResponse.transportId,
+            iceParameters: transportResponse.iceParameters,
+            iceCandidates: transportResponse.iceCandidates,
+            dtlsParameters: transportResponse.dtlsParameters,
+          })
+        : device.createRecvTransport({
+            id: transportResponse.transportId,
+            iceParameters: transportResponse.iceParameters,
+            iceCandidates: transportResponse.iceCandidates,
+            dtlsParameters: transportResponse.dtlsParameters,
           });
-        });
 
-        const newTransport = isProducer
-          ? device.createSendTransport({
-              id: transportResponse.transportId,
-              iceParameters: transportResponse.iceParameters,
-              iceCandidates: transportResponse.iceCandidates,
-              dtlsParameters: transportResponse.dtlsParameters,
-            })
-          : device.createRecvTransport({
-              id: transportResponse.transportId,
-              iceParameters: transportResponse.iceParameters,
-              iceCandidates: transportResponse.iceCandidates,
-              dtlsParameters: transportResponse.dtlsParameters,
-            });
+      transport.current = newTransport;
 
-        transport.current = newTransport;
-
-        transport.current.on('connect', async ({ dtlsParameters }, callback, errback) => {
-          try {
-            const response: ConnectTransportResponse = await new Promise(resolve => {
-              socket.emit(
-                'connectTransport',
-                {
-                  roomId: roomId,
-                  dtlsParameters: dtlsParameters,
-                  transportId: transportResponse.transportId,
-                },
-                (result: ConnectTransportResponse) => {
-                  console.log('connectTransport');
-                  resolve(result);
-                },
-              );
-            });
-
-            if (response.connected) {
-              console.log('transport 연결 성공');
+      transport.current.on('connect', async (parameters, callback) => {
+        await new Promise(resolve =>
+          socket.emit(
+            'connectTransport',
+            {
+              roomId: roomId,
+              dtlsParameters: parameters.dtlsParameters,
+              transportId: transportResponse.transportId,
+            },
+            (response: ConnectTransportResponse) => {
+              console.log('connected: ', response.connected);
+              console.log('isProducer: ', response.isProducer);
               callback();
-            } else {
-              const error = new Error('서버에서 연결을 거부했습니다.');
-              console.error(error);
-              setError(error);
-              errback(error);
-            }
-          } catch (err) {
-            const error = err instanceof Error ? err : new Error('Transport 연결 중 에러가 발생했습니다.');
-            console.error('Transport 연결 중 에러:', error);
-            setError(error);
-            errback(error);
-          }
-        });
-      } catch (err) {
-        const error = err instanceof Error ? err : new Error('Transport 생성 에러');
-        console.error('Transport 생성 중 에러:', error);
-        setError(error);
-      }
-    },
-    [socket, isProducer],
-  );
+              resolve;
+            },
+          ),
+        );
+      });
 
-  const initializeMediasoup = useCallback(async () => {
+      transport.current.on('produce', async (parameters, callback) => {
+        socket.emit(
+          'createProducer',
+          {
+            roomId,
+            transportId: transportResponse.transportId,
+            kind: parameters.kind,
+            rtpParameters: parameters.rtpParameters,
+          },
+          (response: { producerId: string }) => {
+            callback({ id: response.producerId });
+          },
+        );
+      });
+
+      if (isProducer) {
+        await transport.current.produce({ track: mediastream?.getVideoTracks()[0] });
+        await transport.current.produce({ track: mediastream?.getAudioTracks()[0] });
+      } else {
+        socket.emit(
+          'createConsumer',
+          {
+            roomId: liveId,
+            transportId: transportResponse.transportId,
+            rtpCapabilities: rtpCapabilitiesRef.current,
+          },
+          (response: { consumers: Consumer[] }) => {
+            const mediaStream = new MediaStream();
+            console.log(response);
+            response.consumers.forEach((consumer: Consumer) => {
+              transport.current?.consume({
+                id: consumer.id,
+                producerId: consumer.producerId,
+                kind: consumer.kind,
+                rtpParameters: consumer.rtpParameters,
+              });
+              mediaStream.addTrack(consumer.track);
+            });
+          },
+        );
+      }
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error('Transport 생성 에러');
+      console.error('Transport 생성 중 에러:', error);
+      setError(error);
+    }
+  };
+
+  const initializeMediasoup = async () => {
     try {
       if (!socket) {
         console.log('소켓이 없습니다');
@@ -152,11 +183,15 @@ export const useMediasoup = ({ url, isProducer = true }: { url: string; isProduc
       console.error('Mediasoup 초기화 중 에러:', error);
       setError(error);
     }
-  }, [socket, getRtpCapabilities, createDevice, createTransport]);
+  };
 
   useEffect(() => {
     if (socketError) {
       setError(socketError);
+      console.log('소켓 에러');
+      return;
+    }
+    if (!mediastream && isProducer) {
       return;
     }
 
@@ -167,10 +202,11 @@ export const useMediasoup = ({ url, isProducer = true }: { url: string; isProduc
         transport.current.close();
       }
     };
-  }, [socket, isConnected]);
+  }, [isConnected, isMediastreamReady]);
 
   return {
     transport: transport.current,
+    mediastream,
     error,
   };
 };
