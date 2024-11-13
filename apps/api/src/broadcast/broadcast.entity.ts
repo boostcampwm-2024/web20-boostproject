@@ -1,10 +1,10 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Member } from '../member/member.entity';
 
 @Entity()
 export class Broadcast {
-  @PrimaryGeneratedColumn({ name: 'broadcastId' })
-  id: number;
+  @PrimaryColumn()
+  id: string;
 
   @Column({ length: 255 })
   title: string;
