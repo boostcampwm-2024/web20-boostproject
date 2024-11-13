@@ -1,6 +1,6 @@
 import { useMediaControls } from '@/hooks/useMediaControls';
-import { useMediasoup } from '@/hooks/useMediasoup';
 import { useMediaStream } from '@/hooks/useMediaStream';
+import { useProducer } from '@/hooks/useProducer';
 import ChatIcon from '@components/icons/ChatIcon';
 import MicrophoneOffIcon from '@components/icons/MicrophoneOffIcon';
 import MicrophoneOnIcon from '@components/icons/MicrophoneOnIcon';
@@ -14,16 +14,10 @@ const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
 function Broadcast() {
   const { mediaStream, mediaStreamError, isMediastreamReady, videoRef } = useMediaStream();
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
-  const {
-    transport: _t,
-    mediastream: _m,
-    error: mediasoupError,
-  } = useMediasoup({
+  const { transport: _t, error: mediasoupError } = useProducer({
     socketUrl: socketUrl,
-    liveId: undefined,
     mediastream: mediaStream,
     isMediastreamReady: isMediastreamReady,
-    isProducer: true,
   });
 
   const handleCheckout = () => {

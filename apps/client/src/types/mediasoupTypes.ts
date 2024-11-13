@@ -10,6 +10,17 @@ export interface useMediasoupProps {
   isProducer: boolean;
 }
 
+export interface useProducerProps {
+  socketUrl: string;
+  mediastream: MediaStream | null;
+  isMediastreamReady: boolean;
+}
+
+export interface useConsumerProps {
+  socketUrl: string;
+  liveId: string | undefined;
+}
+
 export interface RtpCapabilitiesResponse {
   rtpCapabilities: RtpCapabilities;
 }
