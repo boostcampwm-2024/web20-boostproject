@@ -1,5 +1,5 @@
 interface ImportMetaEnv {
-  readonly VITE_APP_MEDIASEVER_URL: string;
+  readonly VITE_MEDIASERVER_URL: string;
 }
 
 interface ImportMeta {

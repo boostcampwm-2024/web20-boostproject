@@ -1,14 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
-interface MediaStreamState {
-  mediaStream: MediaStream | null;
-  error: Error | null;
-}
-
 export const useMediaStream = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const [mediaStramState, setMediaStreamState] = useState<MediaStreamState>({ mediaStream: null, error: null });
+  const [mediaStreamError, setMediaStreamError] = useState<Error | null>(null);
 
   const initializeStream = async () => {
     try {
@@ -23,15 +18,8 @@ export const useMediaStream = () => {
         videoRef.current.srcObject = mediaStream;
       }
       streamRef.current = mediaStream;
-      setMediaStreamState({
-        mediaStream: mediaStream,
-        error: null,
-      });
     } catch (err) {
-      setMediaStreamState({
-        mediaStream: null,
-        error: err instanceof Error ? err : new Error('Failed to get user media'),
-      });
+      setMediaStreamError(err instanceof Error ? err : new Error('유저 미디어(비디오, 오디오) 갖고 오기 실패'));
     }
   };
 
@@ -48,5 +36,9 @@ export const useMediaStream = () => {
     };
   }, []);
 
-  return { ...mediaStramState, videoRef };
+  return {
+    mediaStream: streamRef.current,
+    mediaStreamError,
+    videoRef,
+  };
 };

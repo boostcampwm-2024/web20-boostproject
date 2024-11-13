@@ -1,4 +1,5 @@
 import { useMediaControls } from '@/hooks/useMediaControls';
+import { useMediasoup } from '@/hooks/useMediasoup';
 import { useMediaStream } from '@/hooks/useMediaStream';
 import ChatIcon from '@components/icons/ChatIcon';
 import MicrophoneOffIcon from '@components/icons/MicrophoneOffIcon';
@@ -7,30 +8,15 @@ import MonitorShareIcon from '@components/icons/MonitorShareIcon';
 import VideoOffIcon from '@components/icons/VideoOffIcon';
 import VideoOnIcon from '@components/icons/VideoOnIcon';
 import { Button } from '@components/ui/button';
-import { useEffect, useRef } from 'react';
-import { io, Socket } from 'socket.io-client';
 
-const socketUrl = import.meta.env.VITE_APP_MEDIASEVER_URL;
+const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
 function Broadcast() {
-  const socketRef = useRef<Socket | null>(null);
-  const { mediaStream, error, videoRef } = useMediaStream();
+  const { mediaStream, mediaStreamError, videoRef } = useMediaStream();
+  console.log(mediaStream);
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
-
-  useEffect(() => {
-    const newSocket = io(socketUrl);
-    socketRef.current = newSocket;
-
-    newSocket.on('connect_error', error => {
-      throw Error(`WebSocket 연결 실패: ${error}`);
-    });
-
-    return () => {
-      if (newSocket.connected) {
-        newSocket.disconnect();
-      }
-    };
-  });
+  const { transport, error: mediasoupError } = useMediasoup({ url: socketUrl, isProducer: true });
+  console.log('transport:', transport);
 
   const handleCheckout = () => {
     // TODO: 연결 끊기
@@ -39,10 +25,11 @@ function Broadcast() {
 
   return (
     <>
-      {error ? (
+      {mediaStreamError || mediasoupError ? (
         <div className="flex flex-col">
-          <h2 className="text-display-bold24 text-text-danger">미디어 스트림을 불러오는데 실패했습니다.</h2>
-          <div className="text-display-medium16 text-text-danger">error</div>
+          <h2 className="text-display-bold24 text-text-danger">Error</h2>
+          {mediaStreamError && <div className="text-display-medium16 text-text-danger">{mediaStreamError.message}</div>}
+          {mediasoupError && <div className="text-display-medium16 text-text-danger">{mediasoupError.message}</div>}
         </div>
       ) : (
         <>
