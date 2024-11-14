@@ -19,6 +19,10 @@ export const useSocket = (url: string) => {
       setSocketError(new Error(`Websocket 연결 실패: ${error}`));
     });
 
+    socket.on('exception', error => {
+      console.log(error);
+    });
+
     return () => {
       if (socket?.connected) {
         socket.disconnect();
