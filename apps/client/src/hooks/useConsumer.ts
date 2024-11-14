@@ -19,7 +19,6 @@ export const useConsumer = ({
   const transport = useRef<Transport | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [mediastream, setMediastream] = useState<MediaStream | null>(null);
-  const rtpCapabilitiesRef = useRef(device?.rtpCapabilities);
 
   const connectTransport = async (params: {
     socket: Socket;
@@ -29,7 +28,7 @@ export const useConsumer = ({
   }) => {
     const { socket, transportInfo, device, roomId } = params;
     if (!socket || !transportInfo || !device || !roomId) return;
-
+    console.log('connectTransport 함수 실행');
     try {
       const newTransport = device.createRecvTransport({
         id: transportInfo.transportId,
@@ -79,11 +78,10 @@ export const useConsumer = ({
     socket: Socket;
     roomId: string;
     transportInfo: TransportInfo;
-    rtpCapabilities: any;
     transport: Transport | null;
   }) => {
-    const { socket, roomId, transportInfo, rtpCapabilities, transport } = params;
-
+    const { socket, roomId, transportInfo, transport } = params;
+    console.log('createConsumer 함수 실행');
     if (!transport) return;
 
     try {
@@ -92,9 +90,9 @@ export const useConsumer = ({
         {
           roomId,
           transportId: transportInfo.transportId,
-          rtpCapabilities,
         },
         async ({ consumers }: CreateConsumerResponse) => {
+          console.log('createConsumer emit!');
           const newMediastream = new MediaStream();
           for (const consumerData of consumers) {
             try {
@@ -143,7 +141,6 @@ export const useConsumer = ({
       socket,
       roomId,
       transportInfo,
-      rtpCapabilities: rtpCapabilitiesRef.current,
       transport: transport.current,
     });
 
