@@ -12,8 +12,8 @@ interface MediaControlsActions {
 
 export const useMediaControls = (mediaStream: MediaStream | null): MediaControlsState & MediaControlsActions => {
   const [state, setState] = useState<MediaControlsState>({
-    isVideoEnabled: false,
-    isAudioEnabled: false,
+    isVideoEnabled: true,
+    isAudioEnabled: true,
   });
 
   useEffect(() => {
@@ -26,11 +26,11 @@ export const useMediaControls = (mediaStream: MediaStream | null): MediaControls
       isVideoEnabled: videoTrack?.enabled ?? false,
       isAudioEnabled: audioTrack?.enabled ?? false,
     });
-  }, [mediaStream]);
+  }, []);
 
   const toggleVideo = () => {
     if (!mediaStream) return;
-
+    console.log('toggleVIdeo');
     const videoTrack = mediaStream.getVideoTracks()[0];
     if (videoTrack) {
       videoTrack.enabled = !videoTrack.enabled;
@@ -40,7 +40,7 @@ export const useMediaControls = (mediaStream: MediaStream | null): MediaControls
 
   const toggleAudio = () => {
     if (!mediaStream) return;
-
+    console.log('toggleAudio');
     const audioTrack = mediaStream.getAudioTracks()[0];
     if (audioTrack) {
       audioTrack.enabled = !audioTrack.enabled;

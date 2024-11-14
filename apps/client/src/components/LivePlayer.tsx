@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import PlayIcon from './icons/PlayIcon';
 import PauseIcon from './icons/PauseIcon';
@@ -8,20 +8,45 @@ import ExpandIcon from './icons/ExpandIcon';
 
 type VideoQuality = '480' | '720' | '1080';
 
-function LivePlayer() {
+function LivePlayer(props: { mediastream: MediaStream | null }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMute, setIsMute] = useState(false);
   const [videoQuality, setVideoQuality] = useState<VideoQuality>('480');
+
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const handlePlayPause = () => {
+  useEffect(() => {
+    if (!videoRef.current || !props.mediastream) return;
+
+    const videoElement = videoRef.current;
+    videoElement.srcObject = props.mediastream;
+
+    return () => {
+      if (videoElement.srcObject) {
+        videoElement.srcObject = null;
+      }
+    };
+  }, [props.mediastream]);
+
+  const handlePlayPause = async () => {
     if (!videoRef.current) return;
 
-    videoRef.current.paused ? videoRef.current.play() : videoRef.current.pause();
-    setIsPlaying(!videoRef.current.paused);
+    try {
+      if (videoRef.current.paused) {
+        await videoRef.current.play();
+        setIsPlaying(true);
+      } else {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    } catch (err) {
+      console.error('Play/Pause error:', err);
+    }
   };
 
   const handleMute = () => {
+    if (!videoRef.current) return;
+    videoRef.current.muted = !videoRef.current.muted;
     setIsMute(prev => !prev);
   };
 
@@ -29,8 +54,12 @@ function LivePlayer() {
     setVideoQuality(videoQuality);
   };
 
-  const handleExpand = () => {
-    videoRef.current?.requestFullscreen?.();
+  const handleExpand = async () => {
+    try {
+      await videoRef.current?.requestFullscreen?.();
+    } catch (err) {
+      console.error('Fullscreen error:', err);
+    }
   };
 
   return (

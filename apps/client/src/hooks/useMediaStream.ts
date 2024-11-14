@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 
-interface MediaStreamState {
-  mediaStream: MediaStream | null;
-  error: Error | null;
-}
-
 export const useMediaStream = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const [mediaStramState, setMediaStreamState] = useState<MediaStreamState>({ mediaStream: null, error: null });
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  // const [mediaStream, setIsMediastream] = useState<MediaStream | null>(null);
+  const [mediaStreamError, setMediaStreamError] = useState<Error | null>(null);
+  const [isMediastreamReady, setIsMediastreamReady] = useState(false);
 
   const initializeStream = async () => {
     try {
@@ -18,35 +15,35 @@ export const useMediaStream = () => {
       };
 
       const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+      setIsMediastreamReady(true);
 
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
       }
-      streamRef.current = mediaStream;
-      setMediaStreamState({
-        mediaStream: mediaStream,
-        error: null,
-      });
+      mediaStreamRef.current = mediaStream;
     } catch (err) {
-      setMediaStreamState({
-        mediaStream: null,
-        error: err instanceof Error ? err : new Error('Failed to get user media'),
-      });
+      setMediaStreamError(err instanceof Error ? err : new Error('유저 미디어(비디오, 오디오) 갖고 오기 실패'));
     }
   };
 
   useEffect(() => {
+    const videoElement = videoRef.current;
     initializeStream();
 
     return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach(track => track.stop());
       }
-      if (videoRef.current) {
-        videoRef.current.srcObject = null;
+      if (videoElement) {
+        videoElement.srcObject = null;
       }
     };
   }, []);
 
-  return { ...mediaStramState, videoRef };
+  return {
+    mediaStream: mediaStreamRef.current,
+    mediaStreamError,
+    isMediastreamReady,
+    videoRef,
+  };
 };

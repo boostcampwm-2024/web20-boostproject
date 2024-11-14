@@ -1,5 +1,9 @@
 import { useMediaControls } from '@/hooks/useMediaControls';
 import { useMediaStream } from '@/hooks/useMediaStream';
+import { useProducer } from '@/hooks/useProducer';
+import { useRoom } from '@/hooks/useRoom';
+import { useSocket } from '@/hooks/useSocket';
+import { useTransport } from '@/hooks/useTransport';
 import ChatIcon from '@components/icons/ChatIcon';
 import MicrophoneOffIcon from '@components/icons/MicrophoneOffIcon';
 import MicrophoneOnIcon from '@components/icons/MicrophoneOnIcon';
@@ -7,29 +11,23 @@ import MonitorShareIcon from '@components/icons/MonitorShareIcon';
 import VideoOffIcon from '@components/icons/VideoOffIcon';
 import VideoOnIcon from '@components/icons/VideoOnIcon';
 import { Button } from '@components/ui/button';
-import { useEffect, useRef } from 'react';
-import { io, Socket } from 'socket.io-client';
 
-const socketUrl = import.meta.env.VITE_APP_MEDIASEVER_URL;
+const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
 function Broadcast() {
-  const socketRef = useRef<Socket | null>(null);
-  const { mediaStream, error, videoRef } = useMediaStream();
+  const { mediaStream, mediaStreamError, isMediastreamReady, videoRef } = useMediaStream();
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
+  const { socket, isConnected, socketError: _se } = useSocket(socketUrl);
+  const { roomId, roomError: _re } = useRoom(socket, isConnected);
+  const { transportInfo, device, transportError: _te } = useTransport({ socket, roomId, isProducer: true });
 
-  useEffect(() => {
-    const newSocket = io(socketUrl);
-    socketRef.current = newSocket;
-
-    newSocket.on('connect_error', error => {
-      throw Error(`WebSocket 연결 실패: ${error}`);
-    });
-
-    return () => {
-      if (newSocket.connected) {
-        newSocket.disconnect();
-      }
-    };
+  const { transport: _t, error: mediasoupError } = useProducer({
+    socket,
+    isMediastreamReady,
+    mediaStream,
+    transportInfo,
+    device,
+    roomId,
   });
 
   const handleCheckout = () => {
@@ -39,10 +37,11 @@ function Broadcast() {
 
   return (
     <>
-      {error ? (
+      {mediaStreamError || mediasoupError ? (
         <div className="flex flex-col">
-          <h2 className="text-display-bold24 text-text-danger">미디어 스트림을 불러오는데 실패했습니다.</h2>
-          <div className="text-display-medium16 text-text-danger">error</div>
+          <h2 className="text-display-bold24 text-text-danger">Error</h2>
+          {mediaStreamError && <div className="text-display-medium16 text-text-danger">{mediaStreamError.message}</div>}
+          {mediasoupError && <div className="text-display-medium16 text-text-danger">{mediasoupError.message}</div>}
         </div>
       ) : (
         <>

@@ -31,7 +31,7 @@ const router = createBrowserRouter(
           element: <Profile />,
         },
         {
-          path: 'live',
+          path: 'live/:liveId',
           element: <Live />,
         },
       ],
