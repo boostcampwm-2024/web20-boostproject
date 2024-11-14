@@ -11,6 +11,7 @@ import MonitorShareIcon from '@components/icons/MonitorShareIcon';
 import VideoOffIcon from '@components/icons/VideoOffIcon';
 import VideoOnIcon from '@components/icons/VideoOnIcon';
 import { Button } from '@components/ui/button';
+import { useCallback, useEffect } from 'react';
 
 const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
@@ -30,15 +31,42 @@ function Broadcast() {
     roomId,
   });
 
+  const stopBroadcast = useCallback(
+    (e?: BeforeUnloadEvent) => {
+      if (e) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+      if (socket) {
+        socket.emit('stopBroadcast', { roomId }, (response: { isCleaned: boolean; roomId: string }) => {
+          if (response.isCleaned) {
+            console.log(`${response.roomId} 방이 정리됐습니다.`);
+          } else {
+            console.error('방 정리 실패');
+          }
+        });
+        socket.disconnect();
+        mediaStream?.getTracks().forEach(track => {
+          track.stop();
+        });
+      }
+    },
+    [socket, roomId],
+  );
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', stopBroadcast);
+  }, [socket]);
+
   const handleCheckout = () => {
-    // TODO: 연결 끊기
+    stopBroadcast();
     window.close();
   };
 
   return (
     <>
       {mediaStreamError || mediasoupError ? (
-        <div className="flex flex-col">
+        <div className="flex flex-col ">
           <h2 className="text-display-bold24 text-text-danger">Error</h2>
           {mediaStreamError && <div className="text-display-medium16 text-text-danger">{mediaStreamError.message}</div>}
           {mediasoupError && <div className="text-display-medium16 text-text-danger">{mediasoupError.message}</div>}
