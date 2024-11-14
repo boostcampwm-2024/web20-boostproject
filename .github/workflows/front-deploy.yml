@@ -31,6 +31,8 @@ jobs:
       # 빌드 실행
       - name: Build front-end
         working-directory: apps/client
+        env:
+            VITE_MEDIASERVER_URL: ${{ secrets.VITE_MEDIASERVER_URL }}
         run: pnpm build
 
       - name: Verify build output
