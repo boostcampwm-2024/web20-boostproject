@@ -1,7 +1,6 @@
 <div align="center">
     <a href="https://cam-on.site/">
-        <img src="https://github.com/user-attachments/assets/c3e159b5-0864-478f-96c0-1739fe50f1aa
-" alt="Cam'on logo">
+        <img src="https://github.com/user-attachments/assets/c3e159b5-0864-478f-96c0-1739fe50f1aa" alt="Cam'on logo">
     </a>
     <br />
     <h2>🌟 핵심 가치</h2>
@@ -15,39 +14,28 @@
 <br/>
 
 <div align="center">
- <h2>🎯 주요 기능</h2>
- 
- <div align="left">
-   <h3>📍 실시간 방송 및 출석 관리</h3>
-   <div class="feature-card">
-     <p class="feature-highlight">💡 체크인/체크아웃을 기준으로 출석부 반영</p>
-   </div>
-   <p><strong>[ Figma 기준 ]</strong></p>
-   <img src="https://github.com/user-attachments/assets/1139f959-69e7-43f3-bad0-627ddf50de61" alt="log"/>
-   
-   <h3>📍 네트워킹 및 소통</h3>
-   <div class="feature-card">
-     <p class="feature-highlight">💡 방송자의 [화면공유/카메라/오디오] 스트림 정보를 실시간으로 공유 및 채팅을 통한 다른 캠퍼들과의 소통</p>
-   </div>
-   <p><strong>[ 현재 구현 상황 ]</strong></p>
-   <img src="https://github.com/user-attachments/assets/b193663d-c22a-4c3d-8b7c-e80336d69d76" alt="broadcasting demo"/>
- </div>
+<h2>🎯 주요 기능</h2>
+
+<div align="left" style="max-width: 800px; margin: 0 auto;">
+  <h3>📍 실시간 방송 및 출석 관리</h3>
+  <div style="background-color: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+    <p style="color: #0366d6; font-weight: 600; margin: 0;">
+      💡 체크인/체크아웃을 기준으로 출석부 반영
+    </p>
+  </div>
+  <p><strong>[ Figma 기준 ]</strong></p>
+  <img src="https://github.com/user-attachments/assets/1139f959-69e7-43f3-bad0-627ddf50de61" alt="log" style="max-width: 100%; height: auto;"/>
+  
+  <h3>📍 네트워킹 및 소통</h3>
+  <div style="background-color: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+    <p style="color: #0366d6; font-weight: 600; margin: 0;">
+      💡 방송자의 [화면공유/카메라/오디오] 스트림 정보를 실시간으로 공유 및 채팅을 통한 다른 캠퍼들과의 소통
+    </p>
+  </div>
+  <p><strong>[ 현재 구현 상황 ]</strong></p>
+  <img src="https://github.com/user-attachments/assets/b193663d-c22a-4c3d-8b7c-e80336d69d76" alt="broadcasting demo" style="max-width: 100%; height: auto;"/>
 </div>
-
-<style>
-.feature-card {
- background-color: #f8f9fa;
- padding: 1rem;
- border-radius: 8px;
- margin: 1rem 0;
-}
-
-.feature-highlight {
- color: #0366d6;
- font-weight: 600;
- margin: 0;
-}
-</style>
+</div>
 
 <hr/>
 
