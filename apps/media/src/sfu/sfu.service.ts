@@ -19,6 +19,11 @@ export class SfuService {
 
   cleanupRoom(roomId: string) {
     const room = this.rooms.get(roomId);
+
+    if (!room) {
+      throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
+    }
+
     room.close();
     this.rooms.delete(roomId);
   }
@@ -70,8 +75,10 @@ export class SfuService {
     });
 
     transport.on('routerclose', () => {
-      transport.close();
-      //TODO: transport 객체 삭제 로직 구현
+      if (this.roomTransports.has(roomId)) {
+        transport.close();
+        this.roomTransports.delete(roomId);
+      }
     });
 
     roomTransportInfo.transports.set(transport.id, transport);
@@ -146,8 +153,10 @@ export class SfuService {
     });
 
     producer.on('transportclose', () => {
-      producer.close();
-      //TODO: producer 객체 삭제 로직 구현
+      if (this.producers.has(transportId)) {
+        producer.close();
+        this.producers.delete(transportId);
+      }
     });
 
     if (!this.producers.has(transportId)) {
@@ -198,10 +207,23 @@ export class SfuService {
         const consumer = await transport.consume({
           producerId: producer.id,
           rtpCapabilities,
-          paused: true,
+          paused: false,
         });
 
-        this.addConsumerEvent(consumer);
+        consumer.on('transportclose', () => {
+          if (this.consumers.has(transportId)) {
+            consumer.close();
+            this.consumers.delete(transportId);
+          }
+        });
+
+        consumer.on('producerclose', () => {
+          if (this.consumers.has(transportId)) {
+            consumer.close();
+            this.consumers.delete(transportId);
+          }
+        });
+
         return consumer;
       }),
     );
@@ -230,23 +252,13 @@ export class SfuService {
     });
   }
 
-  addConsumerEvent(consumer: mediasoup.types.Consumer) {
-    consumer.on('transportclose', () => {
-      consumer.close();
-      //TODO: consumer 객체 삭제 로직 구현
-    });
+  async deleteConsumers(roomId: string, transportId: string) {
+    const transport = this.getTransport(roomId, transportId);
 
-    consumer.on('producerclose', () => {
-      consumer.close();
-      //TODO: consumer 객체 삭제 로직 구현
-    });
+    if (!transport) {
+      throw new CustomWsException(ErrorStatus.TRANSPORT_NOT_FOUND);
+    }
 
-    consumer.on('producerpause', () => {
-      consumer.pause();
-    });
-
-    consumer.on('producerresume', () => {
-      consumer.resume();
-    });
+    transport.close();
   }
 }

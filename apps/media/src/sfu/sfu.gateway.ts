@@ -86,5 +86,17 @@ export class SfuGateway {
     }
   }
 
-  //스트림 일시 중단
+  //시청 종료
+  @SubscribeMessage('leaveBroadcast')
+  handleLeaveBroadcast(@MessageBody('transportId') transportId: string, @MessageBody('roomId') roomId: string) {
+    try {
+      this.sfuService.deleteConsumers(roomId, transportId);
+
+      return {
+        success: true,
+      };
+    } catch (error) {
+      return error;
+    }
+  }
 }
