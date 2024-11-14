@@ -23,6 +23,16 @@ export class SfuService {
     this.rooms.delete(roomId);
   }
 
+  getRtpCapabilities(roomId) {
+    const room = this.rooms.get(roomId);
+
+    if (!room) {
+      throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
+    }
+
+    return room.rtpCapabilities;
+  }
+
   //transport
   async createTransport(params) {
     const { roomId, isProducer } = params;

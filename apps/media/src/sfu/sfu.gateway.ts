@@ -17,16 +17,16 @@ export class SfuGateway {
 
   constructor(private readonly workerService: WorkerService, private readonly sfuService: SfuService) {}
 
-  @SubscribeMessage('getRtpCapabilities')
-  handleGetRtpCapabilities() {
-    return { rtpCapabilities: this.workerService.getRtpCapabilities() };
-  }
-
   @SubscribeMessage('createRoom')
   async handleCreateRoom() {
     const room = await this.workerService.createRoom();
     this.sfuService.setRoom(room);
     return { roomId: room.id };
+  }
+
+  @SubscribeMessage('getRtpCapabilities')
+  handleGetRtpCapabilities(@MessageBody('roomId') roomId: string) {
+    return { rtpCapabilities: this.sfuService.getRtpCapabilities(roomId) };
   }
 
   @SubscribeMessage('createTransport')

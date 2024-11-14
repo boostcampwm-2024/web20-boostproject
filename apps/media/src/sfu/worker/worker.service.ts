@@ -31,8 +31,4 @@ export class WorkerService implements OnModuleInit {
   async createRoom() {
     return await this.worker.createRouter({ mediaCodecs: this.rtpCapabilities.codecs });
   }
-
-  getRtpCapabilities() {
-    return this.rtpCapabilities;
-  }
 }
