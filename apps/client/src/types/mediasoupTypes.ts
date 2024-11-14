@@ -1,6 +1,7 @@
 // types/broadcast.ts
-import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
+import { MediaKind, RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
 import { Device, Transport, DtlsParameters, IceCandidate, IceParameters } from 'mediasoup-client/lib/types';
+import { Socket } from 'socket.io-client';
 
 export interface useMediasoupProps {
   socketUrl: string;
@@ -21,6 +22,12 @@ export interface useConsumerProps {
   liveId: string | undefined;
 }
 
+export interface useTransportProps {
+  socket: Socket | null;
+  roomId: string | undefined;
+  isProducer: boolean;
+}
+
 export interface RtpCapabilitiesResponse {
   rtpCapabilities: RtpCapabilities;
 }
@@ -29,8 +36,9 @@ export interface CreateRoomResponse {
   roomId: string;
 }
 
-export interface CreateTransportResponse {
+export interface TransportInfo {
   transportId: string;
+  isProducer: boolean;
   iceParameters: IceParameters;
   iceCandidates: IceCandidate[];
   dtlsParameters: DtlsParameters;
@@ -39,6 +47,17 @@ export interface CreateTransportResponse {
 export interface ConnectTransportResponse {
   connected: boolean;
   isProducer: boolean;
+}
+
+export interface CreateConsumer {
+  consumerId: string;
+  producerId: string;
+  kind: MediaKind;
+  rtpParameters: any;
+}
+
+export interface CreateConsumerResponse {
+  consumers: CreateConsumer[];
 }
 
 export interface MediasoupDeviceState {

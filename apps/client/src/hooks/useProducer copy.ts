@@ -3,22 +3,14 @@
 // import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
 // import { Transport, Device } from 'mediasoup-client/lib/types';
 // import {
-//   useMediasoupProps,
 //   RtpCapabilitiesResponse,
 //   CreateRoomResponse,
-//   CreateTransportResponse,
 //   ConnectTransportResponse,
-//   CreateConsumerResponse,
+//   useProducerProps,
 // } from '../types/mediasoupTypes';
 // import { useSocket } from './useSocket';
 
-// export const useMediasoup = ({
-//   socketUrl,
-//   liveId = '',
-//   mediastream,
-//   isMediastreamReady,
-//   isProducer = true,
-// }: useMediasoupProps) => {
+// export const useProducer = ({ socketUrl, mediastream, isMediastreamReady }: useProducerProps) => {
 //   const rtpCapabilitiesRef = useRef<RtpCapabilities | null>(null);
 //   const transport = useRef<Transport | null>(null);
 //   const [error, setError] = useState<Error | null>(null);
@@ -69,32 +61,18 @@
 
 //     try {
 //       const transportResponse: CreateTransportResponse = await new Promise(resolve => {
-//         if (liveId === '') {
-//           socket.emit('createTransport', { roomId, isProducer }, (response: CreateTransportResponse) => {
-//             console.log('transport 생성');
-//             resolve(response);
-//           });
-//         } else {
-//           socket.emit('createTransport', { roomId: liveId, isProducer }, (response: CreateTransportResponse) => {
-//             console.log('transport 생성');
-//             resolve(response);
-//           });
-//         }
+//         socket.emit('createTransport', { roomId, isProducer: true }, (response: CreateTransportResponse) => {
+//           console.log('transport 생성');
+//           resolve(response);
+//         });
 //       });
 
-//       const newTransport = isProducer
-//         ? device.createSendTransport({
-//             id: transportResponse.transportId,
-//             iceParameters: transportResponse.iceParameters,
-//             iceCandidates: transportResponse.iceCandidates,
-//             dtlsParameters: transportResponse.dtlsParameters,
-//           })
-//         : device.createRecvTransport({
-//             id: transportResponse.transportId,
-//             iceParameters: transportResponse.iceParameters,
-//             iceCandidates: transportResponse.iceCandidates,
-//             dtlsParameters: transportResponse.dtlsParameters,
-//           });
+//       const newTransport = device.createSendTransport({
+//         id: transportResponse.transportId,
+//         iceParameters: transportResponse.iceParameters,
+//         iceCandidates: transportResponse.iceCandidates,
+//         dtlsParameters: transportResponse.dtlsParameters,
+//       });
 
 //       transport.current = newTransport;
 
@@ -132,39 +110,8 @@
 //         );
 //       });
 
-//       if (isProducer) {
-//         await transport.current.produce({ track: mediastream?.getVideoTracks()[0] });
-//         await transport.current.produce({ track: mediastream?.getAudioTracks()[0] });
-//       } else {
-//         socket.emit(
-//           'createConsumer',
-//           {
-//             roomId: liveId,
-//             transportId: transportResponse.transportId,
-//             rtpCapabilities: rtpCapabilitiesRef.current,
-//           },
-//           ({ response }: { response: CreateConsumerResponse[] }) => {
-//             const mediaStream = new MediaStream();
-//             console.log('response: ', response);
-//             response.forEach(async consumer => {
-//               console.log('consumer: ', consumer.producerId);
-//               console.log('consumer: ', consumer.kind);
-//               console.log('consumer: ', consumer.rtpParameters);
-//               console.log(device.rtpCapabilities);
-//               const result = await transport.current?.consume({
-//                 id: consumer.consumerId,
-//                 producerId: consumer.producerId,
-//                 rtpParameters: consumer.rtpParameters,
-//                 kind: consumer.kind,
-//               });
-//               console.log('result: ', result);
-//               result!.resume();
-//               mediaStream.addTrack(result!.track);
-//             });
-//             console.log('mediaStream: ', mediaStream);
-//           },
-//         );
-//       }
+//       await transport.current.produce({ track: mediastream?.getVideoTracks()[0] });
+//       await transport.current.produce({ track: mediastream?.getAudioTracks()[0] });
 //     } catch (err) {
 //       const error = err instanceof Error ? err : new Error('Transport 생성 에러');
 //       console.error('Transport 생성 중 에러:', error);
@@ -179,24 +126,18 @@
 //         return;
 //       }
 
-//       // const rtpCapabilities = await getRtpCapabilities();
-//       // if (!rtpCapabilities) return;
-//       //
-//       // const device = await createDevice();
-//       // if (!device) return;
-
 //       const { roomId } = await new Promise<CreateRoomResponse>(resolve => {
 //         socket.emit('createRoom', (response: CreateRoomResponse) => {
+//           console.log('roomId: ', response.roomId);
 //           resolve(response);
 //         });
 //       });
+
 //       const rtpCapabilities = await getRtpCapabilities(roomId);
 //       if (!rtpCapabilities) return;
 
 //       const device = await createDevice();
 //       if (!device) return;
-
-//       console.log('Room id: ', roomId);
 
 //       await createTransport(device, roomId);
 //     } catch (err) {
@@ -212,7 +153,7 @@
 //       console.log('소켓 에러');
 //       return;
 //     }
-//     if (!mediastream && isProducer) {
+//     if (!mediastream) {
 //       return;
 //     }
 
@@ -227,7 +168,6 @@
 
 //   return {
 //     transport: transport.current,
-//     mediastream,
 //     error,
 //   };
 // };

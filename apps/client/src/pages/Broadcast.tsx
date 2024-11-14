@@ -1,6 +1,9 @@
 import { useMediaControls } from '@/hooks/useMediaControls';
 import { useMediaStream } from '@/hooks/useMediaStream';
 import { useProducer } from '@/hooks/useProducer';
+import { useRoom } from '@/hooks/useRoom';
+import { useSocket } from '@/hooks/useSocket';
+import { useTransport } from '@/hooks/useTransport';
 import ChatIcon from '@components/icons/ChatIcon';
 import MicrophoneOffIcon from '@components/icons/MicrophoneOffIcon';
 import MicrophoneOnIcon from '@components/icons/MicrophoneOnIcon';
@@ -14,10 +17,17 @@ const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
 function Broadcast() {
   const { mediaStream, mediaStreamError, isMediastreamReady, videoRef } = useMediaStream();
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
+  const { socket, isConnected, socketError: _se } = useSocket(socketUrl);
+  const { roomId, roomError: _re } = useRoom(socket, isConnected);
+  const { transportInfo, device, transportError: _te } = useTransport({ socket, roomId, isProducer: true });
+
   const { transport: _t, error: mediasoupError } = useProducer({
-    socketUrl: socketUrl,
-    mediastream: mediaStream,
-    isMediastreamReady: isMediastreamReady,
+    socket,
+    isMediastreamReady,
+    mediaStream,
+    transportInfo,
+    device,
+    roomId,
   });
 
   const handleCheckout = () => {
