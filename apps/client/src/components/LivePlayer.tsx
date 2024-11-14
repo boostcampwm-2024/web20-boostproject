@@ -10,7 +10,7 @@ type VideoQuality = '480' | '720' | '1080';
 
 function LivePlayer({ mediaStream }: { mediaStream: MediaStream | null }) {
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
-  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
   const [videoQuality, setVideoQuality] = useState<VideoQuality>('480');
   const videoRef = useRef<HTMLVideoElement>(null);
 
