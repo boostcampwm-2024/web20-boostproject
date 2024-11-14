@@ -9,16 +9,12 @@ import { ConnectTransportDto } from './dto/transport-params.interface';
 export class SfuService {
   private rooms = new Map<string, mediasoup.types.Router>();
   private roomTransports = new Map<string, IRoomTransportInfo>();
-  private producers: Map<string, mediasoup.types.Producer[]>;
-  private consumers: Map<string, mediasoup.types.Consumer[]>;
+  private producers = new Map<string, mediasoup.types.Producer[]>();
+  private consumers = new Map<string, mediasoup.types.Consumer[]>();
 
   //Room
   setRoom(room: mediasoup.types.Router) {
     this.rooms.set(room.id, room);
-  }
-
-  getRoom(roomId: string) {
-    return this.rooms.get(roomId);
   }
 
   cleanupRoom(roomId: string) {
@@ -27,11 +23,21 @@ export class SfuService {
     this.rooms.delete(roomId);
   }
 
+  getRtpCapabilities(roomId) {
+    const room = this.rooms.get(roomId);
+
+    if (!room) {
+      throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
+    }
+
+    return room.rtpCapabilities;
+  }
+
   //transport
   async createTransport(params) {
     const { roomId, isProducer } = params;
 
-    const room = this.getRoom(roomId);
+    const room = this.rooms.get(roomId);
 
     if (!room) {
       throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
@@ -121,7 +127,7 @@ export class SfuService {
   async createProducer(params) {
     const { roomId, transportId, kind, rtpParameters } = params;
 
-    const room = this.getRoom(roomId);
+    const room = this.rooms.get(roomId);
 
     if (!room) {
       throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
@@ -139,7 +145,6 @@ export class SfuService {
       rtpParameters,
     });
 
-
     producer.on('transportclose', () => {
       producer.close();
       //TODO: producer 객체 삭제 로직 구현
@@ -149,7 +154,7 @@ export class SfuService {
       this.producers.set(transportId, []);
     }
     this.producers.get(transportId).push(producer);
-    
+
     return producer;
   }
 
@@ -164,14 +169,14 @@ export class SfuService {
       throw new CustomWsException(ErrorStatus.NO_HAVE_PRODUCER_TRANSPORT_IN_ROOM);
     }
 
-    return this.producers[producersTransportId];
+    return this.producers.get(producersTransportId);
   }
 
   //consumer
   async createConsumer(params) {
     const { transportId, rtpCapabilities, roomId } = params;
 
-    const room = this.getRoom(roomId);
+    const room = this.rooms.get(roomId);
     if (!room) {
       throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
     }
@@ -197,7 +202,6 @@ export class SfuService {
         });
 
         this.addConsumerEvent(consumer);
-
         return consumer;
       }),
     );
@@ -208,7 +212,14 @@ export class SfuService {
 
     this.consumers.get(transportId).push(...consumers);
 
-    return consumers;
+    return consumers.map(consumer => {
+      return {
+        consumerId: consumer.id,
+        producerId: consumer.producerId,
+        kind: consumer.kind,
+        rtpParameters: consumer.rtpParameters,
+      };
+    });
   }
 
   async canConsume(room: mediasoup.types.Router, rtpCapabilities: any) {
