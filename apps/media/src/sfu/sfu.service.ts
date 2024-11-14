@@ -183,12 +183,14 @@ export class SfuService {
 
   //consumer
   async createConsumer(params) {
-    const { transportId, rtpCapabilities, roomId } = params;
+    const { transportId, roomId } = params;
 
     const room = this.rooms.get(roomId);
     if (!room) {
       throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
     }
+
+    const rtpCapabilities = room.rtpCapabilities;
 
     const canConsume = await this.canConsume(room, rtpCapabilities);
     if (!canConsume) {
@@ -247,9 +249,12 @@ export class SfuService {
   async canConsume(room: mediasoup.types.Router, rtpCapabilities: any) {
     const producers = this.getProducersByRoomId(room.id);
     if (!producers) return false;
-    return producers.every(producer => {
-      return room.canConsume({ producerId: producer.id, rtpCapabilities });
-    });
+    for (const producer of producers) {
+      if (!room.canConsume({ producerId: producer.id, rtpCapabilities })) {
+        return false;
+      }
+    }
+    return true;
   }
 
   async deleteConsumers(roomId: string, transportId: string) {
