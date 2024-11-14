@@ -6,8 +6,11 @@ import { ConnectTransportDto } from './dto/transport-params.interface';
 import { CreateProducerDto } from './dto/create-producer.dto';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
 import { CreateTransportDto } from './dto/create-transport.dto';
+import { UseFilters } from '@nestjs/common';
+import { WebSocketExceptionFilter } from 'src/common/filter/webSocketException.filter';
 
 @WebSocketGateway({ cors: { origin: '*', methods: ['GET', 'POST'] } })
+@UseFilters(WebSocketExceptionFilter)
 export class SfuGateway {
   @WebSocketServer()
   server: Server;
@@ -21,73 +24,51 @@ export class SfuGateway {
 
   @SubscribeMessage('createRoom')
   async handleCreateRoom() {
-    try {
-      const room = await this.workerService.createRoom();
-      this.sfuService.setRoom(room);
-
-      return { roomId: room.id };
-    } catch (error) {
-      return error;
-    }
+    const room = await this.workerService.createRoom();
+    this.sfuService.setRoom(room);
+    return { roomId: room.id };
   }
 
   @SubscribeMessage('createTransport')
   async handleCreateTransport(@MessageBody() params: CreateTransportDto) {
-    try {
-      const { isProducer } = params;
+    const { isProducer } = params;
+    const transport = await this.sfuService.createTransport(params);
 
-      const transport = await this.sfuService.createTransport(params);
-
-      return {
-        transportId: transport.id,
-        isProducer,
-        iceParameters: transport.iceParameters,
-        iceCandidates: transport.iceCandidates,
-        dtlsParameters: transport.dtlsParameters,
-      };
-    } catch (error) {
-      return error;
-    }
+    return {
+      transportId: transport.id,
+      isProducer,
+      iceParameters: transport.iceParameters,
+      iceCandidates: transport.iceCandidates,
+      dtlsParameters: transport.dtlsParameters,
+    };
   }
 
   @SubscribeMessage('connectTransport')
   async handleConnectTransport(@MessageBody() params: ConnectTransportDto) {
-    try {
-      const isProducer = await this.sfuService.connectTransport(params);
+    const isProducer = await this.sfuService.connectTransport(params);
 
-      return {
-        connected: true,
-        isProducer,
-      };
-    } catch (error) {
-      return error;
-    }
+    return {
+      connected: true,
+      isProducer,
+    };
   }
 
   @SubscribeMessage('createProducer')
   async handleCreateProducer(@MessageBody() params: CreateProducerDto) {
-    try {
-      const producer = await this.sfuService.createProducer(params);
+    const producer = await this.sfuService.createProducer(params);
 
-      return {
-        producerId: producer.id,
-      };
-    } catch (error) {
-      return error;
-    }
+    return {
+      producerId: producer.id,
+    };
   }
 
   @SubscribeMessage('createConsumer')
   async handleCreateConsumer(@MessageBody() params: CreateConsumerDto) {
-    try {
-      const consumers = await this.sfuService.createConsumer(params);
+    const consumers = await this.sfuService.createConsumer(params);
 
-      return {
-        consumers,
-      };
-    } catch (error) {
-      return error;
-    }
+    return {
+      consumers,
+    };
   }
 
   //TODO: 방송종료

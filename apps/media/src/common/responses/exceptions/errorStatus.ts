@@ -23,6 +23,11 @@ export class ErrorStatus {
     '방에 방송자가 이미 존재 합니다.',
   );
   static readonly TRANSPORT_NOT_FOUND = new ErrorStatus(404, 'MEDIA_4002', 'TRANSPORT 정보가 존재하지 않습니다.');
+  static readonly NO_HAVE_PRODUCER_TRANSPORT_IN_ROOM = new ErrorStatus(
+    404,
+    'MEDIA_4003',
+    '방에 PRODUCER TRANSPORT가 존재하지 않습니다.',
+  );
 
   // Broadcast Errors
   static readonly BROADCAST_NOT_FOUND = new ErrorStatus(404, 'BROADCAST_4000', '방송 정보가 존재하지 않습니다.');
