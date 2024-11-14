@@ -4,6 +4,7 @@ import { IRoomTransportInfo } from './interfaces/room-transport-info.interface';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { CustomWsException } from 'src/common/responses/exceptions/custom-ws.exception';
 import { ConnectTransportDto } from './dto/transport-params.interface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class SfuService {
@@ -11,6 +12,8 @@ export class SfuService {
   private roomTransports = new Map<string, IRoomTransportInfo>();
   private producers = new Map<string, mediasoup.types.Producer[]>();
   private consumers = new Map<string, mediasoup.types.Consumer[]>();
+
+  constructor(private readonly configService: ConfigService) {}
 
   //Room
   setRoom(room: mediasoup.types.Router) {
@@ -62,10 +65,18 @@ export class SfuService {
     }
 
     const transport = await room.createWebRtcTransport({
-      listenIps: [
+      listenInfos: [
         {
+          protocol: 'udp',
           ip: '0.0.0.0',
-          announcedIp: process.env.ANNOUNCED_IP || '127.0.0.1',
+          announcedAddress: this.configService.get('ANNOUNCED_IP') || '127.0.0.1',
+          portRange: { min: 30000, max: 30100 },
+        },
+        {
+          protocol: 'tcp',
+          ip: '0.0.0.0',
+          announcedAddress: this.configService.get('ANNOUNCED_IP') || '127.0.0.1',
+          portRange: { min: 30000, max: 30100 },
         },
       ],
       enableUdp: true,
