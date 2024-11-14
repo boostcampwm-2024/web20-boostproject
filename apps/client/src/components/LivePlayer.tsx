@@ -8,46 +8,41 @@ import ExpandIcon from './icons/ExpandIcon';
 
 type VideoQuality = '480' | '720' | '1080';
 
-function LivePlayer(props: { mediastream: MediaStream | null }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMute, setIsMute] = useState(false);
+function LivePlayer({ mediaStream }: { mediaStream: MediaStream | null }) {
+  const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(false);
   const [videoQuality, setVideoQuality] = useState<VideoQuality>('480');
-
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (!videoRef.current || !props.mediastream) return;
-
     const videoElement = videoRef.current;
-    videoElement.srcObject = props.mediastream;
+    if (videoElement && mediaStream) {
+      videoElement.srcObject = mediaStream;
+    }
 
     return () => {
-      if (videoElement.srcObject) {
+      if (videoElement && videoElement.srcObject) {
         videoElement.srcObject = null;
       }
     };
-  }, [props.mediastream]);
+  }, [mediaStream]);
 
   const handlePlayPause = async () => {
-    if (!videoRef.current) return;
-
-    try {
-      if (videoRef.current.paused) {
-        await videoRef.current.play();
-        setIsPlaying(true);
-      } else {
+    if (mediaStream && videoRef.current) {
+      if (isVideoEnabled) {
         videoRef.current.pause();
-        setIsPlaying(false);
+        setIsVideoEnabled(false);
+      } else {
+        videoRef.current.play();
+        setIsVideoEnabled(true);
       }
-    } catch (err) {
-      console.error('Play/Pause error:', err);
     }
   };
 
   const handleMute = () => {
-    if (!videoRef.current) return;
-    videoRef.current.muted = !videoRef.current.muted;
-    setIsMute(prev => !prev);
+    if (mediaStream) {
+      setIsAudioEnabled(prev => !prev);
+    }
   };
 
   const handleVideoQuality = (videoQuality: VideoQuality) => {
@@ -64,11 +59,16 @@ function LivePlayer(props: { mediastream: MediaStream | null }) {
 
   return (
     <section className="relative w-full aspect-video flex-grow min-h-[70%]">
-      <video ref={videoRef} autoPlay className="w-full h-full bg-surface-alt rounded-xl" />
+      <video
+        ref={videoRef}
+        autoPlay
+        muted={isAudioEnabled ? false : true}
+        className="w-full h-full bg-surface-alt rounded-xl"
+      />
       <div className="absolute bottom-4 left-0 right-0 px-6 text-text-default h-6 flex flex-row justify-between items-center">
         <div className="flex flex-row space-x-6 items-center">
-          <button onClick={handlePlayPause}>{isPlaying ? <PauseIcon /> : <PlayIcon />}</button>
-          <button onClick={handleMute}>{isMute ? <VolumeOffIcon /> : <VolumeOnIcon />}</button>
+          <button onClick={handlePlayPause}>{isVideoEnabled ? <PauseIcon /> : <PlayIcon />}</button>
+          <button onClick={handleMute}>{isAudioEnabled ? <VolumeOnIcon /> : <VolumeOffIcon />}</button>
         </div>
         <div className="flex flex-row space-x-6 items-center">
           <Select onValueChange={value => handleVideoQuality(value as VideoQuality)}>
