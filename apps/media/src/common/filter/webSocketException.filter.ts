@@ -6,16 +6,23 @@ import { Socket } from 'socket.io';
 export class WebSocketExceptionFilter extends BaseWsExceptionFilter {
   catch(exception: WsException, host: ArgumentsHost) {
     const client = host.switchToWs().getClient<Socket>();
+    const event = host.switchToWs().getPattern();
+
     const error = exception.getError() as {
       status: number;
       code: string;
       message: string;
     };
 
-    client.emit('error', {
-      status: error.status,
-      code: error.code,
-      message: error.message,
-    });
+    const wsResponse = {
+      event,
+      data: {
+        status: error.status || 'error',
+        message: error.message || 'Internal server error',
+        code: error.code || 500,
+      },
+    };
+
+    client.emit('exception', wsResponse);
   }
 }
