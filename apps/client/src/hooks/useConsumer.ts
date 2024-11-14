@@ -19,7 +19,7 @@ export const useConsumer = ({
   const transport = useRef<Transport | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [mediastream, setMediastream] = useState<MediaStream | null>(null);
-  const rtpCapabilitiesRef = useRef(device!.rtpCapabilities);
+  const rtpCapabilitiesRef = useRef(device?.rtpCapabilities);
 
   const connectTransport = async (params: {
     socket: Socket;
@@ -68,14 +68,6 @@ export const useConsumer = ({
           throw err;
         }
       });
-
-      await createConsumer({
-        socket,
-        roomId,
-        transportInfo,
-        rtpCapabilities: rtpCapabilitiesRef.current,
-        transport: transport.current,
-      });
     } catch (error) {
       const err = error instanceof Error ? error : new Error('Transport creation failed');
       setError(err);
@@ -88,9 +80,11 @@ export const useConsumer = ({
     roomId: string;
     transportInfo: TransportInfo;
     rtpCapabilities: any;
-    transport: Transport;
+    transport: Transport | null;
   }) => {
     const { socket, roomId, transportInfo, rtpCapabilities, transport } = params;
+
+    if (!transport) return;
 
     try {
       socket.emit(
@@ -114,12 +108,13 @@ export const useConsumer = ({
               if (consumer.track.kind === 'video') {
                 consumer.track.enabled = true;
               }
-
+              console.log(consumer);
               newMediastream.addTrack(consumer.track);
               consumer.resume();
             } catch (err) {
               const error = err instanceof Error ? err : new Error('Consumer creation failed');
               setError(error);
+              console.error(error);
             }
           }
 
@@ -134,7 +129,7 @@ export const useConsumer = ({
   };
 
   useEffect(() => {
-    if (!socket || !isConnected || !transportInfo || !device) {
+    if (!socket || !isConnected || !roomId || !transportInfo || !device) {
       return;
     }
 
@@ -143,6 +138,13 @@ export const useConsumer = ({
       transportInfo,
       device,
       roomId,
+    });
+    createConsumer({
+      socket,
+      roomId,
+      transportInfo,
+      rtpCapabilities: rtpCapabilitiesRef.current,
+      transport: transport.current,
     });
 
     return () => {

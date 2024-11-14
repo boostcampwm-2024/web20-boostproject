@@ -73,10 +73,10 @@ export const useTransport = ({ socket, roomId, isProducer = false }: useTranspor
     if (!rtpCapabilities) return;
 
     const newDevice = await createDevice(rtpCapabilities);
-    if (!device) return;
+    if (!newDevice) return;
     setDevice(newDevice);
 
-    await createTransport(device, roomId);
+    await createTransport(newDevice, roomId);
     if (!transportInfo) return;
   };
 
