@@ -8,6 +8,9 @@ export class BroadcastService {
   constructor(@InjectRepository(Broadcast) private readonly broadcastRepository: Repository<Broadcast>) {}
 
   async getAll() {
-    return this.broadcastRepository.find();
+    return this.broadcastRepository
+      .createQueryBuilder('broadcast')
+      .leftJoinAndSelect('broadcast.member', 'member')
+      .getMany();
   }
 }
