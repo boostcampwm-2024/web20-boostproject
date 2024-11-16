@@ -38,7 +38,7 @@ export default {
         'surface-brand-alt': 'var(--blue-500-alt)',
         'surface-danger': 'var(--red-500)',
         'border-bold': 'var(--grayscale-white-alt)',
-        'bolder-default': 'var(--grayscale-400)',
+        'border-default': 'var(--grayscale-400)',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {
