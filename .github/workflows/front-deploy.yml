@@ -26,14 +26,15 @@ jobs:
       # 의존성 설치
       - name: Install dependencies
         working-directory: apps/client
-        run: pnpm install --no-frozen-lockfile
+        run:
+          pnpm install --no-frozen-lockfile
 
       # 빌드 실행
       - name: Build front-end
         working-directory: apps/client
-        env:
-            VITE_MEDIASERVER_URL: ${{ secrets.VITE_MEDIASERVER_URL }}
-        run: pnpm build
+        run: |
+          echo "VITE_MEDIASERVER_URL=${{ secrets.VITE_MEDIASERVER_URL }}" >> .env
+          pnpm build
 
       - name: Verify build output
         run: ls -la apps/client/dist
