@@ -37,18 +37,21 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -f ./apps/media/Dockerfile -t ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest \
-            --build-arg MEDIA_PORT=$MEDIA_PORT \
-            --build-arg REDIS_HOST=$REDIS_HOST \
-            --build-arg REDIS_PORT=$REDIS_PORT \
-            --build-arg REDIS_MEDIA=$REDIS_MEDIA \
-            --build-arg DB_HOST=$DB_HOST \
-            --build-arg DB_PORT=$DB_PORT \
-            --build-arg DB_USERNAME=$DB_USERNAME \
-            --build-arg DB_PASSWORD=$DB_PASSWORD \
-            --build-arg DB_NAME=$DB_NAME \
-            --build-arg ANNOUNCED_IP=$ANNOUNCED_IP \
-            .
+          docker build \
+          --cache-from=${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest \
+          -f ./apps/media/Dockerfile \
+          -t ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest \
+          --build-arg MEDIA_PORT=$MEDIA_PORT \
+          --build-arg REDIS_HOST=$REDIS_HOST \
+          --build-arg REDIS_PORT=$REDIS_PORT \
+          --build-arg REDIS_MEDIA=$REDIS_MEDIA \
+          --build-arg DB_HOST=$DB_HOST \
+          --build-arg DB_PORT=$DB_PORT \
+          --build-arg DB_USERNAME=$DB_USERNAME \
+          --build-arg DB_PASSWORD=$DB_PASSWORD \
+          --build-arg DB_NAME=$DB_NAME \
+          --build-arg ANNOUNCED_IP=$ANNOUNCED_IP \
+          .         
 
       - name: Push to Ncloud Container Registry
         run: |
