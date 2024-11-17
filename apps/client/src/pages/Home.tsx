@@ -2,6 +2,8 @@ import { LiveInfo } from '@/types/liveTypes';
 import LiveList from '@/components/LiveList';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import LoadingCharacter from '@components/common/LoadingCharacter';
+import ErrorCharacter from '@components/common/ErrorCharacter';
 
 const baseUrl = import.meta.env.VITE_API_SERVER_URL;
 
@@ -43,11 +45,11 @@ export default function Home() {
     <div className="flex justify-center w-full h-[calc(100vh-88px)]">
       {error ? (
         <div className="flex justify-center items-center flex-1">
-          <div className="text-text-danger">{error}</div>
+          <ErrorCharacter message={error} />
         </div>
       ) : isLoading ? (
         <div className="flex justify-center items-center flex-1">
-          <div>로딩 중....</div>
+          <LoadingCharacter />
         </div>
       ) : (
         <LiveList liveList={liveList} />
