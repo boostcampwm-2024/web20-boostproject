@@ -15,6 +15,25 @@ WORKDIR /app
 # @nestjs/cli 글로벌 설치
 RUN npm install -g @nestjs/cli
 
+# 모노레포 루트의 의존성 파일 복사
+COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
+
+# Media 앱의 package.json 파일 복사
+COPY apps/media/package.json apps/media/
+
+# 의존성 설치 (devDependencies 포함)
+RUN pnpm install --filter=./apps/media --prod=false
+
+# Media 서버의 코드 복사
+COPY apps/media ./apps/media
+
+# Media 서버 빌드
+RUN pnpm --filter=./apps/media exec nest build
+
+FROM node:22-alpine AS runner
+
+WORKDIR /app
+
 # 환경 변수 설정
 ARG MEDIA_PORT
 ARG REDIS_HOST
@@ -38,20 +57,10 @@ ENV DB_PASSWORD=$DB_PASSWORD
 ENV DB_NAME=$DB_NAME
 ENV ANNOUNCED_IP=$ANNOUNCED_IP
 
-# 모노레포 루트의 의존성 파일 복사
-COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
-
-# Media 앱의 package.json 파일 복사
-COPY apps/media/package.json apps/media/
-
-# 의존성 설치 (devDependencies 포함)
-RUN pnpm install --filter=./apps/media --prod=false
-
-# Media 서버의 코드 복사
-COPY apps/media ./apps/media
-
-# Media 서버 빌드
-RUN pnpm --filter=./apps/media exec nest build
+# Media 서버 빌드 결과물 복사
+COPY --from=base /app/apps/media/dist ./apps/media/dist
+COPY --from=base /app/node_modules ./node_modules
+COPY --from=base /app/apps/media/node_modules ./apps/media/node_modules
 
 # 포트 노출
 EXPOSE $MEDIA_PORT
