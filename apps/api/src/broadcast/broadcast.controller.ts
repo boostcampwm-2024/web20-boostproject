@@ -2,7 +2,7 @@ import { Controller, Get, Param } from '@nestjs/common';
 import { BroadcastService } from './broadcast.service';
 import { SuccessStatus } from '../common/responses/bases/successStatus';
 import { BroadcastListResponseDto } from './dto/broadcast-list-response.dto';
-import { BroadcastInfoDto } from './dto/broadcast-info.dto';
+import { BroadcastInfoResponseDto } from './dto/broadcast-info-response.dto';
 
 @Controller('broadcasts')
 export class BroadcastController {
@@ -18,6 +18,6 @@ export class BroadcastController {
   async getBroadcastInfo(@Param('broadcastId') broadcastId: string) {
     const broadcast = await this.broadcastService.getBroadcastInfo(broadcastId);
 
-    return SuccessStatus.OK(BroadcastInfoDto.from(broadcast));
+    return SuccessStatus.OK(BroadcastInfoResponseDto.from(broadcast));
   }
 }
