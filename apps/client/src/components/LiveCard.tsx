@@ -1,13 +1,25 @@
+import { useNavigate } from 'react-router-dom';
+
 interface LiveCardProps {
+  liveId: string;
   title: string;
   userId: string;
   profileUrl?: string;
   thumbnailUrl: string;
 }
 
-const LiveCard = ({ title, userId, profileUrl, thumbnailUrl }: LiveCardProps) => {
+const LiveCard = ({ liveId, title, userId, profileUrl, thumbnailUrl }: LiveCardProps) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/live/${liveId}`);
+  };
+
   return (
-    <div className="w-[300px] h-[225px] relative overflow-hidden group cursor-pointer rounded-xl transition-all duration-300 ease-in-out hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:scale-[1.02] bg-surface-alt">
+    <div
+      onClick={handleClick}
+      className="w-[300px] h-[225px] relative overflow-hidden group cursor-pointer rounded-xl transition-all duration-300 ease-in-out hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:scale-[1.02] bg-surface-alt"
+    >
       {/* 썸네일 */}
       <div className="w-full aspect-video rounded-xl bg-[#161817]">
         {thumbnailUrl && <img src={thumbnailUrl} alt={title} className="w-full h-full object-cover " />}
