@@ -14,5 +14,14 @@ export default defineConfig({
       '@types': path.resolve(__dirname, './src/types'),
     },
   },
+  server: {
+    proxy: {
+      '/v1': {
+        target: 'https://api.cam-on.site',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
   base: '/',
 });

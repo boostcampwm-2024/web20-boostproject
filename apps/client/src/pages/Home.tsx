@@ -1,100 +1,57 @@
+import { LiveInfo } from '@/types/liveTypes';
 import LiveList from '@/components/LiveList';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
-const liveInfos = [
-  {
-    broadcastId: 'cbf4b8de0ce38a7c8c8c37e4eda54889',
-    broadcastTitle: '방송 제목 1',
-    thumbnail: '/images/zoom_membership_bg.png',
-    camperId: 'J001',
-    profileImage: '/images/duck.png',
-    field: 'WEB',
-  },
-  {
-    broadcastId: 'cbf4b8de0ce38a7c8c8c37e4eda54889',
-    broadcastTitle: '방송 제목 22',
-    thumbnail: '/images/zoom_membership_bg.png',
-    camperId: 'J225',
-    profileImage: '/images/duck.png',
-    field: 'WEB',
-  },
-  {
-    broadcastId: 'cbf4b8de0ce38a7c8c8c37e4eda54889',
-    broadcastTitle: '방송 제목 333',
-    thumbnail: '/images/zoom_membership_bg.png',
-    camperId: 'J389',
-    profileImage: '/images/duck.png',
-    field: 'AND',
-  },
-  {
-    broadcastId: 'cbf4b8de0ce38a7c8c8c37e4eda54889',
-    broadcastTitle: '방송 제목 4444',
-    thumbnail: '/images/zoom_membership_bg.png',
-    camperId: 'S486',
-    profileImage: '/images/duck.png',
-    field: 'IOS',
-  },
-  {
-    broadcastId: 'cbf4b8de0ce38a7c8c8c37e4eda54889',
-    broadcastTitle: '방송 제목 55555',
-    thumbnail: '/images/zoom_membership_bg.png',
-    camperId: 'J023',
-    profileImage: '/images/duck.png',
-    field: 'WEB',
-  },
-  {
-    broadcastId: 'cbf4b8de0ce38a7c8c8c37e4eda54889',
-    broadcastTitle: '방송 제목 666666',
-    thumbnail: '/images/zoom_membership_bg.png',
-    camperId: 'J126',
-    profileImage: '/images/duck.png',
-    field: 'WEB',
-  },
-  {
-    broadcastId: 'cbf4b8de0ce38a7c8c8c37e4eda54889',
-    broadcastTitle: '방송 제목 7777777',
-    thumbnail: '/images/zoom_membership_bg.png',
-    camperId: 'J219',
-    profileImage: '/images/duck.png',
-    field: 'WEB',
-  },
-  {
-    broadcastId: 'cbf4b8de0ce38a7c8c8c37e4eda54889',
-    broadcastTitle: '방송 제목 88888888',
-    thumbnail: '/images/zoom_membership_bg.png',
-    camperId: 'J273',
-    profileImage: '/images/duck.png',
-    field: 'IOS',
-  },
-  {
-    broadcastId: 'cbf4b8de0ce38a7c8c8c37e4eda54889',
-    broadcastTitle: '방송 제목 999999999',
-    thumbnail: '/images/zoom_membership_bg.png',
-    camperId: 'K101',
-    profileImage: '/images/duck.png',
-    field: 'AND',
-  },
-  {
-    broadcastId: 'cbf4b8de0ce38a7c8c8c37e4eda54889',
-    broadcastTitle: '방송 제목 테스트 123456789',
-    thumbnail: '/images/zoom_membership_bg.png',
-    camperId: 'S202',
-    profileImage: '/images/duck.png',
-    field: 'IOS',
-  },
-  {
-    broadcastId: 'cbf4b8de0ce38a7c8c8c37e4eda54889',
-    broadcastTitle: '방송 제목 테스트 123456789123456789',
-    thumbnail: '/images/zoom_membership_bg.png',
-    camperId: 'J299',
-    profileImage: '/images/duck.png',
-    field: 'WEB',
-  },
-];
+const baseUrl = import.meta.env.VITE_API_SERVER_URL;
+
+const getLiveList = async (field?: 'WEB' | 'AND' | 'IOS'): Promise<LiveInfo[]> => {
+  const response = await axios.get(`${baseUrl}/v1/broadcast/list`, {
+    headers: { 'Content-Type': 'application/json' },
+    params: {
+      field: field,
+    },
+  });
+  if (!response.data.success) {
+    throw new Error(response.data.message);
+  }
+  return response.data.data;
+};
 
 export default function Home() {
+  const [liveList, setLiveList] = useState<LiveInfo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getLiveList();
+        setLiveList(data);
+      } catch (err) {
+        console.error('Failed to fetch live data: ', err);
+        setError('방송 목록을 불러오는데 실패했습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
-    <div className="flex justify-center w-full">
-      <LiveList liveInfos={liveInfos} />
+    <div className="flex justify-center w-full h-[calc(100vh-88px)]">
+      {error ? (
+        <div className="flex justify-center items-center flex-1">
+          <div className="text-text-danger">{error}</div>
+        </div>
+      ) : isLoading ? (
+        <div className="flex justify-center items-center flex-1">
+          <div>로딩 중....</div>
+        </div>
+      ) : (
+        <LiveList liveList={liveList} />
+      )}
     </div>
   );
 }
