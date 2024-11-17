@@ -1,4 +1,9 @@
-function BlogIcon() {
+interface IconProps {
+  size?: number;
+  className?: string;
+}
+
+function BlogIcon({ size = 24, className = '' }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -6,7 +11,9 @@ function BlogIcon() {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="size-6"
+      width={size}
+      height={size}
+      className={className}
     >
       <path
         strokeLinecap="round"
