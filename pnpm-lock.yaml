@@ -47,22 +47,29 @@ importers:
     dependencies:
       '@nestjs/common':
         specifier: ^10.0.0
-        version: 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        version: 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/config':
         specifier: ^3.3.0
-        version: 3.3.0(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(rxjs@7.8.1)
+        version: 3.3.0(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(rxjs@7.8.1)
       '@nestjs/core':
         specifier: ^10.0.0
-        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        version: 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/platform-express':
         specifier: ^10.0.0
         version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)
       '@nestjs/swagger':
         specifier: ^8.0.7
         version: 8.0.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)
+        version: 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)
       '@nestjs/typeorm':
         specifier: ^10.0.2
-        version: 10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))
+        version: 10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))
+      class-transformer:
+        specifier: ^0.5.1
+        version: 0.5.1
+      class-validator:
+        specifier: ^0.14.1
+        version: 0.14.1
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -71,7 +78,7 @@ importers:
         version: 3.11.4
       nest-winston:
         specifier: ^1.9.7
-        version: 1.9.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(winston@3.16.0)
+        version: 1.9.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(winston@3.16.0)
       reflect-metadata:
         specifier: ^0.2.0
         version: 0.2.2
@@ -99,7 +106,7 @@ importers:
         version: 10.2.3(chokidar@3.6.0)(typescript@5.6.3)
       '@nestjs/testing':
         specifier: ^10.0.0
-        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-express@10.4.7)
+        version: 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-express@10.4.7)
       '@types/express':
         specifier: ^5.0.0
         version: 5.0.0
@@ -138,25 +145,25 @@ importers:
     dependencies:
       '@nestjs-modules/ioredis':
         specifier: ^2.0.2
-        version: 2.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3))))(ioredis@5.4.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))
+        version: 2.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3))))(ioredis@5.4.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))
       '@nestjs/common':
         specifier: ^10.0.0
-        version: 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        version: 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/config':
         specifier: ^3.3.0
-        version: 3.3.0(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(rxjs@7.8.1)
+        version: 3.3.0(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(rxjs@7.8.1)
       '@nestjs/core':
         specifier: ^10.0.0
-        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        version: 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/platform-express':
         specifier: ^10.0.0
-        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)
+        version: 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)
       '@nestjs/typeorm':
         specifier: ^10.0.2
-        version: 10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))
+        version: 10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))
       '@nestjs/websockets':
         specifier: ^10.4.7
-        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-socket.io@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        version: 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-socket.io@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       ioredis:
         specifier: ^5.4.1
         version: 5.4.1
@@ -184,7 +191,7 @@ importers:
         version: 10.2.3(chokidar@3.6.0)(typescript@5.3.3)
       '@nestjs/testing':
         specifier: ^10.0.0
-        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-express@10.4.7)
+        version: 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-express@10.4.7)
       '@types/cache-manager':
         specifier: ^4.0.6
         version: 4.0.6
@@ -320,28 +327,28 @@ importers:
     dependencies:
       '@nestjs-modules/ioredis':
         specifier: ^2.0.2
-        version: 2.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3))))(ioredis@5.4.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))
+        version: 2.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3))))(ioredis@5.4.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))
       '@nestjs/common':
         specifier: ^10.0.0
-        version: 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        version: 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/config':
         specifier: ^3.3.0
-        version: 3.3.0(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(rxjs@7.8.1)
+        version: 3.3.0(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(rxjs@7.8.1)
       '@nestjs/core':
         specifier: ^10.0.0
-        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        version: 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nestjs/platform-express':
         specifier: ^10.0.0
-        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)
+        version: 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)
       '@nestjs/platform-socket.io':
         specifier: ^10.4.7
-        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/websockets@10.4.7)(rxjs@7.8.1)
+        version: 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/websockets@10.4.7)(rxjs@7.8.1)
       '@nestjs/typeorm':
         specifier: ^10.0.2
-        version: 10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))
+        version: 10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))
       '@nestjs/websockets':
         specifier: ^10.4.7
-        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-socket.io@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+        version: 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-socket.io@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       ioredis:
         specifier: ^5.4.1
         version: 5.4.1
@@ -372,7 +379,7 @@ importers:
         version: 10.2.3(chokidar@3.6.0)(typescript@5.6.3)
       '@nestjs/testing':
         specifier: ^10.0.0
-        version: 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-express@10.4.7)
+        version: 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-express@10.4.7)
       '@types/express':
         specifier: ^5.0.0
         version: 5.0.0
@@ -947,6 +954,13 @@ packages:
       '@nestjs/common': '>=6.7.0'
       '@nestjs/core': '>=6.7.0'
       ioredis: '>=5.0.0'
+
+  '@nestjs/axios@3.1.2':
+    resolution: {integrity: sha512-pFlfi4ZQsZtTNNhvgssbxjCHUd1nMpV3sXy/xOOB2uEJhw3M8j8SFR08gjFNil2we2Har7VCsXLfCkwbMHECFQ==}
+    peerDependencies:
+      '@nestjs/common': ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
+      axios: ^1.3.1
+      rxjs: ^6.0.0 || ^7.0.0
 
   '@nestjs/cli@10.4.7':
     resolution: {integrity: sha512-4wJTtBJsbvjLIzXl+Qj6DYHv4J7abotuXyk7bes5erL79y+KBT61LulL56SqilzmNnHOAVbXcSXOn9S2aWUn6A==}
@@ -1766,6 +1780,9 @@ packages:
   '@types/triple-beam@1.3.5':
     resolution: {integrity: sha512-6WaYesThRMCl19iryMYP7/x2OVgCtbIVflDGFpWnb9irXI3UjYE4AzmYuiUKY1AJstGijoY+MgUszMgRxIYTYw==}
 
+  '@types/validator@13.12.2':
+    resolution: {integrity: sha512-6SlHBzUW8Jhf3liqrGGXyTJSIFe4nqlJ5A5KaMZ2l/vbM3Wh3KSybots/wfWVzNLK4D1NZluDlSQIbIEPx6oyA==}
+
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
 
@@ -2081,6 +2098,9 @@ packages:
     resolution: {integrity: sha512-NZKeq9AfyQvEeNlN0zSYAaWrmBffJh3IELMZfRpJVWgrpEbtEpnjvzqBPf+mxoI287JohRDoa+/nsfqqiZmF6g==}
     engines: {node: '>= 6.0.0'}
 
+  axios@1.7.7:
+    resolution: {integrity: sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==}
+
   babel-jest@29.7.0:
     resolution: {integrity: sha512-BrvGY3xZSwEcCzKvKsCi2GgHqDqsYkOP4/by5xCgIwGXQxIEh+8ew3gmrE1y7XRR6LHZIj6yLYnUi/mm2KXKBg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -2238,6 +2258,12 @@ packages:
 
   cjs-module-lexer@1.4.1:
     resolution: {integrity: sha512-cuSVIHi9/9E/+821Qjdvngor+xpnlwnuwIyZOaLmHBVdXL+gP+I6QQB9VkO7RI77YIcTV+S1W9AreJ5eN63JBA==}
+
+  class-transformer@0.5.1:
+    resolution: {integrity: sha512-SQa1Ws6hUbfC98vKGxZH3KFY0Y1lm5Zm0SY8XX9zbK7FJCyVEac3ATW0RIpwzW+oOfmHE5PMPufDG9hCfoEOMw==}
+
+  class-validator@0.14.1:
+    resolution: {integrity: sha512-2VEG9JICxIqTpoK1eMzZqaV+u/EiwEJkMGzTrZf6sU/fwsnOITVgYJ8yojSy6CaXtO9V0Cc6ZQZ8h8m4UBuLwQ==}
 
   class-variance-authority@0.7.0:
     resolution: {integrity: sha512-jFI8IQw4hczaL4ALINxqLEXQbWcNjoSkloa4IaufXCJr6QawJyw7tuRysRsrE8w2p/4gGaxKIt/hX3qz/IbD1A==}
@@ -2953,6 +2979,15 @@ packages:
 
   fn.name@1.1.0:
     resolution: {integrity: sha512-GRnmB5gPyJpAhTQdSZTSp9uaPSvl09KoYcMQtsB9rQoOmzs9dH6ffeccH+Z+cv6P68Hu5bC6JjRh4Ah/mHSNRw==}
+
+  follow-redirects@1.15.9:
+    resolution: {integrity: sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
 
   for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
@@ -3678,6 +3713,9 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
+  libphonenumber-js@1.11.14:
+    resolution: {integrity: sha512-sexvAfwcW1Lqws4zFp8heAtAEXbEDnvkYCEGzvOoMgZR7JhXo/IkE9MkkGACgBed5fWqh3ShBGnJBdDnU9N8EQ==}
+
   lilconfig@2.1.0:
     resolution: {integrity: sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==}
     engines: {node: '>=10'}
@@ -4273,6 +4311,9 @@ packages:
   proxy-addr@2.0.7:
     resolution: {integrity: sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==}
     engines: {node: '>= 0.10'}
+
+  proxy-from-env@1.1.0:
+    resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
 
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
@@ -5132,6 +5173,10 @@ packages:
   v8-to-istanbul@9.3.0:
     resolution: {integrity: sha512-kiGUalWN+rgBJ/1OHZsBtU4rXZOfj/7rKQxULKlIzwzQSvMJUUNgPwJEEh7gU6xEVxC0ahoOBvN2YI8GH6FNgA==}
     engines: {node: '>=10.12.0'}
+
+  validator@13.12.0:
+    resolution: {integrity: sha512-c1Q0mCiPlgdTVVVIJIrBuxNicYE+t/7oKeI9MWLj3fh/uq2Pxh/3eeWbVZ4OcGW1TUf53At0njHw5SMdA3tmMg==}
+    engines: {node: '>= 0.10'}
 
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
@@ -6001,13 +6046,13 @@ snapshots:
 
   '@microsoft/tsdoc@0.15.0': {}
 
-  '@nestjs-modules/ioredis@2.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3))))(ioredis@5.4.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))':
+  '@nestjs-modules/ioredis@2.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3))))(ioredis@5.4.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))':
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       ioredis: 5.4.1
     optionalDependencies:
-      '@nestjs/terminus': 10.2.0(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3))))(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))
+      '@nestjs/terminus': 10.2.0(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3))))(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))
     transitivePeerDependencies:
       - '@grpc/grpc-js'
       - '@grpc/proto-loader'
@@ -6025,13 +6070,13 @@ snapshots:
       - sequelize
       - typeorm
 
-  '@nestjs-modules/ioredis@2.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3))))(ioredis@5.4.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))':
+  '@nestjs-modules/ioredis@2.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3))))(ioredis@5.4.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))':
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       ioredis: 5.4.1
     optionalDependencies:
-      '@nestjs/terminus': 10.2.0(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3))))(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))
+      '@nestjs/terminus': 10.2.0(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3))))(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))
     transitivePeerDependencies:
       - '@grpc/grpc-js'
       - '@grpc/proto-loader'
@@ -6048,6 +6093,13 @@ snapshots:
       - rxjs
       - sequelize
       - typeorm
+
+  '@nestjs/axios@3.1.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(axios@1.7.7)(rxjs@7.8.1)':
+    dependencies:
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      axios: 1.7.7
+      rxjs: 7.8.1
+    optional: true
 
   '@nestjs/cli@10.4.7(@swc/core@1.8.0)':
     dependencies:
@@ -6077,25 +6129,28 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)':
+  '@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
     dependencies:
       iterare: 1.2.1
       reflect-metadata: 0.2.2
       rxjs: 7.8.1
       tslib: 2.7.0
       uid: 2.0.2
+    optionalDependencies:
+      class-transformer: 0.5.1
+      class-validator: 0.14.1
 
-  '@nestjs/config@3.3.0(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(rxjs@7.8.1)':
+  '@nestjs/config@3.3.0(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(rxjs@7.8.1)':
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       dotenv: 16.4.5
       dotenv-expand: 10.0.0
       lodash: 4.17.21
       rxjs: 7.8.1
 
-  '@nestjs/core@10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
+  '@nestjs/core@10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       '@nuxtjs/opencollective': 0.3.2
       fast-safe-stringify: 2.1.1
       iterare: 1.2.1
@@ -6105,8 +6160,8 @@ snapshots:
       tslib: 2.7.0
       uid: 2.0.2
     optionalDependencies:
-      '@nestjs/platform-express': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)
-      '@nestjs/websockets': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-socket.io@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/platform-express': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)
+      '@nestjs/websockets': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-socket.io@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
     transitivePeerDependencies:
       - encoding
 
@@ -6116,9 +6171,10 @@ snapshots:
       reflect-metadata: 0.2.2
 
   '@nestjs/platform-express@10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)':
+  '@nestjs/platform-express@10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)':
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       body-parser: 1.20.3
       cors: 2.8.5
       express: 4.21.1
@@ -6127,10 +6183,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@nestjs/platform-socket.io@10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/websockets@10.4.7)(rxjs@7.8.1)':
+  '@nestjs/platform-socket.io@10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/websockets@10.4.7)(rxjs@7.8.1)':
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/websockets': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-socket.io@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/websockets': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-socket.io@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       rxjs: 7.8.1
       socket.io: 4.8.0
       tslib: 2.7.0
@@ -6174,68 +6230,69 @@ snapshots:
       swagger-ui-dist: 5.18.2
 
   '@nestjs/terminus@10.2.0(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3))))(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))':
+  '@nestjs/terminus@10.2.0(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3))))(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))':
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       boxen: 5.1.2
       check-disk-space: 3.4.0
       reflect-metadata: 0.2.2
       rxjs: 7.8.1
     optionalDependencies:
-      '@nestjs/typeorm': 10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))
+      '@nestjs/typeorm': 10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))
       typeorm: 0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3))
     optional: true
 
-  '@nestjs/terminus@10.2.0(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3))))(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))':
+  '@nestjs/terminus@10.2.0(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3))))(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))':
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       boxen: 5.1.2
       check-disk-space: 3.4.0
       reflect-metadata: 0.2.2
       rxjs: 7.8.1
     optionalDependencies:
-      '@nestjs/typeorm': 10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))
+      '@nestjs/typeorm': 10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))
       typeorm: 0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3))
     optional: true
 
-  '@nestjs/testing@10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-express@10.4.7)':
+  '@nestjs/testing@10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-express@10.4.7)':
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       tslib: 2.7.0
     optionalDependencies:
-      '@nestjs/platform-express': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)
+      '@nestjs/platform-express': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)
 
-  '@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))':
+  '@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3)))':
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       reflect-metadata: 0.2.2
       rxjs: 7.8.1
       typeorm: 0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.3.3))
       uuid: 9.0.1
 
-  '@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))':
+  '@nestjs/typeorm@10.0.2(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)(typeorm@0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3)))':
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       reflect-metadata: 0.2.2
       rxjs: 7.8.1
       typeorm: 0.3.20(ioredis@5.4.1)(mysql2@3.11.4)(redis@4.7.0)(ts-node@10.9.2(@swc/core@1.8.0)(@types/node@20.17.6)(typescript@5.6.3))
       uuid: 9.0.1
 
-  '@nestjs/websockets@10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-socket.io@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
+  '@nestjs/websockets@10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/core@10.4.7)(@nestjs/platform-socket.io@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)':
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
-      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/platform-express@10.4.7)(@nestjs/websockets@10.4.7)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       iterare: 1.2.1
       object-hash: 3.0.0
       reflect-metadata: 0.2.2
       rxjs: 7.8.1
       tslib: 2.7.0
     optionalDependencies:
-      '@nestjs/platform-socket.io': 10.4.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/websockets@10.4.7)(rxjs@7.8.1)
+      '@nestjs/platform-socket.io': 10.4.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(@nestjs/websockets@10.4.7)(rxjs@7.8.1)
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -6808,6 +6865,8 @@ snapshots:
 
   '@types/triple-beam@1.3.5': {}
 
+  '@types/validator@13.12.2': {}
+
   '@types/yargs-parser@21.0.3': {}
 
   '@types/yargs@17.0.33':
@@ -7184,6 +7243,15 @@ snapshots:
 
   aws-ssl-profiles@1.1.2: {}
 
+  axios@1.7.7:
+    dependencies:
+      follow-redirects: 1.15.9
+      form-data: 4.0.1
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    optional: true
+
   babel-jest@29.7.0(@babel/core@7.26.0):
     dependencies:
       '@babel/core': 7.26.0
@@ -7387,6 +7455,14 @@ snapshots:
   ci-info@3.9.0: {}
 
   cjs-module-lexer@1.4.1: {}
+
+  class-transformer@0.5.1: {}
+
+  class-validator@0.14.1:
+    dependencies:
+      '@types/validator': 13.12.2
+      libphonenumber-js: 1.11.14
+      validator: 13.12.0
 
   class-variance-authority@0.7.0:
     dependencies:
@@ -8285,6 +8361,9 @@ snapshots:
   flatted@3.3.1: {}
 
   fn.name@1.1.0: {}
+
+  follow-redirects@1.15.9:
+    optional: true
 
   for-each@0.3.3:
     dependencies:
@@ -9298,6 +9377,8 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
+  libphonenumber-js@1.11.14: {}
+
   lilconfig@2.1.0: {}
 
   lilconfig@3.1.2: {}
@@ -9568,9 +9649,9 @@ snapshots:
 
   neo-async@2.6.2: {}
 
-  nest-winston@1.9.7(@nestjs/common@10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1))(winston@3.16.0):
+  nest-winston@1.9.7(@nestjs/common@10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(winston@3.16.0):
     dependencies:
-      '@nestjs/common': 10.4.7(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/common': 10.4.7(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1)
       fast-safe-stringify: 2.1.1
       winston: 3.16.0
 
@@ -9850,6 +9931,9 @@ snapshots:
     dependencies:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
+
+  proxy-from-env@1.1.0:
+    optional: true
 
   punycode@2.3.1: {}
 
@@ -10862,6 +10946,8 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.25
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 2.0.0
+
+  validator@13.12.0: {}
 
   vary@1.1.2: {}
 
