@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateBroadcastDto } from './dto/createBroadcast.dto';
 import { IBroadcastService } from './interfaces/broadcast-service.interface';
-import { IApiClient } from './interfaces/api-client.interface';
+import { IApiClient } from 'src/common/clients/api-client.interface';
 import { IBroadcast } from './interfaces/broadcast.interface';
 
 @Injectable()

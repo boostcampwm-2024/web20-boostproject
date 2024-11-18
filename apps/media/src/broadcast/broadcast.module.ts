@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ApiClient } from 'src/common/clients/api.client';
 import { BroadcastService } from './broadcast.service';
-import { TestBroadcastController } from './test.controller';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
@@ -16,7 +15,6 @@ import { HttpModule } from '@nestjs/axios';
       inject: [ConfigService],
     }),
   ],
-  controllers: [TestBroadcastController],
   providers: [
     {
       provide: 'API_CLIENT',
