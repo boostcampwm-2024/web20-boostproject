@@ -6,18 +6,32 @@ import { BroadcastInfoResponseDto } from './dto/broadcast-info-response.dto';
 import { UpdateBroadcastTitleDto } from './dto/update-broadcast-title.request.dto';
 import { Broadcast } from './broadcast.entity';
 import { CreateBroadcastDto } from './dto/createBroadcast.dto';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { SwaggerTag } from 'src/common/constants/swagger-tag.enum';
+import { ApiSuccessResponse } from 'src/common/decorators/success-res.decorator';
+import { ApiErrorResponse } from 'src/common/decorators/error-res.decorator';
+import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 
 @Controller('v1/broadcasts')
 export class BroadcastController {
   constructor(private readonly broadcastService: BroadcastService) {}
 
   @Get()
+  @ApiTags(SwaggerTag.MAIN)
+  @ApiOperation({ summary: '방송 리스트 조회' })
+  @ApiSuccessResponse(SuccessStatus.OK(BroadcastListResponseDto), BroadcastListResponseDto)
+  @ApiErrorResponse(500, ErrorStatus.INTERNAL_SERVER_ERROR)
   async getAll() {
     const broadcasts = await this.broadcastService.getAll();
     return SuccessStatus.OK(BroadcastListResponseDto.from(broadcasts));
   }
 
   @Get('/:broadcastId/info')
+  @ApiTags(SwaggerTag.WATCH)
+  @ApiOperation({ summary: '방송 하단 정보 조회' })
+  @ApiSuccessResponse(SuccessStatus.OK(BroadcastInfoResponseDto), BroadcastInfoResponseDto)
+  @ApiErrorResponse(400, ErrorStatus.BROADCAST_NOT_FOUND)
+  @ApiErrorResponse(500, ErrorStatus.INTERNAL_SERVER_ERROR)
   async getBroadcastInfo(@Param('broadcastId') broadcastId: string) {
     const broadcast = await this.broadcastService.getBroadcastInfo(broadcastId);
 
@@ -27,6 +41,12 @@ export class BroadcastController {
   // TODO: 유저 기능 추가 후 유저의 방송 찾는 로직 구현 필요
   @Patch('/title')
   // @UseGuards(JwtAuthGuard)
+  @ApiTags(SwaggerTag.BROADCAST)
+  @ApiOperation({ summary: '방송 제목 수정' })
+  @ApiBody({ type: UpdateBroadcastTitleDto })
+  @ApiSuccessResponse(SuccessStatus.OK(null))
+  @ApiErrorResponse(400, ErrorStatus.BROADCAST_NOT_FOUND)
+  @ApiErrorResponse(500, ErrorStatus.INTERNAL_SERVER_ERROR)
   async updateTitle(
     // @Request() req,
     @Body() updateBroadcastTitleDto: UpdateBroadcastTitleDto,
