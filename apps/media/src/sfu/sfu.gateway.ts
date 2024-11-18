@@ -1,5 +1,4 @@
 import { SfuService } from './sfu.service';
-import { WorkerService } from './worker/worker.service';
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { ConnectTransportDto } from './dto/transport-params.interface';
@@ -15,25 +14,24 @@ export class SfuGateway {
   @WebSocketServer()
   server: Server;
 
-  constructor(private readonly workerService: WorkerService, private readonly sfuService: SfuService) {}
+  constructor(private readonly sfuService: SfuService) {}
 
   @SubscribeMessage('createRoom')
   async handleCreateRoom() {
-    const room = await this.workerService.createRoom();
-    this.sfuService.setRoom(room);
+    const room = await this.sfuService.createRoom();
     return { roomId: room.id };
   }
 
   @SubscribeMessage('getRtpCapabilities')
   handleGetRtpCapabilities(@MessageBody('roomId') roomId: string) {
-    return { rtpCapabilities: this.sfuService.getRtpCapabilities(roomId) };
+    const rtpCapabilities = this.sfuService.getRtpCapabilities(roomId);
+    return { rtpCapabilities };
   }
 
   @SubscribeMessage('createTransport')
   async handleCreateTransport(@MessageBody() params: CreateTransportDto) {
     const { isProducer } = params;
     const transport = await this.sfuService.createTransport(params);
-
     return {
       transportId: transport.id,
       isProducer,
@@ -64,8 +62,7 @@ export class SfuGateway {
 
   @SubscribeMessage('createConsumer')
   async handleCreateConsumer(@MessageBody() params: CreateConsumerDto) {
-    const consumers = await this.sfuService.createConsumer(params);
-
+    const consumers = await this.sfuService.createConsumers(params);
     return {
       consumers,
     };
@@ -75,8 +72,7 @@ export class SfuGateway {
   @SubscribeMessage('stopBroadcast')
   handleStopBroadcast(@MessageBody('roomId') roomId: string) {
     try {
-      this.sfuService.cleanupRoom(roomId);
-
+      this.sfuService.stopBroadcast(roomId);
       return {
         isCleaned: true,
         roomId,
@@ -90,8 +86,7 @@ export class SfuGateway {
   @SubscribeMessage('leaveBroadcast')
   handleLeaveBroadcast(@MessageBody('transportId') transportId: string, @MessageBody('roomId') roomId: string) {
     try {
-      this.sfuService.deleteConsumers(roomId, transportId);
-
+      this.sfuService.leaveBroadcast(roomId, transportId);
       return {
         success: true,
       };
