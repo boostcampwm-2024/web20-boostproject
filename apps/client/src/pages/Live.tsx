@@ -1,3 +1,4 @@
+import LiveCamperInfo from '@/components/LiveCamperInfo';
 import { useConsumer } from '@/hooks/useConsumer';
 import { useSocket } from '@/hooks/useSocket';
 import { useTransport } from '@/hooks/useTransport';
@@ -9,7 +10,15 @@ const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
 export default function Live() {
   const { liveId } = useParams<{ liveId: string }>();
   const { socket, isConnected, socketError: _se } = useSocket(socketUrl);
-  const { transportInfo, device, transportError: _te } = useTransport({ socket, roomId: liveId, isProducer: false });
+  const {
+    transportInfo,
+    device,
+    transportError: _te,
+  } = useTransport({
+    socket,
+    roomId: liveId,
+    isProducer: false,
+  });
   const { mediastream: mediaStream, error: _error } = useConsumer({
     socket,
     device,
@@ -19,10 +28,12 @@ export default function Live() {
   });
 
   return (
-    <div className="flex flex-row w-full gap-4">
-      <div className="flex flex-col basis-3/4 gap-4 w-3/4 h-full ml-8">
+    <div className="fixed top-[88px] bottom-0 left-0 right-0 overflow-auto flex flex-row w-full gap-10">
+      <div className="flex flex-col basis-3/4 gap-4 w-7/12 h-full ml-8">
         <LivePlayer mediaStream={mediaStream} />
-        <div className="bg-surface-alt flex-grow">방송자 정보 컴포넌트</div>
+        <div className="flex-grow">
+          <LiveCamperInfo />
+        </div>
       </div>
       <div className="bg-surface-alt basis-1/4">채팅</div>
     </div>

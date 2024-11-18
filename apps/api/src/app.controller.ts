@@ -3,8 +3,10 @@ import { AppService } from './app.service';
 import { CustomException } from './common/responses/exceptions/custom.exception';
 import { ErrorStatus } from './common/responses/exceptions/errorStatus';
 import { SuccessStatus } from './common/responses/bases/successStatus';
+import { ApiExcludeController } from '@nestjs/swagger';
 
 @Controller()
+@ApiExcludeController()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 

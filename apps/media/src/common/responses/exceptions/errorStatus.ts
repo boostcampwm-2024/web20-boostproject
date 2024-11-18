@@ -38,4 +38,7 @@ export class ErrorStatus {
     'MEDIA_4003',
     'CONSUME할 수 있는 PRODUCER가 없습니다.',
   );
+
+  // Worker Errors
+  static readonly WORKER_NOT_FOUND = new ErrorStatus(404, 'WORKER_4000', 'Worker 정보가 존재하지 않습니다.');
 }
