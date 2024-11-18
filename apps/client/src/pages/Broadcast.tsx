@@ -1,3 +1,4 @@
+import BroadcastTitle from '@/components/BroadcastTitle';
 import { useMediaControls } from '@/hooks/useMediaControls';
 import { useMediaStream } from '@/hooks/useMediaStream';
 import { useProducer } from '@/hooks/useProducer';
@@ -11,7 +12,7 @@ import MonitorShareIcon from '@components/icons/MonitorShareIcon';
 import VideoOffIcon from '@components/icons/VideoOffIcon';
 import VideoOnIcon from '@components/icons/VideoOnIcon';
 import { Button } from '@components/ui/button';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
@@ -21,7 +22,6 @@ function Broadcast() {
   const { socket, isConnected, socketError: _se } = useSocket(socketUrl);
   const { roomId, roomError: _re } = useRoom(socket, isConnected);
   const { transportInfo, device, transportError: _te } = useTransport({ socket, roomId, isProducer: true });
-
   const { transport: _t, error: mediasoupError } = useProducer({
     socket,
     isMediastreamReady,
@@ -30,6 +30,7 @@ function Broadcast() {
     device,
     roomId,
   });
+  const [title, setTitle] = useState<string>('방송 제목');
 
   const stopBroadcast = useCallback(
     (e?: BeforeUnloadEvent) => {
@@ -63,6 +64,10 @@ function Broadcast() {
     window.close();
   };
 
+  const handleBroadcastTitle = (newTitle: string) => {
+    setTitle(newTitle);
+  };
+
   return (
     <>
       {mediaStreamError || mediasoupError ? (
@@ -78,10 +83,7 @@ function Broadcast() {
             <audio />
           </div>
           <div className="w-full">
-            <div className="flex flex-row justify-between p-4">
-              <div className="text-text-default text-display-medium16">방송 제목</div>
-              <Button className="bg-transparent border border-border-default">수정</Button>
-            </div>
+            <BroadcastTitle currentTitle={title} onTitleChange={handleBroadcastTitle} />
             <div className="flex justify-between items-center m-4">
               <Button onClick={handleCheckout} className="bg-surface-brand-default hover:hover:bg-surface-brand-alt">
                 체크아웃
