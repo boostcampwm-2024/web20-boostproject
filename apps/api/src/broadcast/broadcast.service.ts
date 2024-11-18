@@ -17,6 +17,18 @@ export class BroadcastService {
       .getMany();
   }
 
+  async getBroadcastInfo(broadcastId: string) {
+    const broadcast = await this.broadcastRepository
+      .createQueryBuilder('broadcast')
+      .leftJoinAndSelect('broadcast.member', 'member')
+      .where('broadcast.id = :broadcastId', { broadcastId })
+      .getOne();
+
+    if (!broadcast) throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
+
+    return broadcast;
+  }
+
   async updateTitle(userId: number, { title: broadcastTitle }: UpdateBroadcastTitleDto) {
     // 임시 broadcastId로 사용
     const tempBroadcastId = '1';

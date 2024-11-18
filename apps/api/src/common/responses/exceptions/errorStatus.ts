@@ -16,5 +16,5 @@ export class ErrorStatus {
   static readonly INVALID_TOKEN = new ErrorStatus(400, 'MEMBER_4002', '유효하지 않은 토큰입니다.');
 
   // Broadcast Errors
-  static readonly BROADCAST_NOT_FOUND = new ErrorStatus(400, 'BROADCAST_4000', '방송 중이 아닙니다.');
+  static readonly BROADCAST_NOT_FOUND = new ErrorStatus(400, 'BROADCAST_4000', '존재하지 않는 방송입니다.');
 }
