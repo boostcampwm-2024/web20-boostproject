@@ -14,6 +14,12 @@ async function bootstrap() {
 
   ConfigSwagger.setup(app);
 
+  app.enableCors({
+    origin: ['http://localhost:5173', 'https://cam-on.site'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true,
+  });
+
   await app.listen(3000);
 }
 bootstrap();
