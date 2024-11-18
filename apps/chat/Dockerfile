@@ -12,18 +12,6 @@ WORKDIR /app
 # @nestjs/cli만 글로벌 설치
 RUN npm install -g @nestjs/cli
 
-# 환경 변수 설정
-ARG CHAT_PORT
-ARG REDIS_HOST
-ARG REDIS_PORT
-ARG REDIS_CHAT
-
-
-ENV CHAT_PORT=${CHAT_PORT}
-ENV REDIS_HOST=${REDIS_HOST}
-ENV REDIS_PORT=${REDIS_PORT}
-ENV REDIS_CHAT=${REDIS_CHAT}
-
 # 모노레포 루트의 의존성 파일 복사
 COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
 
@@ -38,6 +26,25 @@ COPY apps/chat ./apps/chat
 
 # Chat 서버 빌드
 RUN pnpm --filter=./apps/chat exec nest build
+
+FROM node:22-alpine AS runner
+
+WORKDIR /app
+
+# 환경 변수 설정
+ARG CHAT_PORT
+ARG REDIS_HOST
+ARG REDIS_PORT
+ARG REDIS_CHAT
+
+ENV CHAT_PORT=$CHAT_PORT
+ENV REDIS_HOST=$REDIS_HOST
+ENV REDIS_PORT=$REDIS_PORT
+ENV REDIS_CHAT=$REDIS_CHAT
+
+COPY --from=base /app/apps/chat/dist ./apps/chat/dist
+COPY --from=base /app/node_modules ./node_modules
+COPY --from=base /app/apps/chat/node_modules ./apps/chat/node_modules
 
 # 포트 노출
 EXPOSE ${CHAT_PORT}
