@@ -5,6 +5,7 @@ import { MoreThan, Repository } from 'typeorm';
 import { CreateBroadcastDto } from './dto/createBroadcast.dto';
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
+import { Member } from 'src/member/member.entity';
 
 @Injectable()
 export class BroadcastService {
@@ -69,7 +70,7 @@ export class BroadcastService {
    * @param broadcastId 방송 UUID
    * @throws CustomException 방송을 찾을 수 없는 경우
    */
-  async deleteBroadcast(broadcastId: string): Promise<void> {
+  async deleteBroadcast(broadcastId: string): Promise<{ startTime: Date; member: Member }> {
     const broadcast = await this.broadcastRepository.findOne({
       where: { id: broadcastId },
     });
@@ -79,5 +80,10 @@ export class BroadcastService {
     }
 
     await this.broadcastRepository.delete({ id: broadcastId });
+
+    return {
+      startTime: broadcast.startTime,
+      member: broadcast.member,
+    };
   }
 }
