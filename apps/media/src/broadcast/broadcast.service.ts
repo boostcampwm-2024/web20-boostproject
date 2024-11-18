@@ -63,4 +63,21 @@ export class BroadcastService {
 
     await this.broadcastRepository.update({ id: broadcastId, viewers: MoreThan(0) }, { viewers: () => 'viewers - 1' });
   }
+
+  /**
+   * 방송을 삭제합니다.
+   * @param broadcastId 방송 UUID
+   * @throws CustomException 방송을 찾을 수 없는 경우
+   */
+  async deleteBroadcast(broadcastId: string): Promise<void> {
+    const broadcast = await this.broadcastRepository.findOne({
+      where: { id: broadcastId },
+    });
+
+    if (!broadcast) {
+      throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
+    }
+
+    await this.broadcastRepository.delete({ id: broadcastId });
+  }
 }
