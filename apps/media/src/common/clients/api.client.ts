@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IApiClient } from 'src/broadcast/interfaces/api-client.interface';
+import { IApiClient } from './api-client.interface';
 import { CustomException } from '../responses/exceptions/custom.exception';
 import { ErrorStatus } from '../responses/exceptions/errorStatus';
 import { HttpService } from '@nestjs/axios';
