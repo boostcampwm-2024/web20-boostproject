@@ -20,7 +20,11 @@ export default function Live() {
     roomId: liveId,
     isProducer: false,
   });
-  const { mediastream: mediaStream, error: _error } = useConsumer({
+  const {
+    transport,
+    mediastream: mediaStream,
+    error: _error,
+  } = useConsumer({
     socket,
     device,
     roomId: liveId,
@@ -29,12 +33,12 @@ export default function Live() {
   });
 
   const handleLeaveLive = () => {
-    if (socket) {
-      if (liveId && transportInfo) {
-        socket.emit('leaveBroadcast', { transportId: transportInfo.transportId, roomId: liveId });
-      }
-      socket.disconnect();
+    if (socket && liveId && transportInfo) {
+      socket.emit('leaveBroadcast', { transportId: transportInfo.transportId, roomId: liveId });
     }
+
+    socket?.disconnect();
+    transport?.close();
   };
 
   const preventClose = (e: BeforeUnloadEvent) => {
