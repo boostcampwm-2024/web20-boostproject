@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc && node dist",
+    "build": "tsc",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",

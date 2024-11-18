@@ -24,6 +24,6 @@ COPY apps/record ./apps/record
 # Build
 RUN pnpm --filter=./apps/record run build
 
-EXPOSE 3000
+EXPOSE ${RECORD_PORT}
 
 CMD ["node", "apps/record/dist/index.js"]

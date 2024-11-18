@@ -15,7 +15,7 @@ io.on('connect', client => {
 });
 
 server.listen(PORT, () => {
-  console.log('Recording Server listening on port 3003');
+  console.log(`Recording Server listening on port ${PORT}`);
 });
 
 export default app;
