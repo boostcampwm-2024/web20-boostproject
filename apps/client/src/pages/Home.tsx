@@ -1,24 +1,10 @@
 import { LiveInfo } from '@/types/liveTypes';
 import LiveList from '@/components/LiveList';
-import axios from 'axios';
+
 import { useEffect, useState } from 'react';
 import LoadingCharacter from '@components/common/LoadingCharacter';
 import ErrorCharacter from '@components/common/ErrorCharacter';
-
-const baseUrl = import.meta.env.VITE_API_SERVER_URL;
-
-const getLiveList = async (field?: 'WEB' | 'AND' | 'IOS'): Promise<LiveInfo[]> => {
-  const response = await axios.get(`${baseUrl}/v1/broadcast/list`, {
-    headers: { 'Content-Type': 'application/json' },
-    params: {
-      field: field,
-    },
-  });
-  if (!response.data.success) {
-    throw new Error(response.data.message);
-  }
-  return response.data.data;
-};
+import { getLiveList } from '@/services/axios';
 
 export default function Home() {
   const [liveList, setLiveList] = useState<LiveInfo[]>([]);
