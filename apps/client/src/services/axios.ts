@@ -8,12 +8,4 @@ const axiosInstance = axios.create({
   timeout: 5000,
 });
 
-export const getLiveList = async (field?: string) => {
-  const response = await axiosInstance.get('/v1/broadcasts', {
-    params: {
-      field: field,
-    },
-  });
-  if (!response.data.success) throw new Error(response.data.message);
-  return response.data.data;
-};
+export default axiosInstance;
