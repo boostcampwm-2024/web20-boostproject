@@ -23,9 +23,7 @@ function Broadcast() {
   const { roomId, roomError: _re } = useRoom(socket, isConnected);
   const { transportInfo, device, transportError: _te } = useTransport({ socket, roomId, isProducer: true });
 
-
   const { transport, error: mediasoupError } = useProducer({
-
     socket,
     isMediastreamReady,
     mediaStream,
@@ -61,7 +59,11 @@ function Broadcast() {
 
   useEffect(() => {
     window.addEventListener('beforeunload', stopBroadcast);
-  }, [socket]);
+
+    return () => {
+      window.removeEventListener('beforeunload', stopBroadcast);
+    };
+  }, []);
 
   const handleCheckout = () => {
     stopBroadcast();
