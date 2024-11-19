@@ -29,6 +29,7 @@ export const useConsumer = ({
     const { socket, transportInfo, device, roomId } = params;
     if (!socket || !transportInfo || !device || !roomId) return;
     console.log('connectTransport 함수 실행');
+
     try {
       const newTransport = device.createRecvTransport({
         id: transportInfo.transportId,
@@ -83,7 +84,7 @@ export const useConsumer = ({
     const { socket, roomId, transportInfo, transport } = params;
     console.log('createConsumer 함수 실행');
     if (!transport) return;
-
+    console.log(transport);
     try {
       socket.emit(
         'createConsumer',

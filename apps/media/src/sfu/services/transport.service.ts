@@ -48,6 +48,22 @@ export class TransportService {
     return transport;
   }
 
+  async createRecordTransport(room: mediasoup.types.Router) {
+    const transport = await room.createPlainTransport({
+      listenInfo: {
+        protocol: 'udp',
+        ip: '0.0.0.0',
+        announcedAddress: this.configService.get('ANNOUNCED_IP') || '127.0.0.1',
+        portRange: { min: 30000, max: 30100 },
+      },
+    });
+
+    this.setUpTransportListeners(transport, room.id);
+    this.logger.log(`Record Transport created: ${transport.id}`);
+
+    return transport;
+  }
+
   async connectTransport(roomId: string, transportId: string, dtlsParameters: mediasoup.types.DtlsParameters) {
     const transport = this.getTransport(roomId, transportId);
     await transport.connect({ dtlsParameters });
@@ -92,13 +108,13 @@ export class TransportService {
     return roomTransport;
   }
 
-  private setUpTransportListeners(transport: mediasoup.types.WebRtcTransport, roomId: string) {
+  private setUpTransportListeners(transport: mediasoup.types.Transport, roomId: string) {
     transport.on('routerclose', () => {
       this.handleTransportClose(transport, roomId);
     });
   }
 
-  private handleTransportClose(transport: mediasoup.types.WebRtcTransport, roomId: string) {
+  private handleTransportClose(transport: mediasoup.types.Transport, roomId: string) {
     const room = this.roomTransports.get(roomId);
     if (room) {
       room.transports.delete(transport.id);
