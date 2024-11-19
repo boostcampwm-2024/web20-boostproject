@@ -1,6 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
+interface ExceptionData {
+  status: number;
+  message: string;
+}
+
+interface ExceptionResponse {
+  event: string;
+  data: ExceptionData;
+}
+
 export const useSocket = (url: string) => {
   const socketRef = useRef<Socket | null>(null);
   const [socketError, setSocketError] = useState<Error | null>(null);
@@ -19,8 +29,9 @@ export const useSocket = (url: string) => {
       setSocketError(new Error(`Websocket 연결 실패: ${error}`));
     });
 
-    socket.on('exception', error => {
-      console.log(error);
+    socket.on('exception', (error: ExceptionResponse) => {
+      console.error(`socket exception Error: ${error.data.status}`);
+      setSocketError(new Error(error.data.message));
     });
 
     return () => {
