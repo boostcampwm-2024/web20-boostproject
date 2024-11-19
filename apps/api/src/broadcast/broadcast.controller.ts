@@ -1,9 +1,11 @@
-import { Body, Controller, Get, Patch, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { BroadcastService } from './broadcast.service';
 import { SuccessStatus } from '../common/responses/bases/successStatus';
 import { BroadcastListResponseDto } from './dto/broadcast-list-response.dto';
 import { BroadcastInfoResponseDto } from './dto/broadcast-info-response.dto';
 import { UpdateBroadcastTitleDto } from './dto/update-broadcast-title.request.dto';
+import { Broadcast } from './broadcast.entity';
+import { CreateBroadcastDto } from './dto/createBroadcast.dto';
 
 @Controller('v1/broadcasts')
 export class BroadcastController {
@@ -32,5 +34,20 @@ export class BroadcastController {
     await this.broadcastService.updateTitle(null, updateBroadcastTitleDto);
 
     return SuccessStatus.OK(null, '제목 수정이 완료 되었습니다.');
+  }
+
+  @Post()
+  async createBroadcast(@Body() createBroadcastDto: CreateBroadcastDto): Promise<Broadcast> {
+    return this.broadcastService.createBroadcast(createBroadcastDto);
+  }
+
+  @Put(':id/viewers/increment')
+  async incrementViewers(@Param('id') id: string): Promise<void> {
+    return this.broadcastService.incrementViewers(id);
+  }
+
+  @Put(':id/viewers/decrement')
+  async decrementViewers(@Param('id') id: string): Promise<void> {
+    return this.broadcastService.decrementViewers(id);
   }
 }
