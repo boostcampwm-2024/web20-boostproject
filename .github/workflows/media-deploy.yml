@@ -22,6 +22,8 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
       ANNOUNCED_IP: ${{ secrets.ANNOUNCED_IP }}
+      API_SERVER_URL: ${{ secrets.API_SERVER_URL }}
+      HTTP_TIMEOUT: ${{ secrets.HTTP_TIMEOUT }}
 
     steps:
       - name: Checkout code
@@ -51,6 +53,8 @@ jobs:
           --build-arg DB_PASSWORD=$DB_PASSWORD \
           --build-arg DB_NAME=$DB_NAME \
           --build-arg ANNOUNCED_IP=$ANNOUNCED_IP \
+          --build-arg API_SERVER_URL=$API_SERVER_URL \
+          --build-arg HTTP_TIMEOUT=$HTTP_TIMEOUT \
           .         
 
       - name: Push to Ncloud Container Registry
@@ -89,6 +93,8 @@ jobs:
               -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
               -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
               -e DB_NAME=${{ secrets.DB_NAME }} \
+              -e API_SERVER_URL=${{ secrets.API_SERVER_URL }} \
+              -e HTTP_TIMEOUT=${{ secrets.HTTP_TIMEOUT }} \
               ${{ secrets.NCLOUD_REGISTRY_URL }}/media-camon:latest
             sudo docker image prune -f
 

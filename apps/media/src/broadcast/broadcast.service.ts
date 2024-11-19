@@ -1,17 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { Broadcast } from './broadcast.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { MoreThan, Repository } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateBroadcastDto } from './dto/createBroadcast.dto';
+import { IBroadcastService } from './interfaces/broadcast-service.interface';
+import { IApiClient } from 'src/common/clients/api-client.interface';
+import { IBroadcast } from './interfaces/broadcast.interface';
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { Member } from 'src/member/member.entity';
 
 @Injectable()
-export class BroadcastService {
+export class BroadcastService implements IBroadcastService {
   constructor(
-    @InjectRepository(Broadcast)
-    private readonly broadcastRepository: Repository<Broadcast>,
+    @Inject('API_CLIENT')
+    private readonly apiClient: IApiClient,
   ) {}
 
   /**
@@ -19,16 +19,8 @@ export class BroadcastService {
    * @param createBroadcastDto 방송 생성에 필요한 정보
    * @returns 생성된 방송 정보
    */
-  async createBroadcast(createBroadcastDto: CreateBroadcastDto): Promise<Broadcast> {
-    const { id, title } = createBroadcastDto;
-
-    const broadcast = this.broadcastRepository.create({
-      id,
-      title,
-      member: null, // 현재 방송자에 대한 부분은 논의 후 로직 적용
-    });
-
-    return await this.broadcastRepository.save(broadcast);
+  async createBroadcast(createBroadcastDto: CreateBroadcastDto): Promise<IBroadcast> {
+    return this.apiClient.post<IBroadcast>('/v1/broadcasts', createBroadcastDto);
   }
 
   /**
@@ -37,15 +29,7 @@ export class BroadcastService {
    * @returns 업데이트된 방송 정보
    */
   async incrementViewers(broadcastId: string): Promise<void> {
-    const broadcast = await this.broadcastRepository.findOne({
-      where: { id: broadcastId },
-    });
-
-    if (!broadcast) {
-      throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
-    }
-
-    await this.broadcastRepository.update({ id: broadcastId }, { viewers: () => 'viewers + 1' });
+    await this.apiClient.put<void>(`/v1/broadcasts/${broadcastId}/viewers/increment`);
   }
 
   /**
@@ -54,16 +38,30 @@ export class BroadcastService {
    * @returns 업데이트된 방송 정보
    */
   async decrementViewers(broadcastId: string): Promise<void> {
-    const broadcast = await this.broadcastRepository.findOne({
-      where: { id: broadcastId },
-    });
-
-    if (!broadcast) {
-      throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
-    }
-
-    await this.broadcastRepository.update({ id: broadcastId, viewers: MoreThan(0) }, { viewers: () => 'viewers - 1' });
+    await this.apiClient.put<void>(`/v1/broadcasts/${broadcastId}/viewers/decrement`);
   }
+
+  /**
+   * 방송을 삭제합니다.
+   * @param broadcastId 방송 UUID
+   * @throws CustomException 방송을 찾을 수 없는 경우
+   */
+  // async deleteBroadcast(broadcastId: string): Promise<{ startTime: Date; member: Member }> {
+  //   const broadcast = await this.broadcastRepository.findOne({
+  //     where: { id: broadcastId },
+  //   });
+
+  //   if (!broadcast) {
+  //     throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
+  //   }
+
+  //   await this.broadcastRepository.delete({ id: broadcastId });
+
+  //   return {
+  //     startTime: broadcast.startTime,
+  //     member: broadcast.member,
+  //   };
+  // }
 
   /**
    * 방송을 삭제합니다.
