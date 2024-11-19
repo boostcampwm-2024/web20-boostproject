@@ -59,7 +59,6 @@ export class BroadcastService {
     const broadcast = this.broadcastRepository.create({
       id,
       title,
-      startTime: new Date(),
       member: null,
     });
 
@@ -103,30 +102,14 @@ export class BroadcastService {
 
     // attendance 테이블에 출석 기록 저장 기능
     const endTime = new Date();
-    const isValidStartTime = this.isValidStartTime(broadcast.startTime);
-    const isValidEndTime = this.isValidEndTime(endTime);
 
     const attendance = this.attendanceRepository.create({
-      date: new Date(),
-      attended: isValidStartTime && isValidEndTime,
+      attended: Attendance.isAttended(broadcast.startTime, endTime),
       startTime: broadcast.startTime,
       endTime,
       member: broadcast.member,
     });
 
     await this.attendanceRepository.save(attendance);
-  }
-
-  // 9시 30분 ~ 10시 사이 === true
-  private isValidStartTime(startTime: Date): boolean {
-    const hour = startTime.getHours();
-    const minutes = startTime.getMinutes();
-    return (hour === 9 && minutes >= 30) || (hour === 10 && minutes === 0);
-  }
-
-  // 19시 이후 === true
-  private isValidEndTime(endTime: Date): boolean {
-    const hour = endTime.getHours();
-    return hour >= 19;
   }
 }
