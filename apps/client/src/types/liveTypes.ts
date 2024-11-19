@@ -8,7 +8,7 @@ export interface ContactInfo {
 export interface LiveInfo {
   title: string;
   camperId: string;
-  participants: number;
+  viewers: number;
   field: 'WEB' | 'AND' | 'IOS';
   profileImage: string;
   contacts: ContactInfo;
