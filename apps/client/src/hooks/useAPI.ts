@@ -2,7 +2,13 @@ import axiosInstance from '@/services/axios';
 import { AxiosRequestConfig } from 'axios';
 import { useEffect, useState } from 'react';
 
-export const useAPI = (apiInfo: AxiosRequestConfig) => {
+interface APIQueryState<T> {
+  data: T | null;
+  isLoading: boolean;
+  error: Error | null;
+}
+
+export const useAPI = <T>(apiInfo: AxiosRequestConfig): APIQueryState<T> => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [data, setData] = useState(null);
