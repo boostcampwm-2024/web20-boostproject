@@ -154,6 +154,7 @@ export const useConsumer = ({
   }, [socket, isConnected, transportInfo, device, roomId]);
 
   return {
+    transport: transport.current,
     mediastream,
     error,
   };
