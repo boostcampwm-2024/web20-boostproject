@@ -6,7 +6,7 @@ import { RoomService } from './services/room.service';
 import { TransportService } from './services/transport.service';
 import { ProducerService } from './services/producer.service';
 import { ConsumerService } from './services/consumer.service';
-import { BroadcastModule } from 'src/broadcast/broadcast.module';
+import { BroadcastModule } from '../broadcast/broadcast.module';
 
 @Module({
   imports: [BroadcastModule],
