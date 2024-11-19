@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Broadcast } from './broadcast.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
+import { CreateBroadcastDto } from './dto/createBroadcast.dto';
 import { UpdateBroadcastTitleDto } from './dto/update-broadcast-title.request.dto';
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
@@ -48,5 +49,40 @@ export class BroadcastService {
 
     broadcast.title = broadcastTitle;
     await this.broadcastRepository.update(broadcast.id, broadcast);
+  }
+
+  async createBroadcast({ id, title }: CreateBroadcastDto): Promise<Broadcast> {
+    const broadcast = this.broadcastRepository.create({
+      id,
+      title,
+      startTime: new Date(),
+      member: null,
+    });
+
+    return await this.broadcastRepository.save(broadcast);
+  }
+
+  async incrementViewers(broadcastId: string): Promise<void> {
+    const broadcast = await this.broadcastRepository.findOne({
+      where: { id: broadcastId },
+    });
+
+    if (!broadcast) {
+      throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
+    }
+
+    await this.broadcastRepository.update({ id: broadcastId }, { viewers: () => 'viewers + 1' });
+  }
+
+  async decrementViewers(broadcastId: string): Promise<void> {
+    const broadcast = await this.broadcastRepository.findOne({
+      where: { id: broadcastId },
+    });
+
+    if (!broadcast) {
+      throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
+    }
+
+    await this.broadcastRepository.update({ id: broadcastId, viewers: MoreThan(0) }, { viewers: () => 'viewers - 1' });
   }
 }
