@@ -8,6 +8,8 @@ export class ErrorStatus {
 
   static readonly UNAUTHORIZED = new ErrorStatus(400, 'COMMON_4001', '인증되지 않은 요청입니다.');
 
+  static readonly API_SERVER_ERROR = new ErrorStatus(500, 'COMMON_5001', 'API 서비스 로직에서 문제가 발생했습니다.');
+
   // User Errors
   static readonly USER_NOT_FOUND = new ErrorStatus(404, 'MEMBER_4000', '사용자를 찾을 수 없습니다.');
 

@@ -22,7 +22,10 @@ function Broadcast() {
   const { socket, isConnected, socketError: _se } = useSocket(socketUrl);
   const { roomId, roomError: _re } = useRoom(socket, isConnected);
   const { transportInfo, device, transportError: _te } = useTransport({ socket, roomId, isProducer: true });
-  const { transport: _t, error: mediasoupError } = useProducer({
+
+
+  const { transport, error: mediasoupError } = useProducer({
+
     socket,
     isMediastreamReady,
     mediaStream,
@@ -51,6 +54,7 @@ function Broadcast() {
           track.stop();
         });
       }
+      transport?.close();
     },
     [socket, roomId],
   );

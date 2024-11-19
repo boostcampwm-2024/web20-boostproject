@@ -3,6 +3,7 @@ import { useConsumer } from '@/hooks/useConsumer';
 import { useSocket } from '@/hooks/useSocket';
 import { useTransport } from '@/hooks/useTransport';
 import LivePlayer from '@components/LivePlayer';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
@@ -19,13 +20,41 @@ export default function Live() {
     roomId: liveId,
     isProducer: false,
   });
-  const { mediastream: mediaStream, error: _error } = useConsumer({
+  const {
+    transport,
+    mediastream: mediaStream,
+    error: _error,
+  } = useConsumer({
     socket,
     device,
     roomId: liveId,
     transportInfo,
     isConnected,
   });
+
+  const handleLeaveLive = () => {
+    if (socket && liveId && transportInfo) {
+      socket.emit('leaveBroadcast', { transportId: transportInfo.transportId, roomId: liveId });
+    }
+
+    socket?.disconnect();
+    transport?.close();
+  };
+
+  const preventClose = (e: BeforeUnloadEvent) => {
+    e.preventDefault();
+    handleLeaveLive();
+    e.returnValue = '';
+  };
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', preventClose);
+
+    return () => {
+      handleLeaveLive();
+      window.removeEventListener('beforeunload', preventClose);
+    };
+  }, [socket, liveId, transportInfo]);
 
   return (
     <div className="fixed top-[88px] bottom-0 left-0 right-0 overflow-auto flex flex-row w-full gap-10">
