@@ -7,7 +7,15 @@ export const useSocket = (url: string) => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    const socket = io(url);
+    const socket = io(url, {
+      withCredentials: true,
+      secure: true,
+      transports: ['websocket', 'polling'],
+      timeout: 10000,
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+    });
     socketRef.current = socket;
 
     socket.on('connect', () => {
