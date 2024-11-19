@@ -4,7 +4,6 @@ import { WorkerService } from './worker.service';
 import { CustomWsException } from '../../common/responses/exceptions/custom-ws.exception';
 import { ErrorStatus } from '../../common/responses/exceptions/errorStatus';
 import { BroadcastService } from 'src/broadcast/broadcast.service';
-import { AttendanceService } from 'src/attendance/attendance.service';
 
 const DEFAULT_RTP_CAPABILITIES: mediasoup.types.RtpCapabilities = {
   codecs: [
@@ -27,11 +26,7 @@ const DEFAULT_RTP_CAPABILITIES: mediasoup.types.RtpCapabilities = {
 export class RoomService {
   private rooms = new Map<string, mediasoup.types.Router>();
   private readonly logger = new Logger(RoomService.name);
-  constructor(
-    private readonly workerService: WorkerService,
-    private readonly broadcastService: BroadcastService,
-    private readonly attendanceService: AttendanceService,
-  ) {}
+  constructor(private readonly workerService: WorkerService, private readonly broadcastService: BroadcastService) {}
 
   async createRoom() {
     const worker = this.workerService.getWorker();
@@ -52,10 +47,7 @@ export class RoomService {
 
   async deleteRoom(roomId: string) {
     const room = this.getRoom(roomId);
-
-    const { startTime, member } = await this.broadcastService.deleteBroadcast(roomId);
-
-    await this.attendanceService.createAttendanceRecord(member, startTime);
+    await this.broadcastService.deleteBroadcast(roomId);
 
     room.close();
   }

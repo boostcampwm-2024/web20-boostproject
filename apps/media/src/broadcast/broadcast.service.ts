@@ -3,9 +3,6 @@ import { CreateBroadcastDto } from './dto/createBroadcast.dto';
 import { IBroadcastService } from './interfaces/broadcast-service.interface';
 import { IApiClient } from 'src/common/clients/api-client.interface';
 import { IBroadcast } from './interfaces/broadcast.interface';
-import { CustomException } from 'src/common/responses/exceptions/custom.exception';
-import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
-import { Member } from 'src/member/member.entity';
 
 @Injectable()
 export class BroadcastService implements IBroadcastService {
@@ -42,46 +39,11 @@ export class BroadcastService implements IBroadcastService {
   }
 
   /**
-   * 방송을 삭제합니다.
+   * 방송을 삭제하고, 출석부를 작성합니다.
    * @param broadcastId 방송 UUID
    * @throws CustomException 방송을 찾을 수 없는 경우
    */
-  // async deleteBroadcast(broadcastId: string): Promise<{ startTime: Date; member: Member }> {
-  //   const broadcast = await this.broadcastRepository.findOne({
-  //     where: { id: broadcastId },
-  //   });
-
-  //   if (!broadcast) {
-  //     throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
-  //   }
-
-  //   await this.broadcastRepository.delete({ id: broadcastId });
-
-  //   return {
-  //     startTime: broadcast.startTime,
-  //     member: broadcast.member,
-  //   };
-  // }
-
-  /**
-   * 방송을 삭제합니다.
-   * @param broadcastId 방송 UUID
-   * @throws CustomException 방송을 찾을 수 없는 경우
-   */
-  async deleteBroadcast(broadcastId: string): Promise<{ startTime: Date; member: Member }> {
-    const broadcast = await this.broadcastRepository.findOne({
-      where: { id: broadcastId },
-    });
-
-    if (!broadcast) {
-      throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
-    }
-
-    await this.broadcastRepository.delete({ id: broadcastId });
-
-    return {
-      startTime: broadcast.startTime,
-      member: broadcast.member,
-    };
+  async deleteBroadcast(broadcastId: string): Promise<void> {
+    await this.apiClient.delete<void>(`/v1/broadcasts/${broadcastId}`);
   }
 }
