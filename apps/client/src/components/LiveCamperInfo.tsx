@@ -44,9 +44,7 @@ function LiveCamperInfo({ liveId }: { liveId: string | undefined }) {
                     {data.field}
                   </Badge>
                 </div>
-                <span className="text-text-weak text-display-medium12">
-                  {data.participants.toLocaleString()}명 시청 중
-                </span>
+                <span className="text-text-weak text-display-medium12">{data.participants}명 시청 중</span>
               </div>
             </div>
           </div>
