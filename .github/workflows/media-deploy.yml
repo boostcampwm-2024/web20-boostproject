@@ -19,6 +19,7 @@ jobs:
       ANNOUNCED_IP: ${{ secrets.ANNOUNCED_IP }}
       API_SERVER_URL: ${{ secrets.API_SERVER_URL }}
       HTTP_TIMEOUT: ${{ secrets.HTTP_TIMEOUT }}
+      RECORD_SERVER_URL: ${{secrets.RECORD_SERVER_URL}}
 
     steps:
       - name: Checkout code
@@ -85,6 +86,7 @@ jobs:
               -e DB_NAME=${{ secrets.DB_NAME }} \
               -e API_SERVER_URL=${{ secrets.API_SERVER_URL }} \
               -e HTTP_TIMEOUT=${{ secrets.HTTP_TIMEOUT }} \
+              -e RECORD_SERVER_URL=${{secrets.RECORD_SERVER_URL}} \
               ${{ secrets.NCLOUD_REGISTRY_URL }}/media-camon:latest
             sudo docker image prune -f
 
