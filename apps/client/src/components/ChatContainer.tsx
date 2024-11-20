@@ -85,7 +85,7 @@ const ChatContainer = () => {
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden px-6 pb-2">
         <ScrollArea className="h-full w-full pr-4" ref={scrollAreaRef} onScroll={handleScroll}>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {chattings.map((chat, index) => (
               <div key={index}>
                 <span className="font-medium text-display-medium16 text-text-weak">{chat.camperId} </span>
