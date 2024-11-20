@@ -10,6 +10,7 @@ const app = express();
 app.use(express.json());
 
 const dirPath = path.join(__dirname, '../thumbnail');
+console.log(dirPath);
 
 if (!fs.existsSync(dirPath)) {
   fs.mkdirSync(dirPath, { recursive: true });
