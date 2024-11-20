@@ -17,7 +17,7 @@ export class ChatGateway {
 
   //룸생성
   @SubscribeMessage('createRoom')
-  async handleCreateRoom(params: createRoomDto, @ConnectedSocket() client: Socket) {
+  async handleCreateRoom(@MessageBody() params: createRoomDto, @ConnectedSocket() client: Socket) {
     const roomId = this.chatService.createRoom(params, client);
 
     return {
@@ -26,7 +26,7 @@ export class ChatGateway {
   }
   //룸입장
   @SubscribeMessage('joinRoom')
-  async handleJoinRoom(params: joinRoomDto, @ConnectedSocket() client: Socket) {
+  async handleJoinRoom(@MessageBody() params: joinRoomDto, @ConnectedSocket() client: Socket) {
     this.chatService.joinRoom(params, client);
   }
   //룸나가기
@@ -41,7 +41,7 @@ export class ChatGateway {
   }
   //채팅
   @SubscribeMessage('chat')
-  async handleChat(params: chatDto) {
+  async handleChat(@MessageBody() params: chatDto) {
     this.chatService.broadcast(params);
   }
 }
