@@ -29,6 +29,15 @@ export class ApiClient implements IApiClient {
     }
   }
 
+  async delete<T>(path: string, data?: any): Promise<T> {
+    try {
+      const response = await this.httpService.delete<T>(`${this.baseUrl}${path}`, data).toPromise();
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
   // TODO: Error custom 필요
   private handleError(_error: any): Error {
     throw new CustomWsException(ErrorStatus.API_SERVER_ERROR);

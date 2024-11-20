@@ -15,11 +15,8 @@ export class Broadcast {
   @Column({ default: 0 })
   viewers: number;
 
-  @Column()
+  @CreateDateColumn()
   startTime: Date;
-
-  @CreateDateColumn({ name: 'createdAt' })
-  createdAt: Date;
 
   @OneToOne(() => Member)
   @JoinColumn({ name: 'memberId' })

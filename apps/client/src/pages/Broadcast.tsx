@@ -23,9 +23,7 @@ function Broadcast() {
   const { roomId, roomError: _re } = useRoom(socket, isConnected);
   const { transportInfo, device, transportError: _te } = useTransport({ socket, roomId, isProducer: true });
 
-
   const { transport, error: mediasoupError } = useProducer({
-
     socket,
     isMediastreamReady,
     mediaStream,
