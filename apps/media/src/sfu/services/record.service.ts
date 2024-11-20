@@ -43,7 +43,7 @@ export class RecordService {
       .then(({ data }) => data);
 
     await transport.connect({
-      ip: '0.0.0.0',
+      ip: this.configService.get('SERVER_PRIVATE_IP'),
       port,
     });
 
