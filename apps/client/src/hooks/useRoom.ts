@@ -10,6 +10,9 @@ export const useRoom = (socket: Socket | null, isConnected: boolean) => {
       setRoomError(new Error('getRoomId Error: socket이 존재하지 않습니다.'));
       return;
     }
+
+    setRoomError(null);
+
     try {
       const { roomId } = await new Promise<{ roomId: string }>(resolve => {
         socket.emit('createRoom', (response: { roomId: string }) => {

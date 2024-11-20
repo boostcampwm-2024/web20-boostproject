@@ -38,6 +38,8 @@ export const useProducer = ({
       return;
     }
 
+    setError(null);
+
     try {
       const newTransport = device.createSendTransport({
         id: transportInfo.transportId,
@@ -89,6 +91,8 @@ export const useProducer = ({
       setError(dependencyError);
       return;
     }
+
+    setError(null);
 
     try {
       await new Promise<string>(resolve => {
