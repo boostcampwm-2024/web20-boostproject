@@ -55,10 +55,12 @@ export class BroadcastService {
     await this.broadcastRepository.update(broadcast.id, broadcast);
   }
 
-  async createBroadcast({ id, title }: CreateBroadcastDto): Promise<Broadcast> {
+  async createBroadcast({ id, title, thumbnail }: CreateBroadcastDto): Promise<Broadcast> {
     const broadcast = this.broadcastRepository.create({
       id,
       title,
+      thumbnail,
+      startTime: new Date(),
       member: null,
     });
 
