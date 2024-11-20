@@ -65,7 +65,7 @@ jobs:
           port: 22
           script: |
             sudo lsof -i :3001
-            sudo lsof -i :30000-30100
+            sudo lsof -i :30000-31000
             sudo docker login -u ${{secrets.NCLOUD_ACCESS_KEY}} -p ${{ secrets.NCLOUD_SECRET_KEY }} ${{ secrets.NCLOUD_REGISTRY_URL }}
             sudo docker stop media-camon || true
             sudo docker rm media-camon || true
@@ -73,7 +73,7 @@ jobs:
             sudo docker pull ${{ secrets.NCLOUD_REGISTRY_URL }}/media-camon:latest
             sudo docker run -d --name media-camon \
               -p 3001:3001 \
-              -p 30000-30100:30000-30100 \
+              -p 30000-31000:30000-31000 \
               --network=bridge \
               -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
               -e REDIS_PORT=${{ secrets.REDIS_PORT }} \

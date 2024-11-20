@@ -24,13 +24,13 @@ export class TransportService {
           protocol: 'udp',
           ip: '0.0.0.0',
           announcedAddress: this.configService.get('ANNOUNCED_IP') || '127.0.0.1',
-          portRange: { min: 30000, max: 30100 },
+          portRange: { min: 30000, max: 31000 },
         },
         {
           protocol: 'tcp',
           ip: '0.0.0.0',
           announcedAddress: this.configService.get('ANNOUNCED_IP') || '127.0.0.1',
-          portRange: { min: 30000, max: 30100 },
+          portRange: { min: 30000, max: 31000 },
         },
       ],
       enableUdp: true,
@@ -54,7 +54,7 @@ export class TransportService {
     return transportId === this.getProducerTransport(roomId)?.id;
   }
 
-  getTransport(roomId: string, transportId: string): mediasoup.types.WebRtcTransport {
+  getTransport(roomId: string, transportId: string) {
     const room = this.getRoomTransport(roomId);
     const transport = room.transports.get(transportId);
     if (!transport) {
@@ -92,13 +92,13 @@ export class TransportService {
     return roomTransport;
   }
 
-  private setUpTransportListeners(transport: mediasoup.types.WebRtcTransport, roomId: string) {
+  private setUpTransportListeners(transport: mediasoup.types.Transport, roomId: string) {
     transport.on('routerclose', () => {
       this.handleTransportClose(transport, roomId);
     });
   }
 
-  private handleTransportClose(transport: mediasoup.types.WebRtcTransport, roomId: string) {
+  private handleTransportClose(transport: mediasoup.types.Transport, roomId: string) {
     const room = this.roomTransports.get(roomId);
     if (room) {
       room.transports.delete(transport.id);

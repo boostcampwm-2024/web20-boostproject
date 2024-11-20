@@ -10,6 +10,7 @@ import { CreateProducerDto } from './dto/create-producer.dto';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
 import { BroadcastService } from '../broadcast/broadcast.service';
 import { CreateBroadcastDto } from '../broadcast/dto/createBroadcast.dto';
+import { RecordService } from './services/record.service';
 
 @Injectable()
 export class SfuService {
@@ -19,6 +20,7 @@ export class SfuService {
     private readonly producerService: ProducerService,
     private readonly consumerService: ConsumerService,
     private readonly broadcasterService: BroadcastService,
+    private readonly recordService: RecordService,
   ) {}
 
   async createRoom() {
@@ -42,11 +44,13 @@ export class SfuService {
     return this.transportService.connectTransport(roomId, transportId, dtlsParameters);
   }
 
-  createProducer(params: CreateProducerDto) {
+  async createProducer(params: CreateProducerDto) {
     const { roomId, transportId, kind, rtpParameters } = params;
-    this.roomService.getRoom(roomId);
+    const room = this.roomService.getRoom(roomId);
     const transport = this.transportService.getTransport(roomId, transportId);
-    return this.producerService.createProducer(transport, kind, rtpParameters);
+    const producer = await this.producerService.createProducer(transport, kind, rtpParameters);
+    await this.recordService.sendStream(room, producer);
+    return producer;
   }
 
   async createConsumers(params: CreateConsumerDto) {
