@@ -1,8 +1,8 @@
 import { spawn } from 'child_process';
 
-export const createFfmpegProcess = () => {
-  const sdpString = createSdpText();
-  const ffmpegProcess = spawn('ffmpeg', commandArgs());
+export const createFfmpegProcess = (port: number, roomId: string) => {
+  const sdpString = createSdpText(port);
+  const ffmpegProcess = spawn('ffmpeg', commandArgs(roomId));
   ffmpegProcess.stdin.write(sdpString);
   ffmpegProcess.stdin.end();
 
@@ -27,19 +27,20 @@ export const createFfmpegProcess = () => {
   });
 };
 
-const createSdpText = () => {
+const createSdpText = (port: number) => {
   return `v=0
 o=- 0 0 IN IP4 127.0.0.1
 s=FFmpeg
 c=IN IP4 127.0.0.1
 t=0 0
-m=video 5000 RTP/AVP 101 
+m=video ${port} RTP/AVP 101 
 a=rtpmap:101 VP8/90000
 a=sendonly
+a=rtcp-mux
 `;
 };
 
-const commandArgs = () => {
+const commandArgs = (roomId: string) => {
   const commandArgs = [
     '-protocol_whitelist',
     'pipe,udp,rtp', // 허용할 프로토콜 정의
@@ -47,38 +48,11 @@ const commandArgs = () => {
     'sdp', // 입력 포맷
     '-i',
     'pipe:0', // SDP를 파이프로 전달
-    '-c:v',
-    'copy', // 디코딩 없이 비디오 복사
-    'output.webm', // 출력 파일
-    '-frames:v',
-    '1',
-    '-q:v',
-    '2',
     '-vf',
-    'scale=1280:720',
-    'thumbnail.jpg',
+    'fps=1/30,scale=1280:720', // 10초마다 한 프레임을 캡처하고 해상도 조정
+    '-update',
+    '1', // 같은 파일에 덮어쓰기 활성화
+    `thumbnail/${roomId}.jpg`, // 덮어쓸 출력 파일 이름
   ];
   return commandArgs;
 };
-
-// const commandArgs = () => {
-//   const commandArgs = [
-//     '-protocol_whitelist',
-//     'pipe,udp,rtp', // 허용할 프로토콜 정의
-//     '-f',
-//     'sdp', // 입력 포맷
-//     '-i',
-//     'pipe:0', // SDP를 파이프로 전달
-//     '-c:v',
-//     'libx264', // 고품질 H.264 코덱 사용
-//     '-frames:v',
-//     '1', // 1프레임만 출력 (썸네일 생성)
-//     '-q:v',
-//     '1', // 품질 설정 (낮을수록 고품질)
-//     '-vf',
-//     'scale=1280:720', // 해상도 설정
-//     'thumbnail.jpg', // 출력 썸네일 파일
-//     'output.webm', // 출력 비디오 파일
-//   ];
-//   return commandArgs;
-// };

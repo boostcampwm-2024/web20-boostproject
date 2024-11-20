@@ -1,3 +1,4 @@
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { WorkerService } from './services/worker.service';
 import { SfuService } from './sfu.service';
@@ -10,7 +11,7 @@ import { BroadcastModule } from '../broadcast/broadcast.module';
 import { RecordService } from './services/record.service';
 
 @Module({
-  imports: [BroadcastModule],
+  imports: [BroadcastModule, HttpModule],
   providers: [
     WorkerService,
     SfuService,

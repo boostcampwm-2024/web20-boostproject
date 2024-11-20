@@ -1,8 +1,10 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import * as mediasoup from 'mediasoup';
+
 @Injectable()
 export class RecordService {
-  constructor() {}
+  constructor(private readonly httpservice: HttpService) {}
   async sendStream(room: mediasoup.types.Router, producer: mediasoup.types.Producer) {
     if (producer.kind === 'audio') return;
     const transport = await this.createPlainTransport(room);
@@ -29,20 +31,34 @@ export class RecordService {
       await rtpConsumer.requestKeyFrame();
     }, 1000);
 
-    // this.ffmpegService.createFfmpegProcess(rtpConsumer.rtpParameters, 5000);
+    const { port } = await this.httpservice
+      .get('http://localhost:3003/availablePort')
+      .toPromise()
+      .then(({ data }) => data);
 
     await transport.connect({
       ip: '127.0.0.1',
-      port: 5000,
+      port,
     });
+
+    await this.httpservice
+      .post('http://localhost:3003/send', {
+        roomId: room.id,
+        port,
+      })
+      .toPromise();
   }
 
   async createPlainTransport(room: mediasoup.types.Router) {
     // return await room.createPlainTransport(transportConfig.plainRtpTransport);
     return await room.createPlainTransport({
-      listenIp: { ip: '127.0.0.1', announcedIp: '127.0.0.1' }, // Replace 'announcedIp' with public IP if needed
-      rtcpMux: true, // RTP와 RTCP를 같은 포트에서 처리할 경우 true
-      comedia: false, // 외부 클라이언트 연결 방식
+      listenInfo: {
+        protocol: 'udp',
+        ip: '0.0.0.0',
+        announcedAddress: '127.0.0.1',
+        portRange: { min: 20000, max: 20100 },
+      },
+      rtcpMux: true,
     });
   }
 }
