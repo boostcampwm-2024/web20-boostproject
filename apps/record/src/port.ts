@@ -8,12 +8,13 @@ export const getPort = () => {
   while (takenPort.has(port)) {
     port = getRandomPort();
   }
-  takenPort.add(port);
+  takenPort.add(port).add(port + 1);
   return port;
 };
 
 export const releasePort = (port: number) => {
   takenPort.delete(port);
+  takenPort.delete(port + 1);
 };
 
 const getRandomPort = () => {
