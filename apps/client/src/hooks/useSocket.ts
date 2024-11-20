@@ -17,6 +17,7 @@ export const useSocket = (url: string) => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+    if (socketRef.current?.connected) return;
     const socket = io(url, {
       withCredentials: true,
       secure: true,
@@ -31,7 +32,7 @@ export const useSocket = (url: string) => {
     socket.on('connect', () => {
       setIsConnected(true);
       setSocketError(null);
-      console.log('소켓 연결');
+      console.log(`${url === import.meta.env.VITE_MEDIASERVER_URL ? '미디어' : '챗'} 소켓 연결`);
     });
 
     socket.on('connect_error', error => {
@@ -45,6 +46,7 @@ export const useSocket = (url: string) => {
     });
 
     socket.on('exception', (error: ExceptionResponse) => {
+      console.log(`exception Error!!!: ${JSON.stringify(error)}`);
       console.error(`socket exception Error: ${error.data.status}`);
       setSocketError(new Error(error.data.message));
     });
