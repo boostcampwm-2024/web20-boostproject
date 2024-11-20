@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -43,6 +43,16 @@ const sampleChat = [
 const ChatContainer = () => {
   const [chattings, setChattings] = useState<Chat[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = () => {
+    if (scrollAreaRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
+      const isAtBottom = scrollHeight - scrollTop - clientHeight < 20;
+      setShouldAutoScroll(isAtBottom);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -59,13 +69,22 @@ const ChatContainer = () => {
     setChattings(sampleChat);
   }, []);
 
+  useEffect(() => {
+    if (scrollAreaRef.current && shouldAutoScroll) {
+      scrollAreaRef.current.scrollTo({
+        top: scrollAreaRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [chattings]);
+
   return (
     <Card className="h-full flex flex-col border-border-default bg-transparent shadow-none">
       <CardHeader>
         <CardTitle className="font-bold text-text-strong">Chat</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden px-6 pb-2">
-        <ScrollArea className="h-full w-full pr-4">
+        <ScrollArea className="h-full w-full pr-4" ref={scrollAreaRef} onScroll={handleScroll}>
           <div className="space-y-2">
             {chattings.map((chat, index) => (
               <div key={index}>
@@ -88,9 +107,9 @@ const ChatContainer = () => {
                 handleSendChat();
               }
             }}
-            className="flex-1 text-text-default border-none"
+            className="flex-1 text-text-default border-none focus-visible:outline-none focus-visible:ring-0"
           />
-          <button className="ml-2 p-2 rounded-full text-text-default" onClick={handleSendChat}>
+          <button className="ml-2 p-2 rounded-full text-text-default">
             <SmileIcon />
           </button>
         </div>
