@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 export const useMediaStream = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
-  // const [mediaStream, setIsMediastream] = useState<MediaStream | null>(null);
   const [mediaStreamError, setMediaStreamError] = useState<Error | null>(null);
   const [isMediastreamReady, setIsMediastreamReady] = useState(false);
 

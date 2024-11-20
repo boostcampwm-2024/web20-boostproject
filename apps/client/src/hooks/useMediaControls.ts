@@ -30,7 +30,6 @@ export const useMediaControls = (mediaStream: MediaStream | null): MediaControls
 
   const toggleVideo = () => {
     if (!mediaStream) return;
-    console.log('toggleVIdeo');
     const videoTrack = mediaStream.getVideoTracks()[0];
     if (videoTrack) {
       videoTrack.enabled = !videoTrack.enabled;
@@ -40,7 +39,6 @@ export const useMediaControls = (mediaStream: MediaStream | null): MediaControls
 
   const toggleAudio = () => {
     if (!mediaStream) return;
-    console.log('toggleAudio');
     const audioTrack = mediaStream.getAudioTracks()[0];
     if (audioTrack) {
       audioTrack.enabled = !audioTrack.enabled;

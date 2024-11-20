@@ -21,9 +21,9 @@ export const useSocket = (url: string) => {
       withCredentials: true,
       secure: true,
       transports: ['websocket', 'polling'],
-      timeout: 10000,
-      reconnection: true,
-      reconnectionAttempts: 5,
+      timeout: 10000, // 10초 동안 응답 못 받으면 연결 끊음
+      reconnection: true, // 재연결 시도 활성화
+      reconnectionAttempts: 5, // 최대 재연결 시도 횟수
       reconnectionDelay: 1000,
     });
     socketRef.current = socket;
