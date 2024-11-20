@@ -1,3 +1,4 @@
+import ChatContainer from '@/components/ChatContainer';
 import LiveCamperInfo from '@/components/LiveCamperInfo';
 import { useConsumer } from '@/hooks/useConsumer';
 import { useSocket } from '@/hooks/useSocket';
@@ -57,14 +58,16 @@ export default function Live() {
   }, [socket, liveId, transportInfo]);
 
   return (
-    <div className="fixed top-[88px] bottom-0 left-0 right-0 overflow-auto flex flex-row w-full gap-10">
+    <div className="fixed top-[88px] bottom-0 left-0 right-0 overflow-auto flex flex-row w-full gap-5">
       <div className="flex flex-col basis-3/4 gap-4 w-7/12 h-full ml-8">
         <LivePlayer mediaStream={mediaStream} />
         <div className="flex-grow">
           <LiveCamperInfo />
         </div>
       </div>
-      <div className="bg-surface-alt basis-1/4">채팅</div>
+      <div className="basis-1/4 pr-5">
+        <ChatContainer />
+      </div>
     </div>
   );
 }
