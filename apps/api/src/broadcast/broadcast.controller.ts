@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { BroadcastService } from './broadcast.service';
 import { SuccessStatus } from '../common/responses/bases/successStatus';
 import { BroadcastListResponseDto } from './dto/broadcast-list-response.dto';
@@ -69,5 +69,10 @@ export class BroadcastController {
   @Put(':id/viewers/decrement')
   async decrementViewers(@Param('id') id: string): Promise<void> {
     return this.broadcastService.decrementViewers(id);
+  }
+
+  @Delete('/:broadcastId')
+  async deleteBroadcast(@Param('broadcastId') broadcastId: string): Promise<void> {
+    return await this.broadcastService.deleteBroadcast(broadcastId);
   }
 }
