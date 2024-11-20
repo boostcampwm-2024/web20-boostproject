@@ -60,6 +60,8 @@ export default function Live() {
         <div className="flex w-full h-full justify-center items-center">
           <ErrorCharacter size={400} message="방송 연결 중 에러가 발생했습니다. 관리자에게 문의하세요" />
         </div>
+      ) : !liveId ? (
+        <ErrorCharacter size={400} message="방 정보가 없습니다." />
       ) : (
         <>
           <div className="flex flex-col basis-3/4 gap-4 w-7/12 h-full ml-8">
