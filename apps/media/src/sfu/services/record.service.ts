@@ -1,10 +1,15 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as mediasoup from 'mediasoup';
 
 @Injectable()
 export class RecordService {
-  constructor(private readonly httpservice: HttpService) {}
+  private readonly recordServerUrl: string;
+
+  constructor(private readonly httpservice: HttpService, private readonly configService: ConfigService) {
+    this.recordServerUrl = this.configService.get('RECORD_SERVER_URL');
+  }
 
   async sendStream(room: mediasoup.types.Router, producer: mediasoup.types.Producer) {
     if (producer.kind === 'audio') return;
@@ -33,17 +38,17 @@ export class RecordService {
     }, 1000);
 
     const { port } = await this.httpservice
-      .get('http://localhost:3003/availablePort')
+      .get(`${this.recordServerUrl}/availablePort`)
       .toPromise()
       .then(({ data }) => data);
 
     await transport.connect({
-      ip: '127.0.0.1',
+      ip: '0.0.0.0',
       port,
     });
 
     await this.httpservice
-      .post('http://localhost:3003/send', {
+      .post(`${this.recordServerUrl}/send`, {
         roomId: room.id,
         port,
       })
@@ -55,7 +60,7 @@ export class RecordService {
       listenInfo: {
         protocol: 'udp',
         ip: '0.0.0.0',
-        announcedAddress: '127.0.0.1',
+        announcedAddress: this.configService.get('ANNOUNCED_IP') || '127.0.0.1',
         portRange: { min: 30000, max: 31000 },
       },
       rtcpMux: true,
