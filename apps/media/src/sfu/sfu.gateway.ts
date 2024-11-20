@@ -1,6 +1,6 @@
 import { SfuService } from './sfu.service';
-import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
 import { ConnectTransportDto } from './dto/transport-params.interface';
 import { CreateProducerDto } from './dto/create-producer.dto';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
@@ -17,8 +17,9 @@ export class SfuGateway {
   constructor(private readonly sfuService: SfuService) {}
 
   @SubscribeMessage('createRoom')
-  async handleCreateRoom() {
-    const room = await this.sfuService.createRoom();
+  async handleCreateRoom(client: Socket) {
+    console.log(client.id);
+    const room = await this.sfuService.createRoom(client.id);
     return { roomId: room.id };
   }
 
@@ -61,8 +62,8 @@ export class SfuGateway {
   }
 
   @SubscribeMessage('createConsumer')
-  async handleCreateConsumer(@MessageBody() params: CreateConsumerDto) {
-    const consumers = await this.sfuService.createConsumers(params);
+  async handleCreateConsumer(@MessageBody() params: CreateConsumerDto, @ConnectedSocket() client: Socket) {
+    const consumers = await this.sfuService.createConsumers(params, client.id);
     return {
       consumers,
     };
@@ -93,5 +94,9 @@ export class SfuGateway {
     } catch (error) {
       return error;
     }
+  }
+
+  async handleDisconnect(client: Socket) {
+    await this.sfuService.disconnectClient(client.id);
   }
 }
