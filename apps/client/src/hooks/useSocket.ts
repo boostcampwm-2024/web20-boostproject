@@ -21,20 +21,27 @@ export const useSocket = (url: string) => {
       withCredentials: true,
       secure: true,
       transports: ['websocket', 'polling'],
-      timeout: 10000,
-      reconnection: true,
-      reconnectionAttempts: 5,
+      timeout: 10000, // 10초 동안 응답 못 받으면 연결 끊음
+      reconnection: true, // 재연결 시도 활성화
+      reconnectionAttempts: 5, // 최대 재연결 시도 횟수
       reconnectionDelay: 1000,
     });
     socketRef.current = socket;
 
     socket.on('connect', () => {
       setIsConnected(true);
+      setSocketError(null);
       console.log('소켓 연결');
     });
 
     socket.on('connect_error', error => {
+      setIsConnected(false);
       setSocketError(new Error(`Websocket 연결 실패: ${error}`));
+    });
+
+    socket.on('disconnect', reason => {
+      setIsConnected(false);
+      setSocketError(new Error(`소켓 연결이 끊어졌습니다: ${reason}`));
     });
 
     socket.on('exception', (error: ExceptionResponse) => {

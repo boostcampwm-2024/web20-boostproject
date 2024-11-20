@@ -48,7 +48,9 @@ export const useConsumer = ({ socket, device, roomId, transportInfo, isConnected
       setError(dependencyError);
       return;
     }
-    console.log('connectTransport 함수 실행');
+
+    setError(null);
+
     try {
       const newTransport = device.createRecvTransport({
         id: transportInfo.transportId,
@@ -101,6 +103,8 @@ export const useConsumer = ({ socket, device, roomId, transportInfo, isConnected
       setError(dependencyError);
       return;
     }
+
+    setError(null);
 
     try {
       socket.emit(
