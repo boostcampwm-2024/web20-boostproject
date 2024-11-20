@@ -1,8 +1,15 @@
+export interface ContactInfo {
+  github: string;
+  linkedin: string;
+  email: string;
+  blog: string;
+}
+
 export interface LiveInfo {
-  broadcastId: string;
-  broadcastTitle: string;
-  thumbnail: string;
+  title: string;
   camperId: string;
-  profileImage: string;
+  viewers: number;
   field: 'WEB' | 'AND' | 'IOS';
+  profileImage: string;
+  contacts: ContactInfo;
 }

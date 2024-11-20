@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Button } from './ui/button';
+import axiosInstance from '@/services/axios';
 
 interface Inputs {
   title: string;
@@ -17,6 +18,7 @@ function BroadcastTitle({ currentTitle, onTitleChange }: BroadcastTitleProps) {
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
+
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEditTitle = () => {
@@ -24,7 +26,14 @@ function BroadcastTitle({ currentTitle, onTitleChange }: BroadcastTitleProps) {
   };
 
   const onSubmit: SubmitHandler<Inputs> = data => {
-    onTitleChange(data.title);
+    // TODO: 요청 헤더에 Authorization 설정
+    axiosInstance.patch('/v1/broadcasts/title', { title: data.title }).then(response => {
+      if (!response.data.success) {
+        alert('제목 변경에 실패했습니다!');
+      } else {
+        onTitleChange(data.title);
+      }
+    });
     setIsEditing(false);
   };
 

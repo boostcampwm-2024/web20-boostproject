@@ -37,4 +37,13 @@ export class BroadcastService implements IBroadcastService {
   async decrementViewers(broadcastId: string): Promise<void> {
     await this.apiClient.put<void>(`/v1/broadcasts/${broadcastId}/viewers/decrement`);
   }
+
+  /**
+   * 방송을 삭제하고, 출석부를 작성합니다.
+   * @param broadcastId 방송 UUID
+   * @throws CustomException 방송을 찾을 수 없는 경우
+   */
+  async deleteBroadcast(broadcastId: string): Promise<void> {
+    await this.apiClient.delete<void>(`/v1/broadcasts/${broadcastId}`);
+  }
 }
