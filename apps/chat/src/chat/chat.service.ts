@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
 import { Socket } from 'socket.io';
 import { CustomWsException } from 'src/common/responses/exceptions/custom-ws.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
@@ -18,9 +17,8 @@ export class ChatService {
   rooms = new Map<string, IRoom>();
 
   createRoom(params: createRoomDto, client: Socket) {
-    const { name, camperId } = params;
+    const { name, camperId, roomId } = params;
 
-    const roomId = randomUUID();
     const newClient = new Client(name, camperId, client);
 
     const room = {
