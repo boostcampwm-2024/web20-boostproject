@@ -26,14 +26,15 @@ jobs:
       # 의존성 설치
       - name: Install dependencies
         working-directory: apps/client
-        run:
-          pnpm install --no-frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       # 빌드 실행
       - name: Build front-end
         working-directory: apps/client
         run: |
           echo "VITE_MEDIASERVER_URL=${{ secrets.VITE_MEDIASERVER_URL }}" >> .env
+          echo "VITE_API_SERVER_URL=${{ secrets.VITE_API_SERVER_URL }}" >> .env
+          echo "VITE_CHAT_SERVER_URL=${{ secrets.VITE_CHAT_SERVER_URL }}" >> .env
           pnpm build
 
       - name: Verify build output
@@ -58,5 +59,3 @@ jobs:
             sudo chown -R www-data:www-data /var/www/myapp
             sudo cp -r /home/ubuntu/myapp/. /var/www/myapp
             sudo rm -rf /home/ubuntu/myapp
-          
-      
