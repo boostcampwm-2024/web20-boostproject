@@ -89,40 +89,4 @@ export class SfuService {
     }
     return true;
   }
-
-  // private async sendStream(room: mediasoup.types.Router, producer: mediasoup.types.Producer) {
-  //   console.log('sendStream 함수 실행');
-  //   const transport = await this.transportService.createRecordTransport(room);
-  //   const consumers = await this.consumerService.createConsumers(transport, [producer], room.rtpCapabilities);
-  //   await this.createSdpFile(producer);
-  //   console.log(consumers);
-  //   transport.connect({ ip: '127.0.0.1', port: 5000 });
-  // }
-  //
-  // private async createSdpFile(producer: mediasoup.types.Producer) {
-  //   const { kind, rtpParameters } = producer;
-  //   if (kind === 'audio') return;
-  //   const videoCodec = rtpParameters.codecs.find(codec => codec.mimeType.toLowerCase().startsWith('video'));
-  //   if (!videoCodec) {
-  //     throw new Error('No video codec found in producer');
-  //   }
-  //
-  //   const sdpContent = `
-  // v=0
-  // o=- 0 0 IN IP4 127.0.0.1
-  // s=Mediasoup Stream
-  // c=IN IP4 127.0.0.1
-  // t=0 0
-  // m=${kind} 5000 RTP/AVP ${videoCodec.payloadType}
-  // a=rtpmap:${videoCodec.payloadType} ${videoCodec.mimeType.split('/')[1]}/${videoCodec.clockRate}
-  // a=fmtp:${videoCodec.payloadType} ${Object.entries(videoCodec.parameters || {})
-  //     .map(([key, value]) => `${key}=${value}`)
-  //     .join(';')}
-  // a=sendonly
-  // `.trim();
-  //   const outputFilePath = path.join(__dirname, 'stream.sdp');
-  //   // Save SDP content to file
-  //   fs.writeFileSync(outputFilePath, sdpContent, 'utf8');
-  //   console.log(`SDP file created at ${outputFilePath}`);
-  // }
 }

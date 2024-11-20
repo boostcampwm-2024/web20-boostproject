@@ -5,6 +5,7 @@ import * as mediasoup from 'mediasoup';
 @Injectable()
 export class RecordService {
   constructor(private readonly httpservice: HttpService) {}
+
   async sendStream(room: mediasoup.types.Router, producer: mediasoup.types.Producer) {
     if (producer.kind === 'audio') return;
     const transport = await this.createPlainTransport(room);
@@ -50,13 +51,12 @@ export class RecordService {
   }
 
   async createPlainTransport(room: mediasoup.types.Router) {
-    // return await room.createPlainTransport(transportConfig.plainRtpTransport);
     return await room.createPlainTransport({
       listenInfo: {
         protocol: 'udp',
         ip: '0.0.0.0',
         announcedAddress: '127.0.0.1',
-        portRange: { min: 20000, max: 20100 },
+        portRange: { min: 30000, max: 31000 },
       },
       rtcpMux: true,
     });

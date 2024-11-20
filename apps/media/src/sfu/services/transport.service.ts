@@ -24,13 +24,13 @@ export class TransportService {
           protocol: 'udp',
           ip: '0.0.0.0',
           announcedAddress: this.configService.get('ANNOUNCED_IP') || '127.0.0.1',
-          portRange: { min: 30000, max: 30100 },
+          portRange: { min: 30000, max: 31000 },
         },
         {
           protocol: 'tcp',
           ip: '0.0.0.0',
           announcedAddress: this.configService.get('ANNOUNCED_IP') || '127.0.0.1',
-          portRange: { min: 30000, max: 30100 },
+          portRange: { min: 30000, max: 31000 },
         },
       ],
       enableUdp: true,
@@ -48,29 +48,13 @@ export class TransportService {
     return transport;
   }
 
-  async createRecordTransport(room: mediasoup.types.Router) {
-    const transport = await room.createPlainTransport({
-      listenInfo: {
-        protocol: 'udp',
-        ip: '0.0.0.0',
-        announcedAddress: this.configService.get('ANNOUNCED_IP') || '127.0.0.1',
-        portRange: { min: 30000, max: 30100 },
-      },
-    });
-
-    this.setUpTransportListeners(transport, room.id);
-    this.logger.log(`Record Transport created: ${transport.id}`);
-
-    return transport;
-  }
-
   async connectTransport(roomId: string, transportId: string, dtlsParameters: mediasoup.types.DtlsParameters) {
     const transport = this.getTransport(roomId, transportId);
     await transport.connect({ dtlsParameters });
     return transportId === this.getProducerTransport(roomId)?.id;
   }
 
-  getTransport(roomId: string, transportId: string): mediasoup.types.WebRtcTransport {
+  getTransport(roomId: string, transportId: string) {
     const room = this.getRoomTransport(roomId);
     const transport = room.transports.get(transportId);
     if (!transport) {

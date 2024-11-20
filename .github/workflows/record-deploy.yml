@@ -52,7 +52,7 @@ jobs:
             sudo docker rm record-camon || true
             sudo docker rmi ${{ secrets.NCLOUD_REGISTRY_URL }}/record-camon:latest || true
             sudo docker pull ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest
-            sudo docker run -d --name record-camon -p 3003:3003 ${{ secrets.NCLOUD_REGISTRY_URL }}/record-camon:latest
+            sudo docker run -d --name record-camon -p 3003:3003 -p 10000:10300 ${{ secrets.NCLOUD_REGISTRY_URL }}/record-camon:latest
             sudo docker image prune -f
 
       - name: Check container status
