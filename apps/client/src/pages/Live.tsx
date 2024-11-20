@@ -1,3 +1,4 @@
+import ChatContainer from '@/components/ChatContainer';
 import ErrorCharacter from '@/components/common/ErrorCharacter';
 import LiveCamperInfo from '@/components/LiveCamperInfo';
 import { useConsumer } from '@/hooks/useConsumer';
@@ -67,7 +68,9 @@ export default function Live() {
               <LiveCamperInfo liveId={liveId} />
             </div>
           </div>
-          <div className="bg-surface-alt basis-1/4">채팅</div>
+          <div className="basis-1/4 pr-5">
+            <ChatContainer />
+          </div>
         </>
       )}
     </div>
