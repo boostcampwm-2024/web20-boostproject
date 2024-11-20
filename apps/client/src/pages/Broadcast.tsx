@@ -61,7 +61,11 @@ function Broadcast() {
 
   useEffect(() => {
     window.addEventListener('beforeunload', stopBroadcast);
-  }, [socket]);
+
+    return () => {
+      window.removeEventListener('beforeunload', stopBroadcast);
+    };
+  }, []);
 
   const handleCheckout = () => {
     stopBroadcast();

@@ -2,14 +2,21 @@ import { useEffect, useRef, useState } from 'react';
 import { Transport, Device } from 'mediasoup-client/lib/types';
 import { ConnectTransportResponse, TransportInfo } from '../types/mediasoupTypes';
 import { Socket } from 'socket.io-client';
+import { checkDependencies } from '@/lib/utils';
 
-interface useProducerProps {
+interface UseProducerProps {
   socket: Socket | null;
   mediaStream: MediaStream | null;
   isMediastreamReady: boolean;
   roomId: string;
   device: Device | null;
   transportInfo: TransportInfo | null;
+}
+
+interface UseProducerReturn {
+  transport: Transport | null;
+  error: Error | null;
+  producerId: string;
 }
 
 export const useProducer = ({
@@ -19,47 +26,70 @@ export const useProducer = ({
   roomId,
   device,
   transportInfo,
-}: useProducerProps) => {
+}: UseProducerProps): UseProducerReturn => {
   const transport = useRef<Transport | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [producerId, setProducerId] = useState<string>('');
 
   const createTransport = async (socket: Socket, device: Device, roomId: string, transportInfo: TransportInfo) => {
-    if (!socket || !device || !roomId || !transportInfo) return;
+    if (!socket || !device || !roomId || !transportInfo) {
+      const dependencyError = checkDependencies('createTransport', { socket, device, roomId, transportInfo });
+      setError(dependencyError);
+      return;
+    }
 
-    const newTransport = device.createSendTransport({
-      id: transportInfo.transportId,
-      iceParameters: transportInfo.iceParameters,
-      iceCandidates: transportInfo.iceCandidates,
-      dtlsParameters: transportInfo.dtlsParameters,
-    });
+    try {
+      const newTransport = device.createSendTransport({
+        id: transportInfo.transportId,
+        iceParameters: transportInfo.iceParameters,
+        iceCandidates: transportInfo.iceCandidates,
+        dtlsParameters: transportInfo.dtlsParameters,
+      });
 
-    transport.current = newTransport;
+      transport.current = newTransport;
 
-    transport.current.on('connect', async (parameters, callback) => {
-      await new Promise((resolve, reject) =>
-        socket.emit(
-          'connectTransport',
-          {
-            roomId: roomId,
-            dtlsParameters: parameters.dtlsParameters,
-            transportId: transportInfo.transportId,
-          },
-          (response: ConnectTransportResponse) => {
-            if (response.connected) {
-              callback();
-              resolve(true);
-            } else {
-              reject(new Error('Transport connection failed'));
-            }
-          },
-        ),
-      );
-    });
+      transport.current.on('connect', async (parameters, callback) => {
+        try {
+          await new Promise<void>((resolve, reject) =>
+            socket.emit(
+              'connectTransport',
+              {
+                roomId,
+                dtlsParameters: parameters.dtlsParameters,
+                transportId: transportInfo.transportId,
+              },
+              (response: ConnectTransportResponse) => {
+                if (response.connected) {
+                  callback();
+                  resolve();
+                } else {
+                  reject(new Error('Transport connection failed'));
+                }
+              },
+            ),
+          );
+        } catch (err) {
+          setError(err instanceof Error ? err : new Error('Transport connection failed'));
+          throw err;
+        }
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Transport creation failed'));
+      throw err;
+    }
   };
 
   const createProducer = async (socket: Socket, transportInfo: TransportInfo) => {
-    if (!transport.current || !socket) return;
+    if (!transport.current || !socket || !mediaStream) {
+      const dependencyError = checkDependencies('createProducer', {
+        socket,
+        mediaStream,
+        transport: transport.current,
+      });
+      setError(dependencyError);
+      return;
+    }
+
     try {
       await new Promise<string>(resolve => {
         transport.current!.on('produce', async (parameters, callback) => {
@@ -82,8 +112,9 @@ export const useProducer = ({
         transport.current!.produce({ track: mediaStream?.getVideoTracks()[0] });
         transport.current!.produce({ track: mediaStream?.getAudioTracks()[0] });
       });
-    } catch (error) {
-      setError(error instanceof Error ? error : new Error('producer 생성 에러'));
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('Producer creation failed'));
+      throw err;
     }
   };
 
@@ -94,13 +125,15 @@ export const useProducer = ({
 
     createTransport(socket, device, roomId, transportInfo)
       .then(() => createProducer(socket, transportInfo))
-      .catch(error => setError(error instanceof Error ? error : new Error('useProducer 에러')));
+      .catch(err => setError(err instanceof Error ? err : new Error('Producer initialization failed')));
+
     return () => {
       if (transport.current) {
         transport.current.close();
+        transport.current = null;
       }
     };
-  }, [socket, isMediastreamReady, device, roomId, mediaStream, transportInfo]);
+  }, [socket, device, roomId, transportInfo, isMediastreamReady]);
 
   return {
     transport: transport.current,
