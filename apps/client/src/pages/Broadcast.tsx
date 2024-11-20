@@ -1,4 +1,5 @@
 import BroadcastTitle from '@/components/BroadcastTitle';
+import ErrorCharacter from '@/components/common/ErrorCharacter';
 import { useMediaControls } from '@/hooks/useMediaControls';
 import { useMediaStream } from '@/hooks/useMediaStream';
 import { useProducer } from '@/hooks/useProducer';
@@ -19,13 +20,12 @@ const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
 function Broadcast() {
   const { mediaStream, mediaStreamError, isMediastreamReady, videoRef } = useMediaStream();
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
-  const { socket, isConnected, socketError: _se } = useSocket(socketUrl);
-  const { roomId, roomError: _re } = useRoom(socket, isConnected);
-  const { transportInfo, device, transportError: _te } = useTransport({ socket, roomId, isProducer: true });
 
+  const { socket, isConnected, socketError } = useSocket(socketUrl);
+  const { roomId, roomError } = useRoom(socket, isConnected);
+  const { transportInfo, device, transportError } = useTransport({ socket, roomId, isProducer: true });
 
   const { transport, error: mediasoupError } = useProducer({
-
     socket,
     isMediastreamReady,
     mediaStream,
@@ -61,7 +61,11 @@ function Broadcast() {
 
   useEffect(() => {
     window.addEventListener('beforeunload', stopBroadcast);
-  }, [socket]);
+
+    return () => {
+      window.removeEventListener('beforeunload', stopBroadcast);
+    };
+  }, []);
 
   const handleCheckout = () => {
     stopBroadcast();
@@ -71,6 +75,14 @@ function Broadcast() {
   const handleBroadcastTitle = (newTitle: string) => {
     setTitle(newTitle);
   };
+
+  if (socketError || roomError || transportError) {
+    return (
+      <div className="flex h-screen justify-center items-center">
+        <ErrorCharacter size={300} message="방송 연결 중 에러가 발생했습니다. 관리자에게 문의하세요." />
+      </div>
+    );
+  }
 
   return (
     <>

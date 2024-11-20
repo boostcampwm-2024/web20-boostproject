@@ -1,33 +1,53 @@
 import { useEffect, useRef, useState } from 'react';
-import { Transport, Device } from 'mediasoup-client/lib/types';
-import { ConnectTransportResponse, TransportInfo, CreateConsumerResponse } from '../types/mediasoupTypes';
+import { Transport, Device, MediaKind } from 'mediasoup-client/lib/types';
+import { ConnectTransportResponse, TransportInfo } from '../types/mediasoupTypes';
 import { Socket } from 'socket.io-client';
+import { checkDependencies } from '@/lib/utils';
 
-export const useConsumer = ({
-  socket,
-  device,
-  roomId,
-  transportInfo,
-  isConnected,
-}: {
+interface UseConsumerProps {
   socket: Socket | null;
   device: Device | null;
   roomId: string | undefined;
   transportInfo: TransportInfo | null;
   isConnected: boolean;
-}) => {
+}
+
+interface ConnectTransportParams {
+  socket: Socket;
+  transportInfo: TransportInfo;
+  device: Device;
+  roomId: string | undefined;
+}
+
+interface CreateConsumerParams {
+  socket: Socket;
+  roomId: string;
+  transportInfo: TransportInfo;
+  transport: Transport | null;
+}
+
+export interface CreateConsumer {
+  consumerId: string;
+  producerId: string;
+  kind: MediaKind;
+  rtpParameters: any;
+}
+
+export interface CreateConsumerResponse {
+  consumers: CreateConsumer[];
+}
+
+export const useConsumer = ({ socket, device, roomId, transportInfo, isConnected }: UseConsumerProps) => {
   const transport = useRef<Transport | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [mediastream, setMediastream] = useState<MediaStream | null>(null);
 
-  const connectTransport = async (params: {
-    socket: Socket;
-    transportInfo: TransportInfo;
-    device: Device;
-    roomId: string | undefined;
-  }) => {
-    const { socket, transportInfo, device, roomId } = params;
-    if (!socket || !transportInfo || !device || !roomId) return;
+  const connectTransport = async ({ socket, transportInfo, device, roomId }: ConnectTransportParams) => {
+    if (!socket || !transportInfo || !device || !roomId) {
+      const dependencyError = checkDependencies('connectTransport', { socket, transportInfo, device, roomId });
+      setError(dependencyError);
+      return;
+    }
     console.log('connectTransport 함수 실행');
     try {
       const newTransport = device.createRecvTransport({
@@ -74,15 +94,13 @@ export const useConsumer = ({
     }
   };
 
-  const createConsumer = async (params: {
-    socket: Socket;
-    roomId: string;
-    transportInfo: TransportInfo;
-    transport: Transport | null;
-  }) => {
-    const { socket, roomId, transportInfo, transport } = params;
+  const createConsumer = async ({ socket, roomId, transportInfo, transport }: CreateConsumerParams) => {
     console.log('createConsumer 함수 실행');
-    if (!transport) return;
+    if (!transport || !socket) {
+      const dependencyError = checkDependencies('createConsumer', { socket, transport });
+      setError(dependencyError);
+      return;
+    }
 
     try {
       socket.emit(
@@ -136,13 +154,16 @@ export const useConsumer = ({
       transportInfo,
       device,
       roomId,
-    });
-    createConsumer({
-      socket,
-      roomId,
-      transportInfo,
-      transport: transport.current,
-    });
+    })
+      .then(() =>
+        createConsumer({
+          socket,
+          roomId,
+          transportInfo,
+          transport: transport.current,
+        }),
+      )
+      .catch(err => setError(err instanceof Error ? err : new Error('Consumer initialization failed')));
 
     return () => {
       if (transport.current) {
