@@ -20,6 +20,7 @@ const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
 function Broadcast() {
   const { mediaStream, mediaStreamError, isMediastreamReady, videoRef } = useMediaStream();
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
+
   const { socket, isConnected, socketError } = useSocket(socketUrl);
   const { roomId, roomError } = useRoom(socket, isConnected);
   const { transportInfo, device, transportError } = useTransport({ socket, roomId, isProducer: true });
