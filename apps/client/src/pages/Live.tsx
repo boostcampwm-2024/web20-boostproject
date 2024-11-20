@@ -64,7 +64,7 @@ export default function Live() {
           <div className="flex flex-col basis-3/4 gap-4 w-7/12 h-full ml-8">
             <LivePlayer mediaStream={mediaStream} />
             <div className="flex-grow">
-              <LiveCamperInfo />
+              <LiveCamperInfo liveId={liveId} />
             </div>
           </div>
           <div className="bg-surface-alt basis-1/4">채팅</div>
