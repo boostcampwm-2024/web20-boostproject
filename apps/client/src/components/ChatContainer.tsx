@@ -112,8 +112,8 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
         </div>
       ) : (
         <>
-          <CardContent ref={scrollAreaRef} className="flex flex-1 px-6 pb-2 justify-end overflow-y-auto">
-            <div className="w-full pr-4 flex flex-col space-y-3 ">
+          <CardContent ref={scrollAreaRef} className="flex flex-1 px-6 pb-2 overflow-y-auto flex-col-reverse">
+            <div className="w-full flex flex-col space-y-1">
               {chattings.map((chat, index) => (
                 <div key={index}>
                   <span className="font-medium text-display-medium16 text-text-weak">{chat.camperId} </span>
