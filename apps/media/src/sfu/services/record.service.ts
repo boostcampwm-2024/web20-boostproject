@@ -34,7 +34,7 @@ export class RecordService {
       .then(({ data }) => data);
 
     await recordTransport.connect({
-      ip: '127.0.0.1',
+      ip: this.configService.get('SERVER_PRIVATE_IP'),
       port,
     });
 
@@ -54,7 +54,7 @@ export class RecordService {
       listenInfo: {
         protocol: 'udp',
         ip: '0.0.0.0',
-        announcedAddress: '127.0.0.1',
+        announcedAddress: this.configService.get('ANNOUNCED_IP') || '127.0.0.1',
         portRange: { min: 30000, max: 31000 },
       },
       rtcpMux: true,

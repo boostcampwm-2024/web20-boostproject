@@ -1,10 +1,14 @@
 FROM node:22-alpine AS base
 
+RUN apk add --no-cache ffmpeg
+
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 WORKDIR /app
+
+RUN mkdir -p /app/thumbnail && chmod 777 /app/thumbnail
 
 # Environment variables
 ARG RECORD_PORT

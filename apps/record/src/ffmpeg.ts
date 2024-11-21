@@ -1,8 +1,8 @@
 import { spawn } from 'child_process';
 
-export const createFfmpegProcess = (port: number, roomId: string) => {
+export const createFfmpegProcess = (port: number, dirPath: string, roomId: string) => {
   const sdpString = createSdpText(port);
-  const ffmpegProcess = spawn('ffmpeg', commandArgs(roomId));
+  const ffmpegProcess = spawn('ffmpeg', commandArgs(dirPath, roomId));
   ffmpegProcess.stdin.write(sdpString);
   ffmpegProcess.stdin.end();
 
@@ -40,7 +40,7 @@ a=rtcp-mux
 `;
 };
 
-const commandArgs = (roomId: string) => {
+const commandArgs = (dirPath: string, roomId: string) => {
   const commandArgs = [
     '-protocol_whitelist',
     'pipe,udp,rtp', // 허용할 프로토콜 정의
@@ -52,7 +52,7 @@ const commandArgs = (roomId: string) => {
     'fps=1/30,scale=1280:720', // 10초마다 한 프레임을 캡처하고 해상도 조정
     '-update',
     '1', // 같은 파일에 덮어쓰기 활성화
-    `thumbnail/${roomId}.jpg`, // 덮어쓸 출력 파일 이름
+    `${dirPath}/${roomId}.jpg`, // 덮어쓸 출력 파일 이름
   ];
   return commandArgs;
 };
