@@ -8,7 +8,7 @@ export default function Home() {
   const { data: liveList, isLoading, error } = useAPI<LivePreviewInfo[]>({ url: '/v1/broadcasts' });
 
   return (
-    <div className="flex justify-center w-full h-[calc(100vh-88px)]">
+    <div className="flex justify-center w-full h-screen">
       {error ? (
         <div className="flex justify-center items-center flex-1">
           <ErrorCharacter message={error.message} />

@@ -58,12 +58,12 @@ function LivePlayer({ mediaStream }: { mediaStream: MediaStream | null }) {
   };
 
   return (
-    <section className="relative w-full aspect-video flex-grow min-h-[70%]">
+    <section className="relative w-full h-full rounded-xl flex justify-center">
       <video
         ref={videoRef}
         autoPlay
         muted={isAudioEnabled ? false : true}
-        className="w-full h-full bg-surface-alt rounded-xl"
+        className=" h-full aspect-video object-cover"
       />
       <div className="absolute bottom-4 left-0 right-0 px-6 text-text-default h-6 flex flex-row justify-between items-center">
         <div className="flex flex-row space-x-6 items-center">

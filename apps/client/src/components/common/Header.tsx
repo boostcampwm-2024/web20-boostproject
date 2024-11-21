@@ -60,7 +60,7 @@ function Header() {
   };
 
   return (
-    <header className="px-10 py-6 flex justify-between">
+    <header className="fixed top-0 left-0 w-full px-10 py-6 flex justify-between z-10 bg-surface-default">
       <div className="text-text-strong font-nabla text-4xl hover:cursor-pointer" onClick={handleLogoClick}>
         Cam'<span className="text-text-point">On</span>
       </div>

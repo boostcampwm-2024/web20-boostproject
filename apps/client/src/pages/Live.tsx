@@ -55,7 +55,7 @@ export default function Live() {
   }, []);
 
   return (
-    <div className="fixed top-[88px] bottom-0 left-0 right-0 overflow-auto flex flex-row w-full gap-10">
+    <div className="h-full bottom-0 left-0 right-0 overflow-auto flex flex-row w-full gap-10">
       {socketError || transportError ? (
         <div className="flex w-full h-full justify-center items-center">
           <ErrorCharacter
@@ -67,13 +67,11 @@ export default function Live() {
         <ErrorCharacter size={400} message="방 정보가 없습니다." />
       ) : (
         <>
-          <div className="flex flex-col basis-3/4 gap-4 w-7/12 h-full ml-8">
+          <div className="flex flex-col flex-grow gap-4 h-full ml-8">
             <LivePlayer mediaStream={mediaStream} />
-            <div className="flex-grow">
-              <LiveCamperInfo liveId={liveId} />
-            </div>
+            <LiveCamperInfo liveId={liveId} />
           </div>
-          <div className="basis-1/4 pr-5">
+          <div className="flex h-full w-80 pr-5">
             <ChatContainer roomId={liveId} isProducer={false} />
           </div>
         </>
