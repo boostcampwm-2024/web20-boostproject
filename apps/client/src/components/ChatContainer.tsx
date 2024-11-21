@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import SmileIcon from './icons/SmileIcon';
@@ -21,17 +21,13 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
   const [chattings, setChattings] = useState<Chat[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
   const [isComposing, setIsComposing] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   // 스크롤
-  // const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
-  // const scrollAreaRef = useRef<HTMLDivElement>(null);
-
-  // const handleScroll = () => {
-  //   if (scrollAreaRef.current) {
-  //     const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
-  //     const isAtBottom = scrollHeight - scrollTop - clientHeight < 20;
-  //     setShouldAutoScroll(isAtBottom);
-  //   }
-  // };
+  const scrollToBottom = () => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
+    }
+  };
 
   const setUpRoom = async (isProducer: boolean) => {
     try {
@@ -101,14 +97,9 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
   }, [isConnected, roomId, socket]);
 
   // 자동 스크롤
-  // useEffect(() => {
-  //   if (scrollAreaRef.current && shouldAutoScroll) {
-  //     scrollAreaRef.current.scrollTo({
-  //       top: scrollAreaRef.current.scrollHeight,
-  //       behavior: 'smooth',
-  //     });
-  //   }
-  // }, [chattings]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [chattings]);
 
   return (
     <Card className="flex flex-col flex-1 border-border-default bg-transparent shadow-none overflow-hidden">
@@ -121,8 +112,8 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
         </div>
       ) : (
         <>
-          <CardContent className="flex flex-1 px-6 pb-2 justify-end overflow-y-auto">
-            <div className="w-full pr-4 flex flex-col space-y-3 ">
+          <CardContent ref={scrollAreaRef} className="flex flex-1 px-6 pb-2 overflow-y-auto flex-col-reverse">
+            <div className="w-full flex flex-col space-y-1">
               {chattings.map((chat, index) => (
                 <div key={index}>
                   <span className="font-medium text-display-medium16 text-text-weak">{chat.camperId} </span>
