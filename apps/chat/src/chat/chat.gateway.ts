@@ -1,4 +1,11 @@
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import {
+  ConnectedSocket,
+  MessageBody,
+  OnGatewayDisconnect,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { UseFilters } from '@nestjs/common';
 import { WebSocketExceptionFilter } from 'src/common/filter/webSocketExceptionFilter';
@@ -9,7 +16,7 @@ import { chatDto } from './dto/chat.dto';
 
 @WebSocketGateway({ cors: { origin: '*', methods: ['GET', 'POST'] } })
 @UseFilters(WebSocketExceptionFilter)
-export class ChatGateway {
+export class ChatGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
@@ -43,5 +50,9 @@ export class ChatGateway {
   @SubscribeMessage('chat')
   async handleChat(@MessageBody() params: chatDto, @ConnectedSocket() client: Socket) {
     this.chatService.broadcast(params, client);
+  }
+
+  handleDisconnect(client: Socket) {
+    this.chatService.disconnect(client);
   }
 }
