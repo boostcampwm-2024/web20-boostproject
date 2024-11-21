@@ -17,3 +17,11 @@ async function bootstrap() {
   await app.listen(port);
 }
 bootstrap();
+
+process.on('uncaughtException', error => {
+  console.error('Uncaught Exception:', error);
+});
+
+process.on('unhandledRejection', reason => {
+  console.error('Unhandled Rejection:', reason);
+});
