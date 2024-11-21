@@ -14,7 +14,7 @@ function LiveCamperInfo({ liveId }: { liveId: string }) {
   const { data, isLoading, error } = useAPI<LiveInfo>({ url: `v1/broadcasts/${liveId}/info` });
 
   return (
-    <div className="relative w-full p-4 bg-surface-default">
+    <>
       {error || !data ? (
         <div className="text-text-danger flex justify-center items-center">
           <ErrorCharacter size={120} message="방송 정보 조회에 실패했습니다." />
@@ -22,7 +22,7 @@ function LiveCamperInfo({ liveId }: { liveId: string }) {
       ) : isLoading ? (
         <LoadingCharacter size={100} />
       ) : (
-        <>
+        <div className="flex flex-row justify-between">
           <div className="flex flex-col gap-4 pr-24">
             {/* 제목 */}
             <h1 className="text-text-strong font-bold text-2xl">{data.title}</h1>
@@ -50,7 +50,7 @@ function LiveCamperInfo({ liveId }: { liveId: string }) {
           </div>
 
           {/* 우측 상단 아이콘들 - 2x2 그리드 */}
-          <div className="absolute top-4 right-4 grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <IconButton
               title="email"
               ariaLabel="email"
@@ -80,9 +80,9 @@ function LiveCamperInfo({ liveId }: { liveId: string }) {
               <LinkedInIcon size={24} />
             </IconButton>
           </div>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 }
 

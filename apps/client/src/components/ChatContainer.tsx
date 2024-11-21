@@ -20,6 +20,7 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
   const { socket, isConnected, socketError } = useSocket(chatServerUrl);
   const [chattings, setChattings] = useState<Chat[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const [isComposing, setIsComposing] = useState(false);
   // 스크롤
   // const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   // const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -66,6 +67,13 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
     setInputValue(e.target.value);
   };
 
+  const hanldeKeyDownEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (isComposing) return;
+    if (e.key === 'Enter') {
+      handleSendChat();
+    }
+  };
+
   const handleSendChat = () => {
     if (inputValue.trim() && socket) {
       socket.emit('chat', { roomId: roomId, message: inputValue }, (response: Chat) => {
@@ -103,38 +111,36 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
   // }, [chattings]);
 
   return (
-    <Card className="flex flex-col h-full border-border-default bg-transparent shadow-none overflow-hidden">
-      <CardHeader>
+    <Card className="flex flex-col flex-1 border-border-default bg-transparent shadow-none overflow-hidden">
+      <CardHeader className="h-[64px]">
         <CardTitle className="font-bold text-text-strong">Chat</CardTitle>
       </CardHeader>
       {socketError ? (
-        <ErrorCharacter size={200} message={socketError.message} />
+        <div className="flex justify-center items-center">
+          <ErrorCharacter size={200} message={socketError.message} />
+        </div>
       ) : (
         <>
-          <CardContent className="flex-1  px-6 pb-2">
-            <div className=" w-full pr-4 flex flex-col justify-end">
-              <div className="space-y-3">
-                {chattings.map((chat, index) => (
-                  <div key={index}>
-                    <span className="font-medium text-display-medium16 text-text-weak">{chat.camperId} </span>
-                    <span className="font-medium text-display-medium14 text-text-strong">{chat.message}</span>
-                  </div>
-                ))}
-              </div>
+          <CardContent className="flex flex-1 px-6 pb-2 justify-end overflow-y-auto">
+            <div className="w-full pr-4 flex flex-col space-y-3 ">
+              {chattings.map((chat, index) => (
+                <div key={index}>
+                  <span className="font-medium text-display-medium16 text-text-weak">{chat.camperId} </span>
+                  <span className="font-medium text-display-medium14 text-text-strong">{chat.message}</span>
+                </div>
+              ))}
             </div>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="h-[64px]">
             <div className="flex items-center w-full rounded-xl bg-surface-alt">
               <Input
                 type="text"
                 placeholder="채팅을 입력해주세요"
                 value={inputValue}
                 onChange={handleInputChange}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    handleSendChat();
-                  }
-                }}
+                onCompositionStart={() => setIsComposing(true)}
+                onCompositionEnd={() => setIsComposing(false)}
+                onKeyDown={hanldeKeyDownEnter}
                 className="flex-1 text-text-default border-none focus-visible:outline-none focus-visible:ring-0"
               />
               <button className="ml-2 p-2 rounded-full text-text-default">

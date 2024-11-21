@@ -14,7 +14,7 @@ import MonitorShareIcon from '@components/icons/MonitorShareIcon';
 import VideoOffIcon from '@components/icons/VideoOffIcon';
 import VideoOnIcon from '@components/icons/VideoOnIcon';
 import { Button } from '@components/ui/button';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
@@ -36,29 +36,26 @@ function Broadcast() {
   });
   const [title, setTitle] = useState<string>('방송 제목');
 
-  const stopBroadcast = useCallback(
-    (e?: BeforeUnloadEvent) => {
-      if (e) {
-        e.preventDefault();
-        e.returnValue = '';
-      }
-      if (socket) {
-        socket.emit('stopBroadcast', { roomId }, (response: { isCleaned: boolean; roomId: string }) => {
-          if (response.isCleaned) {
-            console.log(`${response.roomId} 방이 정리됐습니다.`);
-          } else {
-            console.error('방 정리 실패');
-          }
-        });
-        socket.disconnect();
-        mediaStream?.getTracks().forEach(track => {
-          track.stop();
-        });
-      }
-      transport?.close();
-    },
-    [socket, roomId],
-  );
+  const stopBroadcast = (e?: BeforeUnloadEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+    if (socket) {
+      socket.emit('stopBroadcast', { roomId }, (response: { isCleaned: boolean; roomId: string }) => {
+        if (response.isCleaned) {
+          console.log(`${response.roomId} 방이 정리됐습니다.`);
+        } else {
+          console.error('방 정리 실패');
+        }
+      });
+      socket.disconnect();
+      mediaStream?.getTracks().forEach(track => {
+        track.stop();
+      });
+    }
+    transport?.close();
+  };
 
   useEffect(() => {
     window.addEventListener('beforeunload', stopBroadcast);
@@ -127,9 +124,7 @@ function Broadcast() {
               </div>
             </div>
           </div>
-          <div className="border border-border-default rounded-xl h-full">
-            <ChatContainer roomId={roomId} isProducer={true} />
-          </div>
+          <ChatContainer roomId={roomId} isProducer={true} />
         </>
       )}
     </div>
