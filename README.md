@@ -71,7 +71,8 @@
 ![Group 320](https://github.com/user-attachments/assets/0d4f1d40-c539-4ccd-972c-57dd9d99ade6)
 
 ## 🏗️ 시스템 아키텍처
-![image](https://github.com/user-attachments/assets/a43e78a1-f507-4dee-8eb3-765ffbe60848)
+![image](https://github.com/user-attachments/assets/dc966b29-da77-49b7-bc12-6b63f1014228)
+
 
 ## 🚀 시작하기
 ### Installation
