@@ -96,6 +96,9 @@ export class TransportService {
     transport.on('routerclose', () => {
       this.handleTransportClose(transport, roomId);
     });
+    transport.observer.on('close', () => {
+      this.handleTransportClose(transport, roomId);
+    });
   }
 
   private handleTransportClose(transport: mediasoup.types.Transport, roomId: string) {
