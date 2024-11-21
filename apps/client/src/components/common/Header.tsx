@@ -2,8 +2,8 @@ import { useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import CamOnCharacterSVG from '@/assets/logo/camon_character_88.svg?react';
-import CamOnLogoSVG from '@/assets/logo/camon_logo.svg?react';
+import Character from '@components/icons/Character';
+import Logo from '@components/icons/Logo';
 
 function Header() {
   const [isLogIn, setIsLogIn] = useState(true);
@@ -64,8 +64,8 @@ function Header() {
   return (
     <header className="fixed top-0 left-0 w-full px-10 py-3 flex justify-between z-10 bg-surface-default">
       <div className="flex flex-row gap-2 hover:cursor-pointer" onClick={handleLogoClick}>
-        <CamOnCharacterSVG height="48px" width="48px" />
-        <CamOnLogoSVG />
+        <Character size={48} />
+        <Logo width={109} height={50} />
       </div>
       {isLogIn ? (
         <div className="flex gap-2 items-center">
