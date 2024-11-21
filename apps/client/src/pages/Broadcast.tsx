@@ -34,7 +34,7 @@ function Broadcast() {
     device,
     roomId,
   });
-  const [title, setTitle] = useState<string>('방송 제목');
+  const [title, setTitle] = useState<string>('J000님의 방송');
 
   const stopBroadcast = (e?: BeforeUnloadEvent) => {
     if (e) {
