@@ -51,7 +51,7 @@ export class ChatService {
   leaveRoom(roomId: string, client: Socket) {
     const room = this.rooms.get(roomId);
 
-    if (!room) new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
+    if (!room) throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
 
     room.clients.delete(client.id);
 
