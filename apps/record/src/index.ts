@@ -27,7 +27,7 @@ app.get('/availablePort', (req, res) => {
 
 app.get('/images/:roomId', (req, res) => {
   const { roomId } = req.params;
-  const thumbnailPath = path.join(__dirname, 'thumbnail', `${roomId}.jpg`);
+  const thumbnailPath = path.join(__dirname, '../thumbnail', `${roomId}.jpg`);
   fs.access(thumbnailPath, fs.constants.F_OK, err => {
     if (err) {
       console.error(`Thumbnail not found for roomId: ${roomId}`);

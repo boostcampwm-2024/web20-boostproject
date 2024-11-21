@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 import * as mediasoup from 'mediasoup';
 import { ConnectTransportDto } from './dto/transport-params.interface';
@@ -21,11 +22,13 @@ export class SfuService {
     private readonly consumerService: ConsumerService,
     private readonly broadcasterService: BroadcastService,
     private readonly recordService: RecordService,
+    private readonly configService: ConfigService,
   ) {}
 
   async createRoom() {
     const room = await this.roomService.createRoom();
-    await this.broadcasterService.createBroadcast(CreateBroadcastDto.of(room.id, 'title', null));
+    const thumbnail = `${this.configService.get('RECORD_SERVER_URL')}/images/${room.id}`;
+    await this.broadcasterService.createBroadcast(CreateBroadcastDto.of(room.id, 'J000님의 방송', thumbnail, null));
     return room;
   }
 
