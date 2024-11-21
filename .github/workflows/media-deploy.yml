@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - develop
-      - Fix/221
     paths:
       - 'apps/media/**'
 

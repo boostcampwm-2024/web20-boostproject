@@ -10,7 +10,6 @@ const app = express();
 app.use(express.json());
 
 const dirPath = path.join(__dirname, '../thumbnail');
-console.log(dirPath);
 
 if (!fs.existsSync(dirPath)) {
   fs.mkdirSync(dirPath, { recursive: true });
@@ -29,7 +28,6 @@ app.get('/availablePort', (req, res) => {
 app.get('/images/:roomId', (req, res) => {
   const { roomId } = req.params;
   const thumbnailPath = path.join(dirPath, `${roomId}.jpg`);
-  console.log('Thumbnail path is : ', thumbnailPath);
   fs.access(thumbnailPath, fs.constants.F_OK, err => {
     if (err) {
       console.error(`Thumbnail not found for roomId: ${roomId}`);
