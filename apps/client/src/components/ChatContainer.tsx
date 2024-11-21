@@ -36,7 +36,7 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
         await new Promise(resolve =>
           socket?.emit(
             'createRoom',
-            { name: '방송함', camperId: 'J111', roomId: roomId },
+            { name: '송출자', camperId: 'J111', roomId: roomId },
             (response: { roomId: string }) => {
               console.log(`채팅룸 생성 응답: ${JSON.stringify(response)}`);
               console.log(`채팅룸 생성: ${response.roomId}`);
