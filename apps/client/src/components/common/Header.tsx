@@ -2,6 +2,8 @@ import { useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
+import CamOnCharacterSVG from '@/assets/logo/camon_character_88.svg?react';
+import CamOnLogoSVG from '@/assets/logo/camon_logo.svg?react';
 
 function Header() {
   const [isLogIn, setIsLogIn] = useState(true);
@@ -61,11 +63,12 @@ function Header() {
 
   return (
     <header className="fixed top-0 left-0 w-full px-10 py-6 flex justify-between z-10 bg-surface-default">
-      <div className="text-text-strong font-nabla text-4xl hover:cursor-pointer" onClick={handleLogoClick}>
-        Cam'<span className="text-text-point">On</span>
+      <div className="flex flex-row gap-2 hover:cursor-pointer" onClick={handleLogoClick}>
+        <CamOnCharacterSVG height="48px" width="48px" />
+        <CamOnLogoSVG />
       </div>
       {isLogIn ? (
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <Button
             className={cn({
               'bg-surface-brand-default hover:bg-surface-brand-alt': !isCheckedIn,
