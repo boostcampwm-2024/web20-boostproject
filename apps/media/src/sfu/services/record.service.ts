@@ -5,15 +5,11 @@ import * as mediasoup from 'mediasoup';
 
 @Injectable()
 export class RecordService {
-  private readonly recordServerUrl: string;
-
-  constructor(private readonly httpservice: HttpService, private readonly configService: ConfigService) {
-    this.recordServerUrl = this.configService.get('RECORD_SERVER_URL');
-  }
+  constructor(private readonly httpservice: HttpService, private readonly configService: ConfigService) {}
 
   async sendStream(room: mediasoup.types.Router, producer: mediasoup.types.Producer) {
     if (producer.kind === 'audio') return;
-    const transport = await this.createPlainTransport(room);
+    const recordTransport = await this.createPlainTransport(room);
     const codecs = [];
     const routerCodec = room.rtpCapabilities.codecs.find(codec => codec.kind === producer.kind);
     codecs.push(routerCodec);
@@ -21,34 +17,32 @@ export class RecordService {
       codecs,
       rtcpFeedback: [],
     };
-    const rtpConsumer = await transport.consume({
+    const recordConsumer = await recordTransport.consume({
       producerId: producer.id,
       rtpCapabilities,
       paused: true,
     });
 
-    await rtpConsumer.setPreferredLayers({
-      spatialLayer: 2,
-      temporalLayer: 2,
-    });
-
     setTimeout(async () => {
-      await rtpConsumer.resume();
-      await rtpConsumer.requestKeyFrame();
+      await recordConsumer.resume();
+      await recordConsumer.requestKeyFrame();
     }, 1000);
 
     const { port } = await this.httpservice
-      .get(`${this.recordServerUrl}/availablePort`)
+      .get(`${this.configService.get('RECORD_SERVER_URL')}/availablePort`)
       .toPromise()
       .then(({ data }) => data);
 
-    await transport.connect({
+    await recordTransport.connect({
       ip: this.configService.get('SERVER_PRIVATE_IP'),
       port,
     });
 
+    this.setUpRecordTransportListeners(recordTransport, port);
+    this.setUpRecordConsumerListeners(recordConsumer);
+
     await this.httpservice
-      .post(`${this.recordServerUrl}/send`, {
+      .post(`${this.configService.get('RECORD_SERVER_URL')}/send`, {
         roomId: room.id,
         port,
       })
@@ -64,6 +58,23 @@ export class RecordService {
         portRange: { min: 30000, max: 31000 },
       },
       rtcpMux: true,
+    });
+  }
+
+  private setUpRecordTransportListeners(recordTransport: mediasoup.types.Transport, port: number) {
+    recordTransport.on('routerclose', async () => {
+      await this.httpservice
+        .post(`${this.configService.get('RECORD_SERVER_URL')}/close`, {
+          port,
+        })
+        .toPromise();
+      recordTransport.close();
+    });
+  }
+
+  private setUpRecordConsumerListeners(recordConsumer: mediasoup.types.Consumer) {
+    recordConsumer.on('transportclose', () => {
+      recordConsumer.close();
     });
   }
 }

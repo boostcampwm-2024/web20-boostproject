@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 import * as mediasoup from 'mediasoup';
 import { ConnectTransportDto } from './dto/transport-params.interface';
@@ -10,6 +11,7 @@ import { CreateProducerDto } from './dto/create-producer.dto';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
 import { BroadcastService } from '../broadcast/broadcast.service';
 import { CreateBroadcastDto } from '../broadcast/dto/createBroadcast.dto';
+import { ClientService } from './services/client.service';
 import { RecordService } from './services/record.service';
 
 @Injectable()
@@ -21,11 +23,15 @@ export class SfuService {
     private readonly consumerService: ConsumerService,
     private readonly broadcasterService: BroadcastService,
     private readonly recordService: RecordService,
+    private readonly clientService: ClientService,
+    private readonly configService: ConfigService,
   ) {}
 
-  async createRoom() {
+  async createRoom(clientId: string) {
     const room = await this.roomService.createRoom();
-    await this.broadcasterService.createBroadcast(CreateBroadcastDto.of(room.id, 'title', null));
+    const thumbnail = `${this.configService.get('RECORD_SERVER_URL')}/images/${room.id}`;
+    await this.broadcasterService.createBroadcast(CreateBroadcastDto.of(room.id, 'J000님의 방송', thumbnail, null));
+    this.clientService.addClientToRoom(clientId, room.id);
     return room;
   }
 
@@ -53,7 +59,7 @@ export class SfuService {
     return producer;
   }
 
-  async createConsumers(params: CreateConsumerDto) {
+  async createConsumers(params: CreateConsumerDto, clientId: string) {
     const { roomId, transportId } = params;
     const room = this.roomService.getRoom(roomId);
     const producerTransport = this.transportService.getProducerTransport(roomId);
@@ -62,6 +68,7 @@ export class SfuService {
     const consumerTransport = this.transportService.getTransport(roomId, transportId);
     const consumers = await this.consumerService.createConsumers(consumerTransport, producers, room.rtpCapabilities);
     await this.broadcasterService.incrementViewers(roomId);
+    this.clientService.addClientTransport(clientId, consumerTransport.id, roomId);
     return consumers.map(consumer => {
       return {
         consumerId: consumer.id,
@@ -72,8 +79,8 @@ export class SfuService {
     });
   }
 
-  stopBroadcast(roomId: string) {
-    this.roomService.deleteRoom(roomId);
+  async stopBroadcast(roomId: string) {
+    await this.roomService.deleteRoom(roomId);
   }
 
   async leaveBroadcast(roomId: string, transportId: string) {
@@ -88,5 +95,16 @@ export class SfuService {
       }
     }
     return true;
+  }
+
+  async disconnectClient(clientId: string) {
+    if (this.clientService.hasRoom(clientId)) {
+      const roomId = this.clientService.getClientRoom(clientId);
+      await this.stopBroadcast(roomId);
+    }
+    if (this.clientService.hasTransport(clientId)) {
+      const data = this.clientService.getClientTransport(clientId);
+      await this.leaveBroadcast(data.roomId, data.transportId);
+    }
   }
 }

@@ -8,6 +8,7 @@ import { TransportService } from './services/transport.service';
 import { ProducerService } from './services/producer.service';
 import { ConsumerService } from './services/consumer.service';
 import { BroadcastModule } from '../broadcast/broadcast.module';
+import { ClientService } from './services/client.service';
 import { RecordService } from './services/record.service';
 
 @Module({
@@ -21,6 +22,7 @@ import { RecordService } from './services/record.service';
     ProducerService,
     ConsumerService,
     RecordService,
+    ClientService,
   ],
 })
 export class SfuModule {}

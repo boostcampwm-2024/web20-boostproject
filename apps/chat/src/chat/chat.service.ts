@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { Injectable, Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { CustomWsException } from 'src/common/responses/exceptions/custom-ws.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
@@ -15,32 +14,32 @@ interface IRoom {
 
 @Injectable()
 export class ChatService {
-  rooms = new Map<string, IRoom>();
+  private rooms = new Map<string, IRoom>();
+  private readonly logger = new Logger(ChatService.name);
 
   createRoom(params: createRoomDto, client: Socket) {
-    const { name, camperId } = params;
-
-    const roomId = randomUUID();
+    const { name, camperId, roomId } = params;
     const newClient = new Client(name, camperId, client);
 
     const room = {
       ownerId: client.id,
       clients: [newClient],
     };
-    this.rooms.set(roomId, room);
 
+    this.rooms.set(roomId, room);
+    this.logger.log(`Chat Room created: ${roomId}`);
     return roomId;
   }
 
   joinRoom(params: joinRoomDto, client: Socket) {
     const { name, camperId, roomId } = params;
     const room = this.rooms.get(roomId);
-
     if (!room) new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
 
     const newClient = new Client(name, camperId, client);
 
     room.clients.push(newClient);
+    this.logger.log(`Client Join Room: ${room}`);
   }
 
   leaveRoom(roomId: string, client: Socket) {
@@ -56,6 +55,7 @@ export class ChatService {
     };
 
     this.rooms.set(roomId, updatedRoom);
+    this.logger.log(`Client Leave Room: ${room}`);
   }
 
   deleteRoom(roomId: string, client: Socket) {
@@ -65,6 +65,7 @@ export class ChatService {
     if (room.ownerId !== client.id) new CustomWsException(ErrorStatus.NO_HAVE_AUTHORITY_IN_ROOM);
 
     this.rooms.delete(roomId);
+    this.logger.log(`Delete Chat Room: ${roomId}`);
   }
 
   broadcast(params: chatDto) {
@@ -76,5 +77,6 @@ export class ChatService {
     room.clients.forEach(client => {
       client.sendMessage(message);
     });
+    this.logger.log(`BroadCast to Clients: room#${roomId} message#${message}}`);
   }
 }

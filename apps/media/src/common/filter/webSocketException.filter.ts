@@ -1,10 +1,12 @@
-import { Catch, ArgumentsHost } from '@nestjs/common';
+import { Catch, ArgumentsHost, Logger } from '@nestjs/common';
 import { BaseWsExceptionFilter, WsException } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 
 @Catch(WsException)
 export class WebSocketExceptionFilter extends BaseWsExceptionFilter {
+  private readonly logger = new Logger(WebSocketExceptionFilter.name);
   catch(exception: WsException, host: ArgumentsHost) {
+    this.logger.error(exception);
     const client = host.switchToWs().getClient<Socket>();
     const event = host.switchToWs().getPattern();
 
@@ -22,7 +24,6 @@ export class WebSocketExceptionFilter extends BaseWsExceptionFilter {
         code: error.code || 500,
       },
     };
-
     client.emit('exception', wsResponse);
   }
 }

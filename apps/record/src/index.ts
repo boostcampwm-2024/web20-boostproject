@@ -3,7 +3,7 @@ import fs from 'fs';
 import dotenv from 'dotenv';
 import { createFfmpegProcess } from './ffmpeg';
 import express from 'express';
-import { getPort } from './port';
+import { getPort, releasePort } from './port';
 
 dotenv.config();
 const app = express();
@@ -28,7 +28,7 @@ app.get('/availablePort', (req, res) => {
 
 app.get('/images/:roomId', (req, res) => {
   const { roomId } = req.params;
-  const thumbnailPath = path.join(__dirname, 'thumbnail', `${roomId}.jpg`);
+  const thumbnailPath = path.join(__dirname, '../thumbnail', `${roomId}.jpg`);
   fs.access(thumbnailPath, fs.constants.F_OK, err => {
     if (err) {
       console.error(`Thumbnail not found for roomId: ${roomId}`);
@@ -36,6 +36,12 @@ app.get('/images/:roomId', (req, res) => {
     }
     res.sendFile(thumbnailPath);
   });
+});
+
+app.post('/close', (req, res) => {
+  const { port } = req.body;
+  releasePort(port);
+  res.send({ success: true });
 });
 
 app.listen(3003);
