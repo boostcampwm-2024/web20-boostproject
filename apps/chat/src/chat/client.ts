@@ -23,10 +23,10 @@ export class Client {
     return this.socket;
   }
 
-  sendMessage(message: string) {
+  sendMessage(camperId: string, name: string, message: string) {
     this.socket.emit('chat', {
-      camperId: this.camperId,
-      name: this.name,
+      camperId,
+      name,
       message,
     });
   }

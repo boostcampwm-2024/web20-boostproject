@@ -41,7 +41,7 @@ export class ChatGateway {
   }
   //채팅
   @SubscribeMessage('chat')
-  async handleChat(@MessageBody() params: chatDto) {
-    this.chatService.broadcast(params);
+  async handleChat(@MessageBody() params: chatDto, @ConnectedSocket() client: Socket) {
+    this.chatService.broadcast(params, client);
   }
 }

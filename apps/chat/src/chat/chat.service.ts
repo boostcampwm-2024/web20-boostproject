@@ -68,15 +68,18 @@ export class ChatService {
     this.logger.log(`Delete Chat Room: ${roomId}`);
   }
 
-  broadcast(params: chatDto) {
+  broadcast(params: chatDto, client: Socket) {
     const { roomId, message } = params;
     const room = this.rooms.get(roomId);
 
     if (!room) new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
 
-    room.clients.forEach(client => {
-      client.sendMessage(message);
+    const sendClient = room.clients.find(anyClient => anyClient.getSocket() === client);
+
+    room.clients.forEach(anyClient => {
+      anyClient.sendMessage(sendClient.getName(), sendClient.getName(), message);
     });
+
     this.logger.log(`BroadCast to Clients: room#${roomId} message#${message}}`);
   }
 }
