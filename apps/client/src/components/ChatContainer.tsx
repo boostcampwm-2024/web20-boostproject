@@ -20,6 +20,7 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
   const { socket, isConnected, socketError } = useSocket(chatServerUrl);
   const [chattings, setChattings] = useState<Chat[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const [isComposing, setIsComposing] = useState(false);
   // 스크롤
   // const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   // const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -64,6 +65,13 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
+  };
+
+  const hanldeKeyDownEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (isComposing) return;
+    if (e.key === 'Enter') {
+      handleSendChat();
+    }
   };
 
   const handleSendChat = () => {
@@ -130,10 +138,10 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
                 placeholder="채팅을 입력해주세요"
                 value={inputValue}
                 onChange={handleInputChange}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') {
-                    handleSendChat();
-                  }
+                onKeyDown={hanldeKeyDownEnter}
+                onCompositionStart={() => setIsComposing(true)}
+                onCompositionEnd={() => {
+                  setIsComposing(false);
                 }}
                 className="flex-1 text-text-default border-none focus-visible:outline-none focus-visible:ring-0"
               />
