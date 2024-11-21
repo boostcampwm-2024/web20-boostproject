@@ -62,7 +62,7 @@ function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full px-10 py-6 flex justify-between z-10 bg-surface-default">
+    <header className="fixed top-0 left-0 w-full px-10 py-3 flex justify-between z-10 bg-surface-default">
       <div className="flex flex-row gap-2 hover:cursor-pointer" onClick={handleLogoClick}>
         <CamOnCharacterSVG height="48px" width="48px" />
         <CamOnLogoSVG />
