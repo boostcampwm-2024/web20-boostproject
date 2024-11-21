@@ -18,7 +18,7 @@ if (!fs.existsSync(dirPath)) {
 
 app.post('/send', (req, res) => {
   const { port, roomId } = req.body;
-  createFfmpegProcess(port, roomId);
+  createFfmpegProcess(port, dirPath, roomId);
   res.send({ success: true });
 });
 
@@ -28,7 +28,7 @@ app.get('/availablePort', (req, res) => {
 
 app.get('/images/:roomId', (req, res) => {
   const { roomId } = req.params;
-  const thumbnailPath = path.join('/app/thumbnail', `${roomId}.jpg`);
+  const thumbnailPath = path.join(dirPath, `${roomId}.jpg`);
   console.log('Thumbnail path is : ', thumbnailPath);
   fs.access(thumbnailPath, fs.constants.F_OK, err => {
     if (err) {
