@@ -79,7 +79,7 @@ function Broadcast() {
 
   if (socketError || roomError || transportError) {
     return (
-      <div className="flex h-screen justify-center items-center">
+      <div className="flex h-full justify-center items-center">
         <ErrorCharacter
           size={300}
           message={`방송 연결 중 에러가 발생했습니다: ${
@@ -91,15 +91,15 @@ function Broadcast() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="flex flex-col p-4 h-full">
       {mediaStreamError || mediasoupError ? (
-        <div className="flex flex-col ">
+        <>
           <h2 className="text-display-bold24 text-text-danger">Error</h2>
           {mediaStreamError && <div className="text-display-medium16 text-text-danger">{mediaStreamError.message}</div>}
           {mediasoupError && <div className="text-display-medium16 text-text-danger">{mediasoupError.message}</div>}
-        </div>
+        </>
       ) : (
-        <div className="flex flex-col h-full p-4">
+        <>
           <div className="relative w-full aspect-video">
             <video
               ref={videoRef}
@@ -130,7 +130,7 @@ function Broadcast() {
           <div className="border border-border-default rounded-xl h-full">
             <ChatContainer roomId={roomId} isProducer={true} />
           </div>
-        </div>
+        </>
       )}
     </div>
   );
