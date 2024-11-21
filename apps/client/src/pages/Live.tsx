@@ -58,8 +58,13 @@ export default function Live() {
     <div className="fixed top-[88px] bottom-0 left-0 right-0 overflow-auto flex flex-row w-full gap-10">
       {socketError || transportError ? (
         <div className="flex w-full h-full justify-center items-center">
-          <ErrorCharacter size={400} message="방송 연결 중 에러가 발생했습니다. 관리자에게 문의하세요" />
+          <ErrorCharacter
+            size={400}
+            message={`방송 연결 중 에러가 발생했습니다: ${socketError ? socketError.message : transportError?.message}`}
+          />
         </div>
+      ) : !liveId ? (
+        <ErrorCharacter size={400} message="방 정보가 없습니다." />
       ) : (
         <>
           <div className="flex flex-col basis-3/4 gap-4 w-7/12 h-full ml-8">
@@ -69,7 +74,7 @@ export default function Live() {
             </div>
           </div>
           <div className="basis-1/4 pr-5">
-            <ChatContainer />
+            <ChatContainer roomId={liveId} isProducer={false} />
           </div>
         </>
       )}

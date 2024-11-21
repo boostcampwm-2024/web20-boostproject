@@ -1,4 +1,5 @@
 import BroadcastTitle from '@/components/BroadcastTitle';
+import ChatContainer from '@/components/ChatContainer';
 import ErrorCharacter from '@/components/common/ErrorCharacter';
 import { useMediaControls } from '@/hooks/useMediaControls';
 import { useMediaStream } from '@/hooks/useMediaStream';
@@ -15,16 +16,16 @@ import VideoOnIcon from '@components/icons/VideoOnIcon';
 import { Button } from '@components/ui/button';
 import { useCallback, useEffect, useState } from 'react';
 
-const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
+const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
 function Broadcast() {
   const { mediaStream, mediaStreamError, isMediastreamReady, videoRef } = useMediaStream();
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
 
-  const { socket, isConnected, socketError } = useSocket(socketUrl);
+  // 방송 송출
+  const { socket, isConnected, socketError } = useSocket(mediaServerUrl);
   const { roomId, roomError } = useRoom(socket, isConnected);
   const { transportInfo, device, transportError } = useTransport({ socket, roomId, isProducer: true });
-
   const { transport, error: mediasoupError } = useProducer({
     socket,
     isMediastreamReady,
@@ -78,24 +79,34 @@ function Broadcast() {
 
   if (socketError || roomError || transportError) {
     return (
-      <div className="flex h-screen justify-center items-center">
-        <ErrorCharacter size={300} message="방송 연결 중 에러가 발생했습니다. 관리자에게 문의하세요." />
+      <div className="flex h-full justify-center items-center">
+        <ErrorCharacter
+          size={300}
+          message={`방송 연결 중 에러가 발생했습니다: ${
+            socketError ? socketError.message : roomError ? roomError.message : transportError?.message
+          }`}
+        />
       </div>
     );
   }
 
   return (
-    <>
+    <div className="flex flex-col p-4 h-full">
       {mediaStreamError || mediasoupError ? (
-        <div className="flex flex-col ">
+        <>
           <h2 className="text-display-bold24 text-text-danger">Error</h2>
           {mediaStreamError && <div className="text-display-medium16 text-text-danger">{mediaStreamError.message}</div>}
           {mediasoupError && <div className="text-display-medium16 text-text-danger">{mediasoupError.message}</div>}
-        </div>
+        </>
       ) : (
         <>
-          <div className="w-full aspect-video p-4">
-            <video ref={videoRef} autoPlay muted className="w-full h-full bg-surface-alt rounded-xl" />
+          <div className="relative w-full aspect-video">
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              className="absolute top-0 left-0 w-full h-full bg-surface-alt rounded-xl object-cover"
+            />
             <audio />
           </div>
           <div className="w-full">
@@ -116,10 +127,12 @@ function Broadcast() {
               </div>
             </div>
           </div>
-          <div className="border border-border-default rounded-xl"></div>
+          <div className="border border-border-default rounded-xl h-full">
+            <ChatContainer roomId={roomId} isProducer={true} />
+          </div>
         </>
       )}
-    </>
+    </div>
   );
 }
 

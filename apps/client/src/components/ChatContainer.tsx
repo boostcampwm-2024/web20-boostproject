@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import SmileIcon from './icons/SmileIcon';
+import { useSocket } from '@/hooks/useSocket';
+import ErrorCharacter from './common/ErrorCharacter';
 
 interface Chat {
   camperId: string;
@@ -10,48 +11,55 @@ interface Chat {
   message: string;
 }
 
-const sampleChat = [
-  { camperId: 'J999', name: '김부캠', message: '안녕하세요' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 채팅입니당' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  {
-    camperId: 'J999',
-    name: '김부캠',
-    message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ 어디까지 늘어나는거에요오오오옹ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ',
-  },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ 길게도 보내봐야지' },
-  {
-    camperId: 'J999',
-    name: '김부캠',
-    message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ 어디까지 늘어나는거에요오오오옹ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ',
-  },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-  { camperId: 'J999', name: '김부캠', message: '테스트 원투원투 아ㅏ아ㅏ아아ㅏ' },
-];
+const chatServerUrl = import.meta.env.VITE_CHAT_SERVER_URL;
 
-const ChatContainer = () => {
+const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boolean }) => {
+  // 채팅 방 입장
+  const [isJoinedRoom, setIsJoinedRoom] = useState(false);
+  // 채팅 전송
+  const { socket, isConnected, socketError } = useSocket(chatServerUrl);
   const [chattings, setChattings] = useState<Chat[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
-  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  // 스크롤
+  // const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  // const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  const handleScroll = () => {
-    if (scrollAreaRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
-      const isAtBottom = scrollHeight - scrollTop - clientHeight < 20;
-      setShouldAutoScroll(isAtBottom);
+  // const handleScroll = () => {
+  //   if (scrollAreaRef.current) {
+  //     const { scrollTop, scrollHeight, clientHeight } = scrollAreaRef.current;
+  //     const isAtBottom = scrollHeight - scrollTop - clientHeight < 20;
+  //     setShouldAutoScroll(isAtBottom);
+  //   }
+  // };
+
+  const setUpRoom = async (isProducer: boolean) => {
+    try {
+      if (isProducer) {
+        console.log('채팅룸 생성할거임');
+        await new Promise(resolve =>
+          socket?.emit(
+            'createRoom',
+            { name: '방송함', camperId: 'J111', roomId: roomId },
+            (response: { roomId: string }) => {
+              console.log(`채팅룸 생성 응답: ${JSON.stringify(response)}`);
+              console.log(`채팅룸 생성: ${response.roomId}`);
+              resolve;
+            },
+          ),
+        );
+      } else {
+        // 채팅방 입장
+        await new Promise(resolve =>
+          socket?.emit('joinRoom', { roomId: roomId, name: '김부캠', camperId: 'J999' }, () => {
+            console.log('채팅방 입장');
+            resolve;
+          }),
+        );
+      }
+    } catch (err) {
+      console.error(`방 생성/입장 실패: ${err}`);
     }
+    setIsJoinedRoom(true);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,61 +67,83 @@ const ChatContainer = () => {
   };
 
   const handleSendChat = () => {
-    if (inputValue.trim()) {
-      setChattings(prev => [...prev, { camperId: 'J123', name: '부덕이', message: inputValue }]);
-      setInputValue('');
+    if (inputValue.trim() && socket) {
+      socket.emit('chat', { roomId: roomId, message: inputValue }, (response: Chat) => {
+        console.log('채팅 보내고 받은 응답:', response);
+      });
     }
+    setInputValue('');
+  };
+
+  const handleReceiveChat = (response: Chat) => {
+    const { camperId, name, message } = response;
+    setChattings(prev => [...prev, { camperId, name, message }]);
   };
 
   useEffect(() => {
-    setChattings(sampleChat);
-  }, []);
+    if (!isConnected || !socket || !roomId || isJoinedRoom) return;
+    console.log(`roomId: ${JSON.stringify(roomId)}`);
+    setUpRoom(isProducer);
 
-  useEffect(() => {
-    if (scrollAreaRef.current && shouldAutoScroll) {
-      scrollAreaRef.current.scrollTo({
-        top: scrollAreaRef.current.scrollHeight,
-        behavior: 'smooth',
-      });
-    }
-  }, [chattings]);
+    socket?.on('chat', handleReceiveChat);
+
+    return () => {
+      socket?.off('chat', handleReceiveChat);
+    };
+  }, [isConnected, roomId, socket]);
+
+  // 자동 스크롤
+  // useEffect(() => {
+  //   if (scrollAreaRef.current && shouldAutoScroll) {
+  //     scrollAreaRef.current.scrollTo({
+  //       top: scrollAreaRef.current.scrollHeight,
+  //       behavior: 'smooth',
+  //     });
+  //   }
+  // }, [chattings]);
 
   return (
-    <Card className="h-full flex flex-col border-border-default bg-transparent shadow-none">
+    <Card className="flex flex-col h-full border-border-default bg-transparent shadow-none overflow-hidden">
       <CardHeader>
         <CardTitle className="font-bold text-text-strong">Chat</CardTitle>
       </CardHeader>
-      <CardContent className="flex-1 overflow-hidden px-6 pb-2">
-        <ScrollArea className="h-full w-full pr-4" ref={scrollAreaRef} onScroll={handleScroll}>
-          <div className="space-y-3">
-            {chattings.map((chat, index) => (
-              <div key={index}>
-                <span className="font-medium text-display-medium16 text-text-weak">{chat.camperId} </span>
-                <span className="font-medium text-display-medium14 text-text-strong">{chat.message}</span>
+      {socketError ? (
+        <ErrorCharacter size={200} message={socketError.message} />
+      ) : (
+        <>
+          <CardContent className="flex-1  px-6 pb-2">
+            <div className=" w-full pr-4 flex flex-col justify-end">
+              <div className="space-y-3">
+                {chattings.map((chat, index) => (
+                  <div key={index}>
+                    <span className="font-medium text-display-medium16 text-text-weak">{chat.camperId} </span>
+                    <span className="font-medium text-display-medium14 text-text-strong">{chat.message}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </ScrollArea>
-      </CardContent>
-      <CardFooter>
-        <div className="flex items-center w-full rounded-xl bg-surface-alt">
-          <Input
-            type="text"
-            placeholder="채팅을 입력해주세요"
-            value={inputValue}
-            onChange={handleInputChange}
-            onKeyDown={e => {
-              if (e.key === 'Enter') {
-                handleSendChat();
-              }
-            }}
-            className="flex-1 text-text-default border-none focus-visible:outline-none focus-visible:ring-0"
-          />
-          <button className="ml-2 p-2 rounded-full text-text-default">
-            <SmileIcon />
-          </button>
-        </div>
-      </CardFooter>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <div className="flex items-center w-full rounded-xl bg-surface-alt">
+              <Input
+                type="text"
+                placeholder="채팅을 입력해주세요"
+                value={inputValue}
+                onChange={handleInputChange}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    handleSendChat();
+                  }
+                }}
+                className="flex-1 text-text-default border-none focus-visible:outline-none focus-visible:ring-0"
+              />
+              <button className="ml-2 p-2 rounded-full text-text-default">
+                <SmileIcon />
+              </button>
+            </div>
+          </CardFooter>
+        </>
+      )}
     </Card>
   );
 };

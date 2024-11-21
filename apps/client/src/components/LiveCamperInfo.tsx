@@ -10,7 +10,7 @@ import { LiveInfo } from '@/types/liveTypes';
 import LoadingCharacter from './common/LoadingCharacter';
 import ErrorCharacter from './common/ErrorCharacter';
 
-function LiveCamperInfo({ liveId }: { liveId: string | undefined }) {
+function LiveCamperInfo({ liveId }: { liveId: string }) {
   const { data, isLoading, error } = useAPI<LiveInfo>({ url: `v1/broadcasts/${liveId}/info` });
 
   return (
