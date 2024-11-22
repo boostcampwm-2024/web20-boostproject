@@ -3,7 +3,7 @@ import App from './App';
 import Home from '@pages/Home';
 import Profile from '@pages/Profile';
 import Live from '@pages/Live';
-import Broadcast from './pages/Broadcast';
+import Broadcast from '@pages/Broadcast';
 
 const routerOptions = {
   future: {
