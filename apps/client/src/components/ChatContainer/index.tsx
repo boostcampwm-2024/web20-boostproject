@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import SmileIcon from './icons/SmileIcon';
-import { useSocket } from '@/hooks/useSocket';
-import ErrorCharacter from './common/ErrorCharacter';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@components/ui/card';
+import { Input } from '@components/ui/input';
+import SmileIcon from '@components/icons/SmileIcon';
+import { useSocket } from '@hooks/useSocket';
+import ErrorCharacter from '@components/ErrorCharacter';
 
 interface Chat {
   camperId: string;

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
+import { cn } from '@/utils/utils';
 import Character from '@components/icons/Character';
 import Logo from '@components/icons/Logo';
 

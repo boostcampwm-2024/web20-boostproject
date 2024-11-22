@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
-import PlayIcon from './icons/PlayIcon';
-import PauseIcon from './icons/PauseIcon';
-import VolumeOnIcon from './icons/VolumeOnIcon';
-import VolumeOffIcon from './icons/VolumeOffIcon';
-import ExpandIcon from './icons/ExpandIcon';
+import PlayIcon from '@components/icons/PlayIcon';
+import PauseIcon from '@components/icons/PauseIcon';
+import VolumeOnIcon from '@components/icons/VolumeOnIcon';
+import VolumeOffIcon from '@components/icons/VolumeOffIcon';
+import ExpandIcon from '@components/icons/ExpandIcon';
 
 type VideoQuality = '480' | '720' | '1080';
 

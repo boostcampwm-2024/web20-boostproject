@@ -1,4 +1,4 @@
-import axiosInstance from '@/services/axios';
+import axiosInstance from '@services/axios';
 import { AxiosRequestConfig } from 'axios';
 import { useEffect, useState } from 'react';
 

@@ -1,7 +1,7 @@
-import LiveList from '@/components/LiveList';
-import LoadingCharacter from '@components/common/LoadingCharacter';
-import ErrorCharacter from '@components/common/ErrorCharacter';
-import { useAPI } from '@/hooks/useAPI';
+import LiveList from '@pages/Home/LiveList';
+import LoadingCharacter from '@components/LoadingCharacter';
+import ErrorCharacter from '@components/ErrorCharacter';
+import { useAPI } from '@hooks/useAPI';
 import { LivePreviewInfo } from '@/types/homeTypes';
 import { useEffect, useState } from 'react';
 

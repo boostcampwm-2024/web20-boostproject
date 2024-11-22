@@ -1,14 +1,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
 import { Badge } from '@components/ui/badge';
-import IconButton from './common/IconButton';
-import MailIcon from './icons/MailIcon';
-import GithubIcon from './icons/GithubIcon';
-import BlogIcon from './icons/BlogIcon';
-import LinkedInIcon from './icons/LinkedInIcon';
-import { useAPI } from '@/hooks/useAPI';
+import IconButton from '@components/IconButton';
+import MailIcon from '@components/icons/MailIcon';
+import GithubIcon from '@components/icons/GithubIcon';
+import BlogIcon from '@components/icons/BlogIcon';
+import LinkedInIcon from '@components/icons/LinkedInIcon';
+import { useAPI } from '@hooks/useAPI';
 import { LiveInfo } from '@/types/liveTypes';
-import LoadingCharacter from './common/LoadingCharacter';
-import ErrorCharacter from './common/ErrorCharacter';
+import LoadingCharacter from '@components/LoadingCharacter';
+import ErrorCharacter from '@components/ErrorCharacter';
 
 function LiveCamperInfo({ liveId }: { liveId: string }) {
   const { data, isLoading, error } = useAPI<LiveInfo>({ url: `v1/broadcasts/${liveId}/info` });
