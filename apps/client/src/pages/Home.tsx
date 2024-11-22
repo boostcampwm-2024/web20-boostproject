@@ -18,7 +18,7 @@ export default function Home() {
   });
 
   return (
-    <div className="flex justify-center w-full h-screen">
+    <div className="flex justify-center w-full h-full">
       {error ? (
         <div className="flex justify-center items-center flex-1">
           <ErrorCharacter message={error.message} />
