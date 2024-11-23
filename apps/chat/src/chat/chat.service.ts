@@ -63,6 +63,9 @@ export class ChatService {
 
     if (!room) new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
     if (room.ownerId !== client.id) new CustomWsException(ErrorStatus.NO_HAVE_AUTHORITY_IN_ROOM);
+    room.clients.forEach(anyClient => {
+      anyClient.alertChatClosed();
+    });
 
     this.rooms.delete(roomId);
     this.logger.log(`Delete Chat Room: ${roomId}`);
