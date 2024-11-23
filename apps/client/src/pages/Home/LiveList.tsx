@@ -1,5 +1,5 @@
-import { LivePreviewInfo } from '@/types/homeTypes';
 import LiveCard from './LiveCard';
+import { LivePreviewInfo } from '@/types/homeTypes';
 
 function LiveList({ liveList }: { liveList: LivePreviewInfo[] }) {
   return (

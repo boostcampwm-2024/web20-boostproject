@@ -1,18 +1,20 @@
-import BroadcastTitle from '@/components/BroadcastTitle';
-import ChatContainer from '@/components/ChatContainer';
-import ErrorCharacter from '@/components/common/ErrorCharacter';
-import { useMediaControls } from '@/hooks/useMediaControls';
-import { useMediaStream } from '@/hooks/useMediaStream';
-import { useProducer } from '@/hooks/useProducer';
-import { useRoom } from '@/hooks/useRoom';
-import { useSocket } from '@/hooks/useSocket';
-import { useTransport } from '@/hooks/useTransport';
-import ChatIcon from '@components/icons/ChatIcon';
-import MicrophoneOffIcon from '@components/icons/MicrophoneOffIcon';
-import MicrophoneOnIcon from '@components/icons/MicrophoneOnIcon';
-import MonitorShareIcon from '@components/icons/MonitorShareIcon';
-import VideoOffIcon from '@components/icons/VideoOffIcon';
-import VideoOnIcon from '@components/icons/VideoOnIcon';
+import BroadcastTitle from './BroadcastTitle';
+import ChatContainer from '@components/ChatContainer';
+import ErrorCharacter from '@components/ErrorCharacter';
+import { useMediaControls } from '@hooks/useMediaControls';
+import { useMediaStream } from '@hooks/useMediaStream';
+import { useProducer } from '@hooks/useProducer';
+import { useRoom } from '@hooks/useRoom';
+import { useSocket } from '@hooks/useSocket';
+import { useTransport } from '@hooks/useTransport';
+import {
+  ChatIcon,
+  MicrophoneOffIcon,
+  MicrophoneOnIcon,
+  VideoOffIcon,
+  VideoOnIcon,
+  MonitorShareIcon,
+} from '@/components/Icons';
 import { Button } from '@components/ui/button';
 import { useEffect, useState } from 'react';
 

@@ -18,10 +18,13 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@assets/*": ["./src/assets/*"],
       "@components/*": ["./src/components/*"],
+      "@contexts/*": ["./src/contexts/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@services/*": ["./src/services/*"],
       "@pages/*": ["./src/pages/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@types/*": ["./src/types/*"]
+      "@utils/*": ["./src/utils/*"]
     },
     "outDir": "./dist"
   },

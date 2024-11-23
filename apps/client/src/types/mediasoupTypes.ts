@@ -1,4 +1,3 @@
-// types/broadcast.ts
 import { DtlsParameters, IceCandidate, IceParameters } from 'mediasoup-client/lib/types';
 
 export interface TransportInfo {

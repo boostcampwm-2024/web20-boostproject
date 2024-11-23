@@ -2,7 +2,7 @@ import * as mediasoupClient from 'mediasoup-client';
 import { useEffect, useState } from 'react';
 import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
 import { Device } from 'mediasoup-client/lib/types';
-import { checkDependencies } from '@/lib/utils';
+import { checkDependencies } from '@/utils/utils';
 import { Socket } from 'socket.io-client';
 import { TransportInfo } from '@/types/mediasoupTypes';
 
