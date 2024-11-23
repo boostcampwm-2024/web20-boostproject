@@ -2,8 +2,7 @@ import { useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/utils/utils';
-import Character from '@components/icons/Character';
-import Logo from '@components/icons/Logo';
+import { Character, Logo } from '@/components/Icons';
 
 function Header() {
   const [isLogIn, setIsLogIn] = useState(true);

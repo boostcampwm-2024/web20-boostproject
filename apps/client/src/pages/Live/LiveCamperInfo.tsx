@@ -1,10 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
 import { Badge } from '@components/ui/badge';
 import IconButton from '@components/IconButton';
-import MailIcon from '@components/icons/MailIcon';
-import GithubIcon from '@components/icons/GithubIcon';
-import BlogIcon from '@components/icons/BlogIcon';
-import LinkedInIcon from '@components/icons/LinkedInIcon';
+import { MailIcon, GithubIcon, BlogIcon, LinkedInIcon } from '@/components/Icons';
 import { useAPI } from '@hooks/useAPI';
 import { LiveInfo } from '@/types/liveTypes';
 import LoadingCharacter from '@components/LoadingCharacter';
