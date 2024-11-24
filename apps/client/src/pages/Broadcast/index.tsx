@@ -16,13 +16,22 @@ import {
   MonitorShareIcon,
 } from '@/components/Icons';
 import { Button } from '@components/ui/button';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import useScreenShare from '@/hooks/useScreenShare';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
 function Broadcast() {
-  const { mediaStream, mediaStreamError, isMediastreamReady, videoRef } = useMediaStream();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const screenShareRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const stream = useRef<MediaStream | null>(null);
+  const [isStreamReady, setIsStreamReady] = useState(false);
+  // 미디어 스트림(비디오, 오디오)
+  const { mediaStream, mediaStreamError, isMediastreamReady } = useMediaStream();
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
+  // 화면 공유
+  const { screenStream, isScreenSharing, screenShareError, toggleScreenShare } = useScreenShare();
 
   // 방송 송출
   const { socket, isConnected, socketError } = useSocket(mediaServerUrl);
@@ -30,8 +39,8 @@ function Broadcast() {
   const { transportInfo, device, transportError } = useTransport({ socket, roomId, isProducer: true });
   const { transport, error: mediasoupError } = useProducer({
     socket,
-    isMediastreamReady,
-    mediaStream,
+    stream: stream.current,
+    isStreamReady,
     transportInfo,
     device,
     roomId,
@@ -55,17 +64,13 @@ function Broadcast() {
       mediaStream?.getTracks().forEach(track => {
         track.stop();
       });
+
+      screenStream?.getTracks().forEach(track => {
+        track.stop();
+      });
     }
     transport?.close();
   };
-
-  useEffect(() => {
-    window.addEventListener('beforeunload', stopBroadcast);
-
-    return () => {
-      window.removeEventListener('beforeunload', stopBroadcast);
-    };
-  }, []);
 
   const handleCheckout = () => {
     stopBroadcast();
@@ -75,6 +80,111 @@ function Broadcast() {
   const handleBroadcastTitle = (newTitle: string) => {
     setTitle(newTitle);
   };
+
+  // 체크아웃 안하고 바로 창 닫을 때 처리
+  useEffect(() => {
+    window.addEventListener('beforeunload', stopBroadcast);
+
+    return () => {
+      window.removeEventListener('beforeunload', stopBroadcast);
+    };
+  }, []);
+
+  // 비디오 스트림 설정
+  useEffect(() => {
+    if (videoRef.current && mediaStream) {
+      videoRef.current.srcObject = mediaStream;
+    }
+  }, [isMediastreamReady]);
+
+  // 화면 공유 스트림 설정
+  useEffect(() => {
+    if (screenShareRef.current && screenStream) {
+      screenShareRef.current.srcObject = screenStream;
+    }
+  }, [isScreenSharing]);
+
+  // 미디어스트림 캔버스에 넣기
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    canvas.width = 1280;
+    canvas.height = 720;
+
+    const context = canvas.getContext('2d');
+    if (!context) return;
+
+    const draw = () => {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 화면 공유 on
+      if (isScreenSharing && screenShareRef.current) {
+        context.drawImage(screenShareRef.current, 0, 0, canvas.width, canvas.height);
+        // 캠 on
+        if (isVideoEnabled && videoRef.current) {
+          const pipWidth = canvas.width / 4;
+          const pipHeight = canvas.height / 4;
+          const pipX = canvas.width - pipWidth;
+          const pipY = canvas.height - pipHeight;
+          context.drawImage(videoRef.current, pipX, pipY, pipWidth, pipHeight);
+        }
+      } else if (isVideoEnabled && videoRef.current) {
+        // 화면 공유 off / 캠 on
+        context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      } else {
+        // 화면 공유 off / 캠 off
+        context.fillStyle = '#d9d9d9';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(draw);
+    };
+
+    // produce할 때 사용할 새 MediaStream 생성
+    const createMixedStream = () => {
+      const canvasVideoStream = canvas.captureStream(60);
+      const mixedStream = new MediaStream();
+
+      // 캔버스 비디오
+      canvasVideoStream.getVideoTracks().forEach(track => {
+        mixedStream.addTrack(track);
+      });
+
+      // 미디어 오디오
+      if (mediaStream) {
+        const audioTracks = mediaStream.getAudioTracks();
+        audioTracks.forEach(track => {
+          mixedStream.addTrack(track);
+        });
+      }
+
+      // 화면 공유 오디오
+      if (isScreenSharing && screenStream) {
+        const screenAudioTracks = screenStream.getAudioTracks();
+        screenAudioTracks.forEach(track => {
+          mixedStream.addTrack(track);
+        });
+      }
+
+      return mixedStream;
+    };
+
+    const startDrawing = () => {
+      draw();
+      if (!stream.current) {
+        stream.current = createMixedStream();
+        console.log(stream.current);
+        setIsStreamReady(true);
+      }
+    };
+
+    if (videoRef.current) {
+      videoRef.current.onloadedmetadata = startDrawing;
+    }
+    if (screenShareRef.current) {
+      screenShareRef.current.onloadedmetadata = startDrawing;
+    }
+  }, [isVideoEnabled, isScreenSharing, mediaStream, screenStream]);
 
   if (socketError || roomError || transportError) {
     return (
@@ -91,22 +201,36 @@ function Broadcast() {
 
   return (
     <div className="flex flex-col p-4 h-full">
-      {mediaStreamError || mediasoupError ? (
+      {mediaStreamError || mediasoupError || screenShareError ? (
         <>
           <h2 className="text-display-bold24 text-text-danger">Error</h2>
           {mediaStreamError && <div className="text-display-medium16 text-text-danger">{mediaStreamError.message}</div>}
           {mediasoupError && <div className="text-display-medium16 text-text-danger">{mediasoupError.message}</div>}
+          {screenShareError && <div className="text-display-medium16 text-text-danger">{screenShareError.message}</div>}
         </>
       ) : (
         <>
-          <div className="relative w-full aspect-video">
+          <div className="relative w-full max-h-[310px] aspect-video">
             <video
               ref={videoRef}
               autoPlay
               muted
-              className="absolute top-0 left-0 w-full h-full bg-surface-alt rounded-xl object-cover"
+              playsInline
+              className="absolute top-0 left-0 w-full h-full object-cover"
             />
-            <audio />
+            <video
+              ref={screenShareRef}
+              autoPlay
+              muted
+              playsInline
+              className="absolute top-0 left-0 w-full h-full object-cover"
+            />
+            <canvas
+              ref={canvasRef}
+              width={1280}
+              height={720}
+              className="absolute top-0 left-0 w-full h-full bg-surface-alt rounded-xl object-cover"
+            ></canvas>
           </div>
           <div className="w-full">
             <BroadcastTitle currentTitle={title} onTitleChange={handleBroadcastTitle} />
@@ -117,7 +241,7 @@ function Broadcast() {
               <div className="flex items-center gap-4">
                 <button onClick={toggleVideo}>{isVideoEnabled ? <VideoOnIcon /> : <VideoOffIcon />}</button>
                 <button onClick={toggleAudio}>{isAudioEnabled ? <MicrophoneOnIcon /> : <MicrophoneOffIcon />}</button>
-                <button>
+                <button onClick={toggleScreenShare}>
                   <MonitorShareIcon />
                 </button>
                 <button>
