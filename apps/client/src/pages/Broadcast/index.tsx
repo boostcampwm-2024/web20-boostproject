@@ -142,7 +142,7 @@ function Broadcast() {
 
     // produce할 때 사용할 새 MediaStream 생성
     const createMixedStream = () => {
-      const canvasVideoStream = canvas.captureStream(60);
+      const canvasVideoStream = canvas.captureStream(30);
       const mixedStream = new MediaStream();
 
       // 캔버스 비디오
@@ -169,13 +169,10 @@ function Broadcast() {
       return mixedStream;
     };
 
-    const startDrawing = () => {
+    const startDrawing = async () => {
       draw();
-      if (!stream.current) {
-        stream.current = createMixedStream();
-        console.log(stream.current);
-        setIsStreamReady(true);
-      }
+      stream.current = createMixedStream();
+      if (!isStreamReady) setIsStreamReady(true);
     };
 
     if (videoRef.current) {
