@@ -16,7 +16,13 @@ const useScreenShare = () => {
       setIsScreenSharing(true);
       screenStreamRef.current = mediaStream;
     } catch (err) {
-      setScreenShareError(err instanceof Error ? err : new Error('화면 공유 실패'));
+      if (err instanceof Error) {
+        if (err.name !== 'NotAllowedError') {
+          setScreenShareError(err);
+        }
+      } else {
+        setScreenShareError(new Error('화면 공유 실패'));
+      }
     }
   };
 
