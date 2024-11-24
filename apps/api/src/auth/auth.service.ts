@@ -10,13 +10,13 @@ export class AuthService {
   constructor(private readonly memberService: MemberService, private readonly jwtService: JwtService) {}
 
   async validateMember({ email, profileImage, name, github }: SigninDto) {
-    const { id } = await this.memberService.findMemberByEmail(email);
+    const member = await this.memberService.findMemberByEmail(email);
 
-    if (!id) {
+    if (!member) {
       return await this.memberService.createMember({ email, profileImage, name, github });
     }
 
-    return id;
+    return member.id;
   }
 
   login(id: Express.User) {
