@@ -17,6 +17,12 @@ export class MemberService {
     return member;
   }
 
+  async findMemberById(id: number) {
+    const member = await this.memberRepository.createQueryBuilder('member').where('member.id = :id', { id }).getOne();
+
+    return member;
+  }
+
   async createMember({ email, profileImage, name, github }: SigninDto) {
     const {
       identifiers: [{ id }],
