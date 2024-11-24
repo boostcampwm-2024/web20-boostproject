@@ -55,6 +55,18 @@ export class BroadcastService {
     await this.broadcastRepository.update(broadcast.id, broadcast);
   }
 
+  async searchBroadcasts(keyword: string): Promise<Broadcast[]> {
+    if (!keyword) {
+      return [];
+    }
+
+    return this.broadcastRepository
+      .createQueryBuilder('broadcast')
+      .leftJoinAndSelect('broadcast.member', 'member')
+      .where('broadcast.title LIKE :keyword', { keyword: `%${keyword}%` })
+      .getMany();
+  }
+
   async createBroadcast({ id, title, thumbnail }: CreateBroadcastDto): Promise<Broadcast> {
     const broadcast = this.broadcastRepository.create({
       id,
