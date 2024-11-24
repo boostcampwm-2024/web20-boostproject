@@ -12,6 +12,8 @@ import { ApiSuccessResponse } from 'src/common/decorators/success-res.decorator'
 import { ApiErrorResponse } from 'src/common/decorators/error-res.decorator';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { BroadcastSearchResponseDto } from './dto/broadcast-search-response.dto';
+import { FieldEnum } from 'src/member/enum/field.enum';
+import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 
 @Controller('v1/broadcasts')
 export class BroadcastController {
@@ -22,9 +24,13 @@ export class BroadcastController {
   @ApiOperation({ summary: '방송 리스트 조회' })
   @ApiSuccessResponse(SuccessStatus.OK(BroadcastListResponseDto), BroadcastListResponseDto)
   @ApiErrorResponse(500, ErrorStatus.INTERNAL_SERVER_ERROR)
-  async getAll() {
-    const broadcasts = await this.broadcastService.getAll();
-    return SuccessStatus.OK(BroadcastListResponseDto.from(broadcasts));
+  async getAllWithFilter(@Query('field') field: FieldEnum) {
+    if (field && !Object.values(FieldEnum).includes(field as FieldEnum)) {
+      throw new CustomException(ErrorStatus.INVALID_FIELD);
+    }
+
+    const broadcasts = await this.broadcastService.getAllWithFilter(field);
+    return SuccessStatus.OK(BroadcastListResponseDto.fromList(broadcasts));
   }
 
   @Get('/:broadcastId/info')
