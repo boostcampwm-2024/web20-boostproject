@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Member } from './member.entity';
 import { Repository } from 'typeorm';
-import { SigninDto } from 'src/auth/dto/signin.dto';
 
 @Injectable()
 export class MemberService {
@@ -23,10 +22,7 @@ export class MemberService {
     return member;
   }
 
-  async createMember({ email, profileImage, name, github }: SigninDto) {
-    const member = this.memberRepository.create([{ email, name, profileImage, github }]);
-    const [savedMember] = await this.memberRepository.save(member);
-
-    return savedMember.id;
+  async createMember(member: Member) {
+    return await this.memberRepository.save(member);
   }
 }

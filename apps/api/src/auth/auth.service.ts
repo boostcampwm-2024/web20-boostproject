@@ -9,11 +9,11 @@ import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 export class AuthService {
   constructor(private readonly memberService: MemberService, private readonly jwtService: JwtService) {}
 
-  async validateOrCreateMember({ email, profileImage, name, github }: SigninDto) {
-    const member = await this.memberService.findMemberByEmail(email);
+  async validateOrCreateMember(signinDto: SigninDto) {
+    const member = await this.memberService.findMemberByEmail(signinDto.email);
 
     if (!member) {
-      return await this.memberService.createMember({ email, profileImage, name, github });
+      return await this.memberService.createMember(signinDto.toMember());
     }
 
     return member.id;
