@@ -23,6 +23,6 @@ export class GoogleAuthStrategy extends PassportStrategy(Strategy) {
       profileImage: photos[0].value,
     };
 
-    return this.authService.validateMember(signinDto);
+    return this.authService.validateOrCreateMember(signinDto);
   }
 }

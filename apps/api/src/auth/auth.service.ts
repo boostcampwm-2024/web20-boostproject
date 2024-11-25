@@ -9,7 +9,7 @@ import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 export class AuthService {
   constructor(private readonly memberService: MemberService, private readonly jwtService: JwtService) {}
 
-  async validateMember({ email, profileImage, name, github }: SigninDto) {
+  async validateOrCreateMember({ email, profileImage, name, github }: SigninDto) {
     const member = await this.memberService.findMemberByEmail(email);
 
     if (!member) {
@@ -26,7 +26,7 @@ export class AuthService {
     return accessToken;
   }
 
-  async validateToken(id: number) {
+  async validateMember(id: number) {
     const member = await this.memberService.findMemberById(id);
 
     if (!member) {

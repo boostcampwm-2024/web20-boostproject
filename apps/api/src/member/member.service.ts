@@ -24,15 +24,9 @@ export class MemberService {
   }
 
   async createMember({ email, profileImage, name, github }: SigninDto) {
-    const {
-      identifiers: [{ id }],
-    } = await this.memberRepository
-      .createQueryBuilder('member')
-      .insert()
-      .into(Member)
-      .values([{ email, name, profileImage, github }])
-      .execute();
+    const member = this.memberRepository.create([{ email, name, profileImage, github }]);
+    const [savedMember] = await this.memberRepository.save(member);
 
-    return id;
+    return savedMember.id;
   }
 }

@@ -24,6 +24,6 @@ export class GithubAuthStrategy extends PassportStrategy(Strategy) {
       github: profileUrl,
     };
 
-    return this.authService.validateMember(signinDto);
+    return this.authService.validateOrCreateMember(signinDto);
   }
 }

@@ -15,6 +15,6 @@ export class JWTAuthStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate({ id }: IPayLoad) {
-    return await this.authService.validateToken(id);
+    return await this.authService.validateMember(id);
   }
 }
