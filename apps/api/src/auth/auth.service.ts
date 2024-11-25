@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { SigninDto } from './dto/signin.dto';
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
+import { Member } from 'src/member/member.entity';
 
 @Injectable()
 export class AuthService {
@@ -16,11 +17,11 @@ export class AuthService {
       return await this.memberService.createMember(signinDto.toMember());
     }
 
-    return member.id;
+    return member;
   }
 
-  login(id: Express.User) {
-    const payload = { id };
+  login(member: Member) {
+    const payload = { id: member.id };
     const accessToken = this.jwtService.sign(payload);
 
     return accessToken;
