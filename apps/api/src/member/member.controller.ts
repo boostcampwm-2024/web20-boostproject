@@ -18,7 +18,7 @@ export class MemberController {
 
   @Get('/info')
   @UseGuards(JWTAuthGuard)
-  @ApiTags(SwaggerTag.MAIN)
+  @ApiTags(SwaggerTag.MYPAGE)
   @ApiOperation({ summary: '내 정보 조회' })
   @ApiSuccessResponse(SuccessStatus.OK(MemberInfoResponseDto), MemberInfoResponseDto)
   @ApiErrorResponse(500, ErrorStatus.INTERNAL_SERVER_ERROR)
