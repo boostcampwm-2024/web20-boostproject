@@ -5,10 +5,15 @@ import { Repository } from 'typeorm';
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { MemberInfoResponseDto } from './dto/member-info-response.dto';
+import { AttendanceResponseDto } from './dto/attendance-response.dto';
+import { Attendance } from 'src/attendance/attendance.entity';
 
 @Injectable()
 export class MemberService {
-  constructor(@InjectRepository(Member) private readonly memberRepository: Repository<Member>) {}
+  constructor(
+    @InjectRepository(Member) private readonly memberRepository: Repository<Member>,
+    @InjectRepository(Attendance) private attendanceRepository: Repository<Attendance>,
+  ) {}
 
   async findMemberByEmail(email: string) {
     const member = await this.memberRepository
@@ -49,5 +54,13 @@ export class MemberService {
       },
       profileImage: member.profileImage,
     };
+  }
+
+  async getMemberAttendance(memberId: number): Promise<AttendanceResponseDto> {
+    const attendances = await this.attendanceRepository.find({
+      where: { member: { id: memberId } },
+      order: { startTime: 'DESC' },
+    });
+    return AttendanceResponseDto.of(memberId, attendances);
   }
 }

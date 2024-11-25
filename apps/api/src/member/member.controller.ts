@@ -10,6 +10,7 @@ import { MemberInfoResponseDto } from './dto/member-info-response.dto';
 import { SwaggerTag } from 'src/common/constants/swagger-tag.enum';
 import { ApiErrorResponse } from 'src/common/decorators/error-res.decorator';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
+import { AttendanceResponseDto } from './dto/attendance-response.dto';
 
 @Controller('/v1/members')
 export class MemberController {
@@ -24,5 +25,14 @@ export class MemberController {
   @ApiErrorResponse(404, ErrorStatus.MEMBER_NOT_FOUND)
   async getInfo(@UserReq() member: Member) {
     return await this.memberService.getMemberInfo(member.id);
+  }
+
+  @Get('/attendance')
+  @UseGuards(JWTAuthGuard)
+  @ApiTags(SwaggerTag.MYPAGE)
+  @ApiOperation({ summary: '내 출석 내역 조회' })
+  @ApiSuccessResponse(SuccessStatus.OK(AttendanceResponseDto), AttendanceResponseDto)
+  async getAttendance(@UserReq() member: Member) {
+    return await this.memberService.getMemberAttendance(member.id);
   }
 }
