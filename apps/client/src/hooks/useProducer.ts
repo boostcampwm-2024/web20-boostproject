@@ -6,8 +6,8 @@ import { checkDependencies } from '@/utils/utils';
 
 interface UseProducerProps {
   socket: Socket | null;
-  mediaStream: MediaStream | null;
-  isMediastreamReady: boolean;
+  stream: MediaStream | null;
+  isStreamReady: boolean;
   roomId: string;
   device: Device | null;
   transportInfo: TransportInfo | null;
@@ -21,8 +21,8 @@ interface UseProducerReturn {
 
 export const useProducer = ({
   socket,
-  mediaStream,
-  isMediastreamReady,
+  stream,
+  isStreamReady,
   roomId,
   device,
   transportInfo,
@@ -82,10 +82,11 @@ export const useProducer = ({
   };
 
   const createProducer = async (socket: Socket, transportInfo: TransportInfo) => {
-    if (!transport.current || !socket || !mediaStream) {
+    if (!transport.current || !socket || !stream) {
+      console.log('useProducer stream:', stream);
       const dependencyError = checkDependencies('createProducer', {
         socket,
-        mediaStream,
+        stream,
         transport: transport.current,
       });
       setError(dependencyError);
@@ -113,8 +114,9 @@ export const useProducer = ({
           );
         });
 
-        transport.current!.produce({ track: mediaStream?.getVideoTracks()[0] });
-        transport.current!.produce({ track: mediaStream?.getAudioTracks()[0] });
+        stream.getTracks().forEach(track => {
+          transport.current!.produce({ track });
+        });
       });
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Producer creation failed'));
@@ -123,10 +125,9 @@ export const useProducer = ({
   };
 
   useEffect(() => {
-    if (!socket || !device || !roomId || !isMediastreamReady || !mediaStream || !transportInfo) {
+    if (!socket || !device || !roomId || !stream || !isStreamReady || !transportInfo) {
       return;
     }
-
     createTransport(socket, device, roomId, transportInfo)
       .then(() => createProducer(socket, transportInfo))
       .catch(err => setError(err instanceof Error ? err : new Error('Producer initialization failed')));
@@ -137,7 +138,7 @@ export const useProducer = ({
         transport.current = null;
       }
     };
-  }, [socket, device, roomId, transportInfo, isMediastreamReady]);
+  }, [socket, device, roomId, transportInfo, isStreamReady]);
 
   return {
     transport: transport.current,
