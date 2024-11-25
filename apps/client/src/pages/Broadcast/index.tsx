@@ -152,10 +152,10 @@ function Broadcast() {
 
       // 미디어 오디오
       if (mediaStream) {
-        const audioTracks = mediaStream.getAudioTracks();
-        audioTracks.forEach(track => {
-          mixedStream.addTrack(track);
-        });
+        const audioTrack = mediaStream.getAudioTracks()[0];
+        if (audioTrack && audioTrack.enabled) {
+          mixedStream.addTrack(audioTrack);
+        }
       }
 
       // 화면 공유 오디오
@@ -177,11 +177,11 @@ function Broadcast() {
 
     if (videoRef.current) {
       videoRef.current.onloadedmetadata = startDrawing;
+      if (videoRef.current.readyState >= 2) {
+        startDrawing();
+      }
     }
-    if (screenShareRef.current) {
-      screenShareRef.current.onloadedmetadata = startDrawing;
-    }
-  }, [isVideoEnabled, isScreenSharing, mediaStream, screenStream]);
+  }, [isVideoEnabled, isAudioEnabled, isScreenSharing, mediaStream, screenStream]);
 
   if (socketError || roomError || transportError) {
     return (
