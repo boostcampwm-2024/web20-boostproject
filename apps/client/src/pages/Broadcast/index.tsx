@@ -18,21 +18,19 @@ import {
 import { Button } from '@components/ui/button';
 import { useEffect, useRef, useState } from 'react';
 import useScreenShare from '@/hooks/useScreenShare';
+import VideoPlayer from './BroadcastPlayer';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
 function Broadcast() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const screenShareRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const stream = useRef<MediaStream | null>(null);
   const [isStreamReady, setIsStreamReady] = useState(false);
   // 미디어 스트림(비디오, 오디오)
-  const { mediaStream, mediaStreamError, isMediastreamReady } = useMediaStream();
+  const { mediaStream, mediaStreamError, isMediastreamReady: _imsr } = useMediaStream();
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
+
   // 화면 공유
   const { screenStream, isScreenSharing, screenShareError, toggleScreenShare } = useScreenShare();
-
   // 방송 송출
   const { socket, isConnected, socketError } = useSocket(mediaServerUrl);
   const { roomId, roomError } = useRoom(socket, isConnected);
@@ -90,99 +88,6 @@ function Broadcast() {
     };
   }, []);
 
-  // 비디오 스트림 설정
-  useEffect(() => {
-    if (videoRef.current && mediaStream) {
-      videoRef.current.srcObject = mediaStream;
-    }
-  }, [isMediastreamReady]);
-
-  // 화면 공유 스트림 설정
-  useEffect(() => {
-    if (screenShareRef.current && screenStream) {
-      screenShareRef.current.srcObject = screenStream;
-    }
-  }, [isScreenSharing]);
-
-  // 미디어스트림 캔버스에 넣기
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    canvas.width = 1280;
-    canvas.height = 720;
-
-    const context = canvas.getContext('2d');
-    if (!context) return;
-
-    const draw = () => {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-
-      // 화면 공유 on
-      if (isScreenSharing && screenShareRef.current) {
-        context.drawImage(screenShareRef.current, 0, 0, canvas.width, canvas.height);
-        // 캠 on
-        if (isVideoEnabled && videoRef.current) {
-          const pipWidth = canvas.width / 4;
-          const pipHeight = canvas.height / 4;
-          const pipX = canvas.width - pipWidth;
-          const pipY = canvas.height - pipHeight;
-          context.drawImage(videoRef.current, pipX, pipY, pipWidth, pipHeight);
-        }
-      } else if (isVideoEnabled && videoRef.current) {
-        // 화면 공유 off / 캠 on
-        context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      } else {
-        // 화면 공유 off / 캠 off
-        context.fillStyle = '#d9d9d9';
-        context.fillRect(0, 0, canvas.width, canvas.height);
-      }
-      requestAnimationFrame(draw);
-    };
-
-    // produce할 때 사용할 새 MediaStream 생성
-    const createMixedStream = () => {
-      const canvasVideoStream = canvas.captureStream(30);
-      const mixedStream = new MediaStream();
-
-      // 캔버스 비디오
-      canvasVideoStream.getVideoTracks().forEach(track => {
-        mixedStream.addTrack(track);
-      });
-
-      // 미디어 오디오
-      if (mediaStream) {
-        const audioTrack = mediaStream.getAudioTracks()[0];
-        if (audioTrack && audioTrack.enabled) {
-          mixedStream.addTrack(audioTrack);
-        }
-      }
-
-      // 화면 공유 오디오
-      if (isScreenSharing && screenStream) {
-        const screenAudioTracks = screenStream.getAudioTracks();
-        screenAudioTracks.forEach(track => {
-          mixedStream.addTrack(track);
-        });
-      }
-
-      return mixedStream;
-    };
-
-    const startDrawing = async () => {
-      draw();
-      stream.current = createMixedStream();
-      if (!isStreamReady) setIsStreamReady(true);
-    };
-
-    if (videoRef.current) {
-      videoRef.current.onloadedmetadata = startDrawing;
-      if (videoRef.current.readyState >= 2) {
-        startDrawing();
-      }
-    }
-  }, [isVideoEnabled, isAudioEnabled, isScreenSharing, mediaStream, screenStream]);
-
   if (socketError || roomError || transportError) {
     return (
       <div className="flex h-full justify-center items-center">
@@ -207,28 +112,16 @@ function Broadcast() {
         </>
       ) : (
         <>
-          <div className="relative w-full max-h-[310px] aspect-video">
-            <video
-              ref={videoRef}
-              autoPlay
-              muted
-              playsInline
-              className="absolute top-0 left-0 w-full h-full object-cover"
-            />
-            <video
-              ref={screenShareRef}
-              autoPlay
-              muted
-              playsInline
-              className="absolute top-0 left-0 w-full h-full object-cover"
-            />
-            <canvas
-              ref={canvasRef}
-              width={1280}
-              height={720}
-              className="absolute top-0 left-0 w-full h-full bg-surface-alt rounded-xl object-cover"
-            ></canvas>
-          </div>
+          <VideoPlayer
+            mediaStream={mediaStream}
+            screenStream={screenStream}
+            isVideoEnabled={isVideoEnabled}
+            isScreenSharing={isScreenSharing}
+            isStreamReady={isStreamReady}
+            setIsStreamReady={setIsStreamReady}
+            stream={stream}
+            isAudioEnabled={isAudioEnabled}
+          />
           <div className="w-full">
             <BroadcastTitle currentTitle={title} onTitleChange={handleBroadcastTitle} />
             <div className="flex justify-between items-center m-4">
