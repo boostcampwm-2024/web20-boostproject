@@ -31,23 +31,9 @@ export class MemberService {
 
   async getMemberInfo(id: number): Promise<MemberInfoResponseDto> {
     const member = await this.findMemberById(id);
-
     if (!member) {
       throw new CustomException(ErrorStatus.MEMBER_NOT_FOUND);
     }
-
-    return {
-      id: member.id,
-      camperId: member.camperId,
-      name: member.name,
-      field: member.field,
-      contacts: {
-        email: member.email,
-        github: member.github,
-        blog: member.blog,
-        linkedIn: member.linkedin,
-      },
-      profileImage: member.profileImage,
-    };
+    return MemberInfoResponseDto.from(member);
   }
 }
