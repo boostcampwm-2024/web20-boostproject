@@ -21,7 +21,7 @@ export class AuthService {
   }
 
   login(member: Member) {
-    const payload = { id: member.id };
+    const payload = { id: member.id, camperId: member.camperId };
     const accessToken = this.jwtService.sign(payload);
 
     return accessToken;

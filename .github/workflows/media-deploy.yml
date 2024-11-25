@@ -22,6 +22,7 @@ jobs:
       RECORD_SERVER_URL: ${{ secrets.RECORD_SERVER_URL }}
       SERVER_PRIVATE_IP: ${{ secrets.SERVER_PRIVATE_IP }}
       PUBLIC_RECORD_SERVER_URL: ${{ secrets.PUBLIC_RECORD_SERVER_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
       - name: Checkout code
@@ -51,6 +52,7 @@ jobs:
           --build-arg RECORD_SERVER_URL=$RECORD_SERVER_URL \
           --build-arg SERVER_PRIVATE_IP=$SERVER_PRIVATE_IP \
           --build-arg PUBLIC_RECORD_SERVER_URL=$PUBLIC_RECORD_SERVER_URL \
+          --build-arg JWT_SECRET=$JWT_SECRET \
           .         
 
       - name: Push to Ncloud Container Registry

@@ -9,6 +9,6 @@ import { AttendanceModule } from 'src/attendance/attendance.module';
   imports: [TypeOrmModule.forFeature([Member]), AttendanceModule],
   controllers: [MemberController],
   providers: [MemberService],
-  exports: [MemberService],
+  exports: [MemberService, TypeOrmModule],
 })
 export class MemberModule {}
