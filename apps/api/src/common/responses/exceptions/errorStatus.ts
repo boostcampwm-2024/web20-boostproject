@@ -9,7 +9,7 @@ export class ErrorStatus {
   static readonly UNAUTHORIZED = new ErrorStatus(401, 'COMMON_4001', '인증되지 않은 요청입니다.');
 
   // User Errors
-  static readonly USER_NOT_FOUND = new ErrorStatus(404, 'MEMBER_4000', '사용자를 찾을 수 없습니다.');
+  static readonly MEMBER_NOT_FOUND = new ErrorStatus(404, 'MEMBER_4000', '사용자를 찾을 수 없습니다.');
 
   static readonly INVALID_PASSWORD = new ErrorStatus(400, 'MEMBER_4001', '잘못된 비밀번호입니다.');
 
