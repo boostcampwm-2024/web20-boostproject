@@ -7,7 +7,7 @@ import { UpdateBroadcastTitleDto } from './dto/update-broadcast-title.request.dt
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { Attendance } from 'src/attendance/attendance.entity';
-import { FieldEnum } from 'src/member/enum/field.enum';
+import { BroadcastListDto } from './dto/broadcast-list.dto';
 
 @Injectable()
 export class BroadcastService {
@@ -16,16 +16,30 @@ export class BroadcastService {
     @InjectRepository(Attendance) private readonly attendanceRepository: Repository<Attendance>,
   ) {}
 
-  async getAllWithFilter(field?: FieldEnum): Promise<Broadcast[]> {
+  async getAllWithFilterAndPagination(queries: BroadcastListDto) {
+    const { field, cursor, limit } = queries;
+
     const query = this.broadcastRepository
       .createQueryBuilder('broadcast')
-      .leftJoinAndSelect('broadcast.member', 'member');
+      .leftJoinAndSelect('broadcast.member', 'member')
+      .orderBy('broadcast.id', 'ASC')
+      .take(limit + 1);
 
     if (field) {
-      query.where('member.filed = :field', { field });
+      query.andWhere('member.filed = :field', { field });
     }
 
-    return query.getMany();
+    if (cursor) {
+      query.andWhere('broadcast.id > :cursor', { cursor });
+    }
+
+    const queryResult = await query.getMany();
+    const hasNextData = queryResult.length > limit;
+    const broadcasts = queryResult.slice(0, limit);
+
+    const nextCursor = hasNextData ? broadcasts[broadcasts.length - 1].id : null;
+
+    return { broadcasts, nextCursor };
   }
 
   async getBroadcastInfo(broadcastId: string) {
