@@ -36,8 +36,8 @@ export class BroadcastInfoResponseDto {
   static from(broadcast: Broadcast) {
     const dto = new BroadcastInfoResponseDto();
     dto.title = broadcast.title;
-    dto.camperId = broadcast.member ? broadcast.member.filed : 'J000';
-    dto.field = broadcast.member ? broadcast.member.filed : FieldEnum.WEB;
+    dto.camperId = broadcast.member ? broadcast.member.camperId : 'J000';
+    dto.field = broadcast.member ? broadcast.member.field : FieldEnum.WEB;
     dto.viewers = broadcast.viewers;
     dto.profileImage = broadcast.member ? broadcast.member.profileImage : '';
     dto.contacts = {

@@ -28,7 +28,7 @@ export class BroadcastListResponseDto {
     dto.thumbnail = broadcast.thumbnail;
     dto.camperId = broadcast.member ? broadcast.member.camperId : '';
     dto.profileImage = broadcast.member ? broadcast.member.profileImage : '';
-    dto.field = broadcast.member ? broadcast.member.filed : FieldEnum.WEB;
+    dto.field = broadcast.member ? broadcast.member.field : FieldEnum.WEB;
     return dto;
   }
 
