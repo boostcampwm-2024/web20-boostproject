@@ -25,9 +25,7 @@ export class AuthController {
   signinGithubCallback(@UserReq() member: Member) {
     const accessToken = this.authService.login(member);
 
-    return {
-      accessToken,
-    };
+    return { accessToken };
   }
 
   @Get('/signin/google')
@@ -41,8 +39,6 @@ export class AuthController {
   signinGoogleCallback(@UserReq() member: Member) {
     const accessToken = this.authService.login(member);
 
-    return {
-      accessToken,
-    };
+    return { accessToken };
   }
 }

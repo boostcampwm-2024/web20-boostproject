@@ -30,7 +30,7 @@ export class BroadcastController {
     }
 
     const broadcasts = await this.broadcastService.getAllWithFilter(field);
-    return SuccessStatus.OK(BroadcastListResponseDto.fromList(broadcasts));
+    return BroadcastListResponseDto.fromList(broadcasts);
   }
 
   @Get('/:broadcastId/info')
@@ -42,7 +42,7 @@ export class BroadcastController {
   async getBroadcastInfo(@Param('broadcastId') broadcastId: string) {
     const broadcast = await this.broadcastService.getBroadcastInfo(broadcastId);
 
-    return SuccessStatus.OK(BroadcastInfoResponseDto.from(broadcast));
+    return BroadcastInfoResponseDto.from(broadcast);
   }
 
   // TODO: 유저 기능 추가 후 유저의 방송 찾는 로직 구현 필요
