@@ -14,13 +14,6 @@ export const createFfmpegProcess = (port: number, dirPath: string, roomId: strin
     ffmpegProcess.stdout.setEncoding('utf-8');
     ffmpegProcess.stdout.on('data', data => console.log('ffmpeg::stdout [data:%o]', data));
   }
-  ffmpegProcess.stderr.on('data', data => {
-    console.log(`FFmpeg log: ${data}`);
-  });
-  ffmpegProcess.stdout.on('data', data => console.log('ffmpeg::stdout [data:%o]', data));
-  ffmpegProcess.stdout.on('message', message => console.log('ffmpeg::stdout [data:%o]', message));
-
-  ffmpegProcess.stderr.on('message', message => console.log('ffmpeg::process::message [message:%o]', message));
   ffmpegProcess.on('error', error => console.error('ffmpeg::process::error [error:%o]', error));
   ffmpegProcess.on('close', code => {
     console.log(`FFmpeg process exited with code: ${code}`);
@@ -42,6 +35,8 @@ a=rtcp-mux
 
 const commandArgs = (dirPath: string, roomId: string) => {
   const commandArgs = [
+    '-loglevel',
+    'info', // 로그 활성화
     '-protocol_whitelist',
     'pipe,udp,rtp', // 허용할 프로토콜 정의
     '-f',

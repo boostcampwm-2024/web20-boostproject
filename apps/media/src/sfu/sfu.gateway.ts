@@ -18,7 +18,6 @@ export class SfuGateway {
 
   @SubscribeMessage('createRoom')
   async handleCreateRoom(client: Socket) {
-    console.log(client.id);
     const room = await this.sfuService.createRoom(client.id);
     return { roomId: room.id };
   }
