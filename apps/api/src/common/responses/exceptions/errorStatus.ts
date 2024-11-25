@@ -15,6 +15,12 @@ export class ErrorStatus {
 
   static readonly INVALID_TOKEN = new ErrorStatus(400, 'MEMBER_4002', '유효하지 않은 토큰입니다.');
 
+  static readonly INVALID_FIELD = new ErrorStatus(
+    400,
+    'MEMBER_4003',
+    '유효하지 않은 분야입니다. (WEB, AND, IOS 중 하나여야 합니다)',
+  );
+
   // Broadcast Errors
   static readonly BROADCAST_NOT_FOUND = new ErrorStatus(404, 'BROADCAST_4000', '방송 정보가 존재하지 않습니다.');
 }

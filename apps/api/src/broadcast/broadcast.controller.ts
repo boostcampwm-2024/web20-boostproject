@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { BroadcastService } from './broadcast.service';
 import { SuccessStatus } from '../common/responses/bases/successStatus';
 import { BroadcastListResponseDto } from './dto/broadcast-list-response.dto';
@@ -11,6 +11,9 @@ import { SwaggerTag } from 'src/common/constants/swagger-tag.enum';
 import { ApiSuccessResponse } from 'src/common/decorators/success-res.decorator';
 import { ApiErrorResponse } from 'src/common/decorators/error-res.decorator';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
+import { BroadcastSearchResponseDto } from './dto/broadcast-search-response.dto';
+import { FieldEnum } from 'src/member/enum/field.enum';
+import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 
 @Controller('v1/broadcasts')
 export class BroadcastController {
@@ -21,9 +24,13 @@ export class BroadcastController {
   @ApiOperation({ summary: '방송 리스트 조회' })
   @ApiSuccessResponse(SuccessStatus.OK(BroadcastListResponseDto), BroadcastListResponseDto)
   @ApiErrorResponse(500, ErrorStatus.INTERNAL_SERVER_ERROR)
-  async getAll() {
-    const broadcasts = await this.broadcastService.getAll();
-    return SuccessStatus.OK(BroadcastListResponseDto.from(broadcasts));
+  async getAllWithFilter(@Query('field') field: FieldEnum) {
+    if (field && !Object.values(FieldEnum).includes(field as FieldEnum)) {
+      throw new CustomException(ErrorStatus.INVALID_FIELD);
+    }
+
+    const broadcasts = await this.broadcastService.getAllWithFilter(field);
+    return SuccessStatus.OK(BroadcastListResponseDto.fromList(broadcasts));
   }
 
   @Get('/:broadcastId/info')
@@ -54,6 +61,16 @@ export class BroadcastController {
     await this.broadcastService.updateTitle(null, updateBroadcastTitleDto);
 
     return SuccessStatus.OK(null, '제목 수정이 완료 되었습니다.');
+  }
+
+  @Get('/search')
+  @ApiTags(SwaggerTag.MAIN)
+  @ApiOperation({ summary: '방송 검색' })
+  @ApiSuccessResponse(SuccessStatus.OK(BroadcastSearchResponseDto), BroadcastSearchResponseDto)
+  @ApiErrorResponse(500, ErrorStatus.INTERNAL_SERVER_ERROR)
+  async searchBroadcasts(@Query('keyword') keyword: string) {
+    const broadcasts = await this.broadcastService.searchBroadcasts(keyword);
+    return SuccessStatus.OK(BroadcastSearchResponseDto.fromList(broadcasts));
   }
 
   @Post()

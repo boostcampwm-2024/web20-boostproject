@@ -21,16 +21,18 @@ export class BroadcastListResponseDto {
   @ApiProperty({ example: 'WEB' })
   field: FieldEnum;
 
-  static from(broadcasts: Broadcast[]) {
-    return broadcasts.map(broadcast => {
-      const dto = new BroadcastListResponseDto();
-      dto.broadcastId = broadcast.id;
-      dto.broadcastTitle = broadcast.title;
-      dto.thumbnail = broadcast.thumbnail;
-      dto.camperId = broadcast.member ? broadcast.member.camperId : '';
-      dto.profileImage = broadcast.member ? broadcast.member.profileImage : '';
-      dto.field = broadcast.member ? broadcast.member.filed : FieldEnum.WEB;
-      return dto;
-    });
+  static from(broadcast: Broadcast): BroadcastListResponseDto {
+    const dto = new BroadcastListResponseDto();
+    dto.broadcastId = broadcast.id;
+    dto.broadcastTitle = broadcast.title;
+    dto.thumbnail = broadcast.thumbnail;
+    dto.camperId = broadcast.member ? broadcast.member.camperId : '';
+    dto.profileImage = broadcast.member ? broadcast.member.profileImage : '';
+    dto.field = broadcast.member ? broadcast.member.filed : FieldEnum.WEB;
+    return dto;
+  }
+
+  static fromList(broadcasts: Broadcast[]): BroadcastListResponseDto[] {
+    return broadcasts.map(broadcast => this.from(broadcast));
   }
 }

@@ -7,6 +7,7 @@ import { UpdateBroadcastTitleDto } from './dto/update-broadcast-title.request.dt
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { Attendance } from 'src/attendance/attendance.entity';
+import { FieldEnum } from 'src/member/enum/field.enum';
 
 @Injectable()
 export class BroadcastService {
@@ -15,11 +16,16 @@ export class BroadcastService {
     @InjectRepository(Attendance) private readonly attendanceRepository: Repository<Attendance>,
   ) {}
 
-  async getAll() {
-    return this.broadcastRepository
+  async getAllWithFilter(field?: FieldEnum): Promise<Broadcast[]> {
+    const query = this.broadcastRepository
       .createQueryBuilder('broadcast')
-      .leftJoinAndSelect('broadcast.member', 'member')
-      .getMany();
+      .leftJoinAndSelect('broadcast.member', 'member');
+
+    if (field) {
+      query.where('member.filed = :field', { field });
+    }
+
+    return query.getMany();
   }
 
   async getBroadcastInfo(broadcastId: string) {
@@ -53,6 +59,18 @@ export class BroadcastService {
 
     broadcast.title = broadcastTitle;
     await this.broadcastRepository.update(broadcast.id, broadcast);
+  }
+
+  async searchBroadcasts(keyword: string): Promise<Broadcast[]> {
+    if (!keyword) {
+      return [];
+    }
+
+    return this.broadcastRepository
+      .createQueryBuilder('broadcast')
+      .leftJoinAndSelect('broadcast.member', 'member')
+      .where('broadcast.title LIKE :keyword', { keyword: `%${keyword}%` })
+      .getMany();
   }
 
   async createBroadcast({ id, title, thumbnail }: CreateBroadcastDto): Promise<Broadcast> {
