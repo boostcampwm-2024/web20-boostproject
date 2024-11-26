@@ -12,6 +12,7 @@ import { ApiErrorResponse } from '../common/decorators/error-res.decorator';
 import { ErrorStatus } from '../common/responses/exceptions/errorStatus';
 import { ProfileImageDto } from './dto/profile-image.dto';
 import { MemberInfoResponseDto } from './dto/member-info-response.dto';
+import { AttendanceResponseDto } from './dto/attendance-response.dto';
 
 @Controller('v1/members')
 @UseGuards(JWTAuthGuard)
@@ -38,8 +39,9 @@ export class MemberController {
   @ApiErrorResponse(400, ErrorStatus.INVALID_TOKEN)
   async getProfileImage(@UserReq() member: Member) {
     return ProfileImageDto.from(member);
-    
-   @Get('/info')
+  }
+
+  @Get('/info')
   @UseGuards(JWTAuthGuard)
   @ApiTags(SwaggerTag.MYPAGE)
   @ApiOperation({ summary: '내 정보 조회' })
@@ -48,5 +50,16 @@ export class MemberController {
   @ApiErrorResponse(404, ErrorStatus.MEMBER_NOT_FOUND)
   async getInfo(@UserReq() member: Member) {
     return MemberInfoResponseDto.from(member);
+  }
+
+  @Get('/attendance')
+  @UseGuards(JWTAuthGuard)
+  @ApiTags(SwaggerTag.MYPAGE)
+  @ApiOperation({ summary: '내 출석 내역 조회' })
+  @ApiSuccessResponse(SuccessStatus.OK(AttendanceResponseDto), AttendanceResponseDto)
+  async getAttendance(@UserReq() member: Member) {
+    const attendances = await this.memberService.getMemberAttendance(member.id);
+
+    return AttendanceResponseDto.of(member.id, attendances);
   }
 }

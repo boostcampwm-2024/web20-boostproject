@@ -27,7 +27,7 @@ export class UpdateMemberInfoDto {
     const member = new Member();
     member.name = this.name;
     member.camperId = this.camperId;
-    member.filed = this.type;
+    member.field = this.type;
     member.email = this.contacts.email;
     member.github = this.contacts.github;
     member.blog = this.contacts.blog;
