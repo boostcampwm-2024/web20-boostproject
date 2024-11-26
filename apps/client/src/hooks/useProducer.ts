@@ -128,6 +128,7 @@ export const useProducer = ({
     if (!socket || !device || !roomId || !tracks || !isStreamReady || !transportInfo) {
       return;
     }
+
     createTransport(socket, device, roomId, transportInfo)
       .then(() => createProducer(socket, transportInfo))
       .catch(err => setError(err instanceof Error ? err : new Error('Producer initialization failed')));
@@ -138,7 +139,7 @@ export const useProducer = ({
         transport.current = null;
       }
     };
-  }, [socket, device, roomId, transportInfo, isStreamReady]);
+  }, [socket, device, roomId, transportInfo, isMediastreamReady]);
 
   return {
     transport: transport.current,

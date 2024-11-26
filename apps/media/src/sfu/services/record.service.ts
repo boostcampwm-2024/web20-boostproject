@@ -2,25 +2,32 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as mediasoup from 'mediasoup';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class RecordService {
-  constructor(private readonly httpservice: HttpService, private readonly configService: ConfigService) {}
+  private readonly recordServerUrl: string;
+  private readonly serverPrivateIp: string;
+  private readonly announcedIp: string;
+
+  constructor(private readonly httpService: HttpService, private readonly configService: ConfigService) {
+    this.recordServerUrl = this.configService.get<string>('RECORD_SERVER_URL', 'http://localhost:3003');
+    this.serverPrivateIp = this.configService.get<string>('SERVER_PRIVATE_IP', '127.0.0.1');
+    this.announcedIp = this.configService.get<string>('ANNOUNCED_IP', '127.0.0.1');
+  }
 
   async sendStream(room: mediasoup.types.Router, producer: mediasoup.types.Producer) {
     if (producer.kind === 'audio') return;
     const recordTransport = await this.createPlainTransport(room);
-    const codecs = [];
-    const routerCodec = room.rtpCapabilities.codecs.find(codec => codec.kind === producer.kind);
-    codecs.push(routerCodec);
-    const rtpCapabilities = {
-      codecs,
-      rtcpFeedback: [],
-    };
+    const rtpCapabilities = this.getRtpCapabilities(room, producer.kind);
     const recordConsumer = await recordTransport.consume({
       producerId: producer.id,
       rtpCapabilities,
       paused: true,
+      preferredLayers: {
+        spatialLayer: 2,
+        temporalLayer: 2,
+      },
     });
 
     setTimeout(async () => {
@@ -28,25 +35,14 @@ export class RecordService {
       await recordConsumer.requestKeyFrame();
     }, 1000);
 
-    const { port } = await this.httpservice
-      .get(`${this.configService.get('RECORD_SERVER_URL')}/availablePort`)
-      .toPromise()
-      .then(({ data }) => data);
+    const { port } = await this.getAvailablePort();
 
-    await recordTransport.connect({
-      ip: this.configService.get('SERVER_PRIVATE_IP'),
-      port,
-    });
+    await recordTransport.connect({ ip: this.serverPrivateIp, port });
 
-    this.setUpRecordTransportListeners(recordTransport, port);
+    this.setUpRecordTransportListeners(recordTransport, port, room.id);
     this.setUpRecordConsumerListeners(recordConsumer);
 
-    await this.httpservice
-      .post(`${this.configService.get('RECORD_SERVER_URL')}/send`, {
-        roomId: room.id,
-        port,
-      })
-      .toPromise();
+    await this.sendRecordStartRequest(room.id, port);
   }
 
   async createPlainTransport(room: mediasoup.types.Router) {
@@ -54,20 +50,21 @@ export class RecordService {
       listenInfo: {
         protocol: 'udp',
         ip: '0.0.0.0',
-        announcedAddress: this.configService.get('ANNOUNCED_IP') || '127.0.0.1',
+        announcedAddress: this.announcedIp,
         portRange: { min: 30000, max: 31000 },
       },
       rtcpMux: true,
     });
   }
 
-  private setUpRecordTransportListeners(recordTransport: mediasoup.types.Transport, port: number) {
+  private setUpRecordTransportListeners(recordTransport: mediasoup.types.Transport, port: number, roomId: string) {
     recordTransport.on('routerclose', async () => {
-      await this.httpservice
-        .post(`${this.configService.get('RECORD_SERVER_URL')}/close`, {
+      await lastValueFrom(
+        this.httpService.post(`${this.configService.get('RECORD_SERVER_URL')}/close`, {
           port,
-        })
-        .toPromise();
+          roomId,
+        }),
+      );
       recordTransport.close();
     });
   }
@@ -76,5 +73,30 @@ export class RecordService {
     recordConsumer.on('transportclose', () => {
       recordConsumer.close();
     });
+  }
+
+  private getRtpCapabilities(room: mediasoup.types.Router, kind: string) {
+    const routerCodec = room.rtpCapabilities.codecs.find(codec => codec.kind === kind);
+    if (!routerCodec) {
+      throw new Error(`No codec found for kind: ${kind}`);
+    }
+    return {
+      codecs: [routerCodec],
+      rtcpFeedback: [],
+    };
+  }
+
+  private async getAvailablePort(): Promise<{ port: number }> {
+    const response = await lastValueFrom(this.httpService.get(`${this.recordServerUrl}/availablePort`));
+    return response.data;
+  }
+
+  private async sendRecordStartRequest(roomId: string, port: number) {
+    await lastValueFrom(
+      this.httpService.post(`${this.recordServerUrl}/send`, {
+        roomId,
+        port,
+      }),
+    );
   }
 }

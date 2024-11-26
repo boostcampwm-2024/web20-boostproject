@@ -6,3 +6,8 @@ export interface LivePreviewInfo {
   thumbnail: string;
   field: 'WEB' | 'AND' | 'IOS';
 }
+
+export interface LivePreviewListInfo {
+  broadcasts: LivePreviewInfo[];
+  nextCursor: string | null;
+}

@@ -7,7 +7,6 @@ import { useTransport } from '@hooks/useTransport';
 import LivePlayer from './LivePlayer';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import LoadingCharacter from '@/components/LoadingCharacter';
 
 const socketUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
@@ -23,7 +22,6 @@ export default function Live() {
     transport,
     mediastream: mediaStream,
     error: _error,
-    isLoading,
   } = useConsumer({
     socket,
     device,
@@ -70,13 +68,7 @@ export default function Live() {
       ) : (
         <>
           <div className="flex flex-col flex-grow gap-4 h-full ml-8">
-            {isLoading ? (
-              <div className="flex h-full w-full justify-center items-center">
-                <LoadingCharacter size={200} />
-              </div>
-            ) : (
-              <LivePlayer mediaStream={mediaStream} />
-            )}
+            <LivePlayer mediaStream={mediaStream} />
             <LiveCamperInfo liveId={liveId} />
           </div>
           <div className="flex h-full w-80 pr-5">

@@ -7,6 +7,7 @@ import { CreateConsumerDto } from './dto/create-consumer.dto';
 import { CreateTransportDto } from './dto/create-transport.dto';
 import { UseFilters } from '@nestjs/common';
 import { WebSocketExceptionFilter } from 'src/common/filter/webSocketException.filter';
+import { SetVideoQualityDto } from './dto/set-video-quality.dto';
 
 @WebSocketGateway({ cors: { origin: '*', methods: ['GET', 'POST'] } })
 @UseFilters(WebSocketExceptionFilter)
@@ -18,7 +19,6 @@ export class SfuGateway {
 
   @SubscribeMessage('createRoom')
   async handleCreateRoom(client: Socket) {
-    console.log(client.id);
     const room = await this.sfuService.createRoom(client.id);
     return { roomId: room.id };
   }
@@ -94,6 +94,12 @@ export class SfuGateway {
     } catch (error) {
       return error;
     }
+  }
+
+  //시청 종료
+  @SubscribeMessage('setVideoQuality')
+  handleVideoQuality(@MessageBody() params: SetVideoQualityDto) {
+    this.sfuService.setVideoQuality(params);
   }
 
   async handleDisconnect(client: Socket) {

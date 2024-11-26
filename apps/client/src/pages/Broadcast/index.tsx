@@ -32,6 +32,7 @@ function Broadcast() {
 
   // 화면 공유
   const { screenStream, isScreenSharing, screenShareError, toggleScreenShare } = useScreenShare();
+
   // 방송 송출
   const { socket, isConnected, socketError } = useSocket(mediaServerUrl);
   const { roomId, roomError } = useRoom(socket, isConnected);
@@ -63,13 +64,17 @@ function Broadcast() {
       mediaStream?.getTracks().forEach(track => {
         track.stop();
       });
-
-      screenStream?.getTracks().forEach(track => {
-        track.stop();
-      });
     }
     transport?.close();
   };
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', stopBroadcast);
+
+    return () => {
+      window.removeEventListener('beforeunload', stopBroadcast);
+    };
+  }, []);
 
   const handleCheckout = () => {
     stopBroadcast();
@@ -79,15 +84,6 @@ function Broadcast() {
   const handleBroadcastTitle = (newTitle: string) => {
     setTitle(newTitle);
   };
-
-  // 체크아웃 안하고 바로 창 닫을 때 처리
-  useEffect(() => {
-    window.addEventListener('beforeunload', stopBroadcast);
-
-    return () => {
-      window.removeEventListener('beforeunload', stopBroadcast);
-    };
-  }, []);
 
   if (socketError || roomError || transportError) {
     return (
@@ -104,12 +100,11 @@ function Broadcast() {
 
   return (
     <div className="flex flex-col p-4 h-full">
-      {mediaStreamError || mediasoupError || screenShareError ? (
+      {mediaStreamError || mediasoupError ? (
         <>
           <h2 className="text-display-bold24 text-text-danger">Error</h2>
           {mediaStreamError && <div className="text-display-medium16 text-text-danger">{mediaStreamError.message}</div>}
           {mediasoupError && <div className="text-display-medium16 text-text-danger">{mediasoupError.message}</div>}
-          {screenShareError && <div className="text-display-medium16 text-text-danger">{screenShareError.message}</div>}
         </>
       ) : (
         <>
@@ -132,7 +127,7 @@ function Broadcast() {
               <div className="flex items-center gap-4">
                 <button onClick={toggleVideo}>{isVideoEnabled ? <VideoOnIcon /> : <VideoOffIcon />}</button>
                 <button onClick={toggleAudio}>{isAudioEnabled ? <MicrophoneOnIcon /> : <MicrophoneOffIcon />}</button>
-                <button onClick={toggleScreenShare}>
+                <button>
                   <MonitorShareIcon />
                 </button>
                 <button>

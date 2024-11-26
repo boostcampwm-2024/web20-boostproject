@@ -7,6 +7,7 @@ import { UpdateBroadcastTitleDto } from './dto/update-broadcast-title.request.dt
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { Attendance } from 'src/attendance/attendance.entity';
+import { BroadcastListDto } from './dto/broadcast-list.dto';
 
 @Injectable()
 export class BroadcastService {
@@ -15,11 +16,30 @@ export class BroadcastService {
     @InjectRepository(Attendance) private readonly attendanceRepository: Repository<Attendance>,
   ) {}
 
-  async getAll() {
-    return this.broadcastRepository
+  async getAllWithFilterAndPagination(queries: BroadcastListDto) {
+    const { field, cursor, limit } = queries;
+
+    const query = this.broadcastRepository
       .createQueryBuilder('broadcast')
       .leftJoinAndSelect('broadcast.member', 'member')
-      .getMany();
+      .orderBy('broadcast.id', 'ASC')
+      .take(limit + 1);
+
+    if (field) {
+      query.andWhere('member.filed = :field', { field });
+    }
+
+    if (cursor) {
+      query.andWhere('broadcast.id > :cursor', { cursor });
+    }
+
+    const queryResult = await query.getMany();
+    const hasNextData = queryResult.length > limit;
+    const broadcasts = queryResult.slice(0, limit);
+
+    const nextCursor = hasNextData ? broadcasts[broadcasts.length - 1].id : null;
+
+    return { broadcasts, nextCursor };
   }
 
   async getBroadcastInfo(broadcastId: string) {
@@ -35,17 +55,10 @@ export class BroadcastService {
   }
 
   async updateTitle(userId: number, { title: broadcastTitle }: UpdateBroadcastTitleDto) {
-    // 임시 broadcastId로 사용
-    const tempBroadcastId = '1';
     const broadcast = await this.broadcastRepository.findOne({
-      where: { id: tempBroadcastId },
+      where: { member: { id: userId } },
+      relations: ['member'],
     });
-
-    // TODO: 현재 userId로 넘어오는 값이 null 임
-    // const broadcast = await this.broadcastRepository.findOne({
-    //   where: { member: { id: userId } },
-    //   relations: ['member'],
-    // });
 
     if (!broadcast) {
       throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
@@ -53,6 +66,18 @@ export class BroadcastService {
 
     broadcast.title = broadcastTitle;
     await this.broadcastRepository.update(broadcast.id, broadcast);
+  }
+
+  async searchBroadcasts(keyword: string): Promise<Broadcast[]> {
+    if (!keyword) {
+      return [];
+    }
+
+    return this.broadcastRepository
+      .createQueryBuilder('broadcast')
+      .leftJoinAndSelect('broadcast.member', 'member')
+      .where('broadcast.title LIKE :keyword', { keyword: `%${keyword}%` })
+      .getMany();
   }
 
   async createBroadcast({ id, title, thumbnail }: CreateBroadcastDto): Promise<Broadcast> {

@@ -19,7 +19,7 @@ export class Member {
   camperId: string;
 
   @Column({ nullable: true })
-  filed: FieldEnum;
+  field: FieldEnum;
 
   @Column({ type: 'text', nullable: true })
   github: string;

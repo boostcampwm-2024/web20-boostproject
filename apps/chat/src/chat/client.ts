@@ -30,4 +30,8 @@ export class Client {
       message,
     });
   }
+
+  alertChatClosed() {
+    this.socket.emit('chatClosed');
+  }
 }

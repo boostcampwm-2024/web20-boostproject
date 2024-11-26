@@ -59,7 +59,7 @@ function LivePlayer({ mediaStream }: { mediaStream: MediaStream | null }) {
         ref={videoRef}
         autoPlay
         muted={isAudioEnabled ? false : true}
-        className=" h-full aspect-video object-contain"
+        className=" h-full aspect-video object-cover"
       />
       <div className="absolute bottom-4 left-0 right-0 px-6 text-text-default h-6 flex flex-row justify-between items-center">
         <div className="flex flex-row space-x-6 items-center">
