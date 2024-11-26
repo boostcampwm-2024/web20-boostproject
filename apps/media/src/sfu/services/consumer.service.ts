@@ -68,7 +68,7 @@ export class ConsumerService {
 
     const consumers = this.consumers.get(transportId);
     const videoConsumer = consumers.find(consumer => consumer.kind === 'video');
-    console.log(videoConsumer);
+
     videoConsumer.setPreferredLayers({
       spatialLayer: QUALITY_LAYER[quality],
       temporalLayer: 2,
