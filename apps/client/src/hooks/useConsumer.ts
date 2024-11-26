@@ -39,6 +39,7 @@ export interface CreateConsumerResponse {
 
 export const useConsumer = ({ socket, device, roomId, transportInfo, isConnected }: UseConsumerProps) => {
   const transport = useRef<Transport | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [mediastream, setMediastream] = useState<MediaStream | null>(null);
 
@@ -167,6 +168,7 @@ export const useConsumer = ({ socket, device, roomId, transportInfo, isConnected
           transport: transport.current,
         }),
       )
+      .then(() => setIsLoading(false))
       .catch(err => setError(err instanceof Error ? err : new Error('Consumer initialization failed')));
 
     return () => {
@@ -182,5 +184,6 @@ export const useConsumer = ({ socket, device, roomId, transportInfo, isConnected
     transport: transport.current,
     mediastream,
     error,
+    isLoading,
   };
 };

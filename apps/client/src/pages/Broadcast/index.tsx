@@ -11,7 +11,7 @@ import { MicrophoneOffIcon, MicrophoneOnIcon, VideoOffIcon, VideoOnIcon, Monitor
 import { Button } from '@components/ui/button';
 import { useEffect, useRef, useState } from 'react';
 import useScreenShare from '@/hooks/useScreenShare';
-import VideoPlayer from './BroadcastPlayer';
+import BroadcastPlayer from './BroadcastPlayer';
 import { Tracks } from '@/types/mediasoupTypes';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
@@ -30,7 +30,11 @@ function Broadcast() {
   const { socket, isConnected, socketError } = useSocket(mediaServerUrl);
   const { roomId, roomError } = useRoom(socket, isConnected);
   const { transportInfo, device, transportError } = useTransport({ socket, roomId, isProducer: true });
-  const { transport, error: mediasoupError } = useProducer({
+  const {
+    transport,
+    error: mediasoupError,
+    producers,
+  } = useProducer({
     socket,
     tracks: tracksRef.current,
     isStreamReady,
@@ -64,6 +68,7 @@ function Broadcast() {
   useEffect(() => {
     window.addEventListener('beforeunload', stopBroadcast);
 
+    tracksRef.current['mediaAudio'] = mediaStream?.getAudioTracks()[0];
     return () => {
       window.removeEventListener('beforeunload', stopBroadcast);
     };
@@ -78,13 +83,31 @@ function Broadcast() {
     setTitle(newTitle);
   };
 
-  if (socketError || roomError || transportError) {
+  const playPauseAudio = () => {
+    if (isAudioEnabled) {
+      producers.get('mediaAudio')?.pause();
+      if (tracksRef.current.mediaAudio) tracksRef.current.mediaAudio.enabled = false;
+      console.log('오디오 pause');
+    } else {
+      producers.get('mediaAudio')?.resume();
+      if (tracksRef.current.mediaAudio) tracksRef.current.mediaAudio.enabled = true;
+      console.log('오디오 resume');
+    }
+  };
+
+  if (socketError || roomError || transportError || screenShareError) {
     return (
       <div className="flex h-full justify-center items-center">
         <ErrorCharacter
           size={300}
           message={`방송 연결 중 에러가 발생했습니다: ${
-            socketError ? socketError.message : roomError ? roomError.message : transportError?.message
+            socketError
+              ? socketError.message
+              : roomError
+              ? roomError.message
+              : transportError
+              ? transportError.message
+              : screenShareError?.message
           }`}
         />
       </div>
@@ -101,7 +124,7 @@ function Broadcast() {
         </>
       ) : (
         <>
-          <VideoPlayer
+          <BroadcastPlayer
             mediaStream={mediaStream}
             screenStream={screenStream}
             isVideoEnabled={isVideoEnabled}
@@ -109,7 +132,6 @@ function Broadcast() {
             isStreamReady={isStreamReady}
             setIsStreamReady={setIsStreamReady}
             tracksRef={tracksRef}
-            isAudioEnabled={isAudioEnabled}
           />
           <div className="w-full">
             <BroadcastTitle currentTitle={title} onTitleChange={handleBroadcastTitle} />
@@ -119,8 +141,15 @@ function Broadcast() {
               </Button>
               <div className="flex items-center gap-4">
                 <button onClick={toggleVideo}>{isVideoEnabled ? <VideoOnIcon /> : <VideoOffIcon />}</button>
-                <button onClick={toggleAudio}>{isAudioEnabled ? <MicrophoneOnIcon /> : <MicrophoneOffIcon />}</button>
-                <button>
+                <button
+                  onClick={() => {
+                    toggleAudio();
+                    playPauseAudio();
+                  }}
+                >
+                  {isAudioEnabled ? <MicrophoneOnIcon /> : <MicrophoneOffIcon />}
+                </button>
+                <button onClick={toggleScreenShare}>
                   <MonitorShareIcon />
                 </button>
               </div>
