@@ -1,13 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
 import { PlayIcon, PauseIcon, VolumeOffIcon, VolumeOnIcon, ExpandIcon } from '@/components/Icons';
+import { Socket } from 'socket.io-client';
 
-type VideoQuality = '480' | '720' | '1080';
+interface LivePlayerProps {
+  mediaStream: MediaStream | null;
+  socket: Socket | null;
+  transportId: string | undefined;
+}
 
-function LivePlayer({ mediaStream }: { mediaStream: MediaStream | null }) {
+type VideoQuality = '480p' | '720p' | '1080p';
+
+function LivePlayer({ mediaStream, socket, transportId }: LivePlayerProps) {
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [isAudioEnabled, setIsAudioEnabled] = useState(false);
-  const [videoQuality, setVideoQuality] = useState<VideoQuality>('480');
+  const [videoQuality, setVideoQuality] = useState('720p');
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -42,6 +49,9 @@ function LivePlayer({ mediaStream }: { mediaStream: MediaStream | null }) {
   };
 
   const handleVideoQuality = (videoQuality: VideoQuality) => {
+    if (!socket) return;
+
+    socket.emit('setVideoQuality', { transportId, quality: videoQuality });
     setVideoQuality(videoQuality);
   };
 
@@ -69,12 +79,12 @@ function LivePlayer({ mediaStream }: { mediaStream: MediaStream | null }) {
         <div className="flex flex-row space-x-6 items-center">
           <Select onValueChange={value => handleVideoQuality(value as VideoQuality)}>
             <SelectTrigger className="w-[80px]">
-              <SelectValue placeholder={videoQuality + 'p'} />
+              <SelectValue placeholder={videoQuality} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="480">480p</SelectItem>
-              <SelectItem value="720">720p</SelectItem>
-              <SelectItem value="1080">1080p</SelectItem>
+              <SelectItem value="480p">480p</SelectItem>
+              <SelectItem value="720p">720p</SelectItem>
+              <SelectItem value="1080p">1080p</SelectItem>
             </SelectContent>
           </Select>
           <button onClick={handleExpand}>

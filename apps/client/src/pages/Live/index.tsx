@@ -68,7 +68,7 @@ export default function Live() {
       ) : (
         <>
           <div className="flex flex-col flex-grow gap-4 h-full ml-8">
-            <LivePlayer mediaStream={mediaStream} />
+            <LivePlayer mediaStream={mediaStream} transportId={transportInfo?.transportId} socket={socket} />
             <LiveCamperInfo liveId={liveId} />
           </div>
           <div className="flex h-full w-80 pr-5">
