@@ -13,6 +13,7 @@ import { BroadcastService } from '../broadcast/broadcast.service';
 import { CreateBroadcastDto } from '../broadcast/dto/createBroadcast.dto';
 import { ClientService } from './services/client.service';
 import { RecordService } from './services/record.service';
+import { SetVideoQualityDto } from './dto/set-video-quality.dto';
 
 @Injectable()
 export class SfuService {
@@ -106,5 +107,9 @@ export class SfuService {
       const data = this.clientService.getClientTransport(clientId);
       await this.leaveBroadcast(data.roomId, data.transportId);
     }
+  }
+
+  setVideoQuality(params: SetVideoQualityDto) {
+    this.consumerService.setConsumerBitrate(params);
   }
 }

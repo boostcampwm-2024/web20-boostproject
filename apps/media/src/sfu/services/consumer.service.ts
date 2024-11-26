@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as mediasoup from 'mediasoup';
+import { SetVideoQualityDto } from '../dto/set-video-quality.dto';
+import { QUALITY, QUALITY_LAYER } from '../constants/quality-layer.constant';
 @Injectable()
 export class ConsumerService {
   private consumers = new Map<string, mediasoup.types.Consumer[]>();
@@ -16,6 +18,10 @@ export class ConsumerService {
           producerId: producer.id,
           rtpCapabilities,
           paused: false,
+          preferredLayers: {
+            spatialLayer: QUALITY_LAYER[QUALITY.MID], // 0,1,2 순으로 480p,720p,1080p. 기본값은 중간인 720p로 시작.
+            temporalLayer: 2, // fps: 0,1,2순으로 기본 fps의 1/4, 1/2, 1 로 들어감.
+          },
         });
         this.setUpConsumerListeners(consumer, transport.id);
         this.logger.log(`Consumer created: ${consumer.id}`);
@@ -55,5 +61,17 @@ export class ConsumerService {
       }
       this.logger.log(`Consumer closed: ${consumerId}`);
     }
+  }
+
+  setConsumerBitrate(params: SetVideoQualityDto) {
+    const { transportId, quality } = params;
+
+    const consumers = this.consumers.get(transportId);
+    const videoConsumer = consumers.find(consumer => consumer.kind === 'video');
+
+    videoConsumer.setPreferredLayers({
+      spatialLayer: QUALITY_LAYER[quality],
+      temporalLayer: 2,
+    });
   }
 }

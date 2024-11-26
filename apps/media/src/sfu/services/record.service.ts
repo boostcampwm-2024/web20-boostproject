@@ -24,6 +24,10 @@ export class RecordService {
       producerId: producer.id,
       rtpCapabilities,
       paused: true,
+      preferredLayers: {
+        spatialLayer: 2,
+        temporalLayer: 2,
+      },
     });
 
     setTimeout(async () => {
@@ -55,12 +59,12 @@ export class RecordService {
 
   private setUpRecordTransportListeners(recordTransport: mediasoup.types.Transport, port: number, roomId: string) {
     recordTransport.on('routerclose', async () => {
-      await this.httpService
-        .post(`${this.configService.get('RECORD_SERVER_URL')}/close`, {
+      await lastValueFrom(
+        this.httpService.post(`${this.configService.get('RECORD_SERVER_URL')}/close`, {
           port,
           roomId,
-        })
-        .toPromise();
+        }),
+      );
       recordTransport.close();
     });
   }
