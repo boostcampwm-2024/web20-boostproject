@@ -1,6 +1,5 @@
 export { default as BlogIcon } from './BlogIcon';
 export { default as Character } from './Character';
-export { default as ChatIcon } from './ChatIcon';
 export { default as CloseIcon } from './CloseIcon';
 export { default as EditIcon } from './EditIcon';
 export { default as ExpandIcon } from './ExpandIcon';
