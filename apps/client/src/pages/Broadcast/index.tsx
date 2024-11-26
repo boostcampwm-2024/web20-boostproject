@@ -7,14 +7,7 @@ import { useProducer } from '@hooks/useProducer';
 import { useRoom } from '@hooks/useRoom';
 import { useSocket } from '@hooks/useSocket';
 import { useTransport } from '@hooks/useTransport';
-import {
-  ChatIcon,
-  MicrophoneOffIcon,
-  MicrophoneOnIcon,
-  VideoOffIcon,
-  VideoOnIcon,
-  MonitorShareIcon,
-} from '@/components/Icons';
+import { MicrophoneOffIcon, MicrophoneOnIcon, VideoOffIcon, VideoOnIcon, MonitorShareIcon } from '@/components/Icons';
 import { Button } from '@components/ui/button';
 import { useEffect, useState } from 'react';
 
@@ -119,9 +112,6 @@ function Broadcast() {
                 <button onClick={toggleAudio}>{isAudioEnabled ? <MicrophoneOnIcon /> : <MicrophoneOffIcon />}</button>
                 <button>
                   <MonitorShareIcon />
-                </button>
-                <button>
-                  <ChatIcon />
                 </button>
               </div>
             </div>
