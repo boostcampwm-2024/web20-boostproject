@@ -1,3 +1,4 @@
+import { RESOLUTION_OPTIONS } from '@/constants/videoOptions';
 import { Tracks } from '@/types/mediasoupTypes';
 import { useEffect, useRef } from 'react';
 
@@ -45,11 +46,14 @@ function BroadcastPlayer({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    canvas.width = 1280;
-    canvas.height = 720;
+    canvas.width = RESOLUTION_OPTIONS['high'].width;
+    canvas.height = RESOLUTION_OPTIONS['high'].height;
 
     const context = canvas.getContext('2d');
     if (!context) return;
+
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = 'high';
 
     const draw = () => {
       context.clearRect(0, 0, canvas.width, canvas.height);
@@ -102,8 +106,8 @@ function BroadcastPlayer({
       />
       <canvas
         ref={canvasRef}
-        width={1280}
-        height={720}
+        width={RESOLUTION_OPTIONS['high'].width}
+        height={RESOLUTION_OPTIONS['high'].height}
         className="absolute top-0 left-0 w-full h-full bg-surface-alt object-cover"
       />
     </div>
