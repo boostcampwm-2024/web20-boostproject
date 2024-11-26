@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Member } from './member.entity';
 import { Repository } from 'typeorm';
-import { AttendanceResponseDto } from './dto/attendance-response.dto';
 import { Attendance } from 'src/attendance/attendance.entity';
 
 @Injectable()
@@ -31,11 +30,11 @@ export class MemberService {
     return await this.memberRepository.save(member);
   }
 
-  async getMemberAttendance(memberId: number): Promise<AttendanceResponseDto> {
+  async getMemberAttendance(memberId: number): Promise<Attendance[]> {
     const attendances = await this.attendanceRepository.find({
       where: { member: { id: memberId } },
       order: { startTime: 'DESC' },
     });
-    return AttendanceResponseDto.of(memberId, attendances);
+    return attendances;
   }
 }

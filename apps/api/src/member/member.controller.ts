@@ -33,6 +33,8 @@ export class MemberController {
   @ApiOperation({ summary: '내 출석 내역 조회' })
   @ApiSuccessResponse(SuccessStatus.OK(AttendanceResponseDto), AttendanceResponseDto)
   async getAttendance(@UserReq() member: Member) {
-    return await this.memberService.getMemberAttendance(member.id);
+    const attendances = await this.memberService.getMemberAttendance(member.id);
+
+    return AttendanceResponseDto.of(member.id, attendances);
   }
 }
