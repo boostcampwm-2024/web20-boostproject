@@ -1,6 +1,5 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { MemberService } from './member.service';
 import { UserReq } from 'src/common/decorators/user-req.decorator';
 import { Member } from './member.entity';
 import { ApiSuccessResponse } from 'src/common/decorators/success-res.decorator';
@@ -11,6 +10,7 @@ import { SwaggerTag } from 'src/common/constants/swagger-tag.enum';
 import { ApiErrorResponse } from 'src/common/decorators/error-res.decorator';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { AttendanceResponseDto } from './dto/attendance-response.dto';
+import { MemberService } from './member.service';
 
 @Controller('/v1/members')
 export class MemberController {
@@ -24,7 +24,7 @@ export class MemberController {
   @ApiErrorResponse(500, ErrorStatus.INTERNAL_SERVER_ERROR)
   @ApiErrorResponse(404, ErrorStatus.MEMBER_NOT_FOUND)
   async getInfo(@UserReq() member: Member) {
-    return await this.memberService.getMemberInfo(member.id);
+    return MemberInfoResponseDto.from(member);
   }
 
   @Get('/attendance')

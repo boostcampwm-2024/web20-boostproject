@@ -1,13 +1,22 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Attendance } from 'src/attendance/attendance.entity';
 
+class AttendanceInfo {
+  @ApiProperty()
+  date: string;
+  @ApiProperty()
+  startTime: string;
+  @ApiProperty()
+  endTime: string;
+  @ApiProperty()
+  isAttendance: boolean;
+}
+
 export class AttendanceResponseDto {
+  @ApiProperty()
   id: number;
-  attendances: {
-    date: string;
-    startTime: string;
-    endTime: string;
-    isAttendance: boolean;
-  }[];
+  @ApiProperty({ type: AttendanceInfo, isArray: true })
+  attendances: AttendanceInfo[];
 
   static of(memberId: number, attendances: Attendance[]): AttendanceResponseDto {
     return {

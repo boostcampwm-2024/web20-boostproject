@@ -1,16 +1,29 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Member } from '../member.entity';
 
+class ContactsDto {
+  @ApiProperty()
+  email: string;
+  @ApiProperty()
+  github: string;
+  @ApiProperty()
+  blog: string;
+  @ApiProperty()
+  linkedIn: string;
+}
+
 export class MemberInfoResponseDto {
+  @ApiProperty()
   id: number;
+  @ApiProperty()
   camperId: string;
+  @ApiProperty()
   name: string;
+  @ApiProperty()
   field: string;
-  contacts: {
-    email: string;
-    github: string;
-    blog: string;
-    linkedIn: string;
-  };
+  @ApiProperty({ type: ContactsDto })
+  contacts: ContactsDto;
+  @ApiProperty()
   profileImage: string;
 
   static from(member: Member): MemberInfoResponseDto {
