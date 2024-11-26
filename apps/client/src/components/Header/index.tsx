@@ -2,11 +2,15 @@ import { useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@/utils/utils';
-import { Character, Logo } from '@/components/Icons';
+import { Character, GithubIcon, GoogleIcon, Logo } from '@/components/Icons';
+import { createPortal } from 'react-dom';
+import Modal from '../Modal';
+import WelcomeCharacter from '../WelcomeCharacter';
 
 function Header() {
   const [isLogIn, setIsLogIn] = useState(true);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const broadcastRef = useRef<Window | null>(null);
   const navigate = useNavigate();
 
@@ -16,8 +20,9 @@ function Header() {
 
   const handleLogInClick = () => {
     // TODO: 로그인 로직 구현
-    alert('로그인 모달 창 구현 예정');
-    setIsLogIn(true);
+    // alert('로그인 모달 창 구현 예정');
+    // setIsLogIn(true);
+    setShowModal(true);
   };
 
   const handleLogOutClick = () => {
@@ -83,6 +88,32 @@ function Header() {
           로그인
         </Button>
       )}
+      {showModal &&
+        createPortal(
+          <Modal setShowModal={setShowModal}>
+            <div className="flex flex-col flex-1">
+              <div className="flex flex-row h-24 text-text-strong font-bold text-5xl items-center justify-center">
+                WELCOME!
+                <WelcomeCharacter size={80} />
+              </div>
+              <div className="flex flex-row md:flex-col flex-1 justify-around items-center gap-3 p-4">
+                <button className="flex flex-row items-center h-16 w-15 md:w-4/5 border border-border-bold rounded-circle ">
+                  <GithubIcon size={60} />
+                  <span className="hidden flex-1 md:flex justify-center text-text-strong text-display-bold16 lg:text-display-bold24">
+                    Gihub로 로그인하기
+                  </span>
+                </button>
+                <button className="flex flex-row items-center h-16 w-15 md:w-4/5 border border-border-bold rounded-circle ">
+                  <GoogleIcon />
+                  <span className="hidden md:flex flex-1 justify-center text-text-strong text-display-bold16 lg:text-display-bold24">
+                    Google로 로그인하기
+                  </span>
+                </button>
+              </div>
+            </div>
+          </Modal>,
+          document.body,
+        )}
     </header>
   );
 }

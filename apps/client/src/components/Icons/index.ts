@@ -10,7 +10,7 @@ export { default as MailIcon } from './MailIcon';
 export { default as MicrophoneOffIcon } from './MicrophoneOffIcon';
 export { default as MicrophoneOnIcon } from './MicrophoneOnIcon';
 export { default as MonitorShareIcon } from './MonitorShareIcon';
-export { default as NaverIcon } from './NaverIcon';
+export { default as GoogleIcon } from './GoogleIcon';
 export { default as PauseIcon } from './PauseIcon';
 export { default as PlayIcon } from './PlayIcon';
 export { default as SmileIcon } from './SmileIcon';
