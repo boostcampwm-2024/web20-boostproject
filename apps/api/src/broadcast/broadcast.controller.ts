@@ -17,6 +17,7 @@ import { CustomException } from 'src/common/responses/exceptions/custom.exceptio
 import { JWTAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { UserReq } from 'src/common/decorators/user-req.decorator';
 import { Member } from 'src/member/member.entity';
+import { BroadcastListDto } from './dto/broadcast-list.dto';
 
 @Controller('v1/broadcasts')
 export class BroadcastController {
@@ -27,13 +28,16 @@ export class BroadcastController {
   @ApiOperation({ summary: '방송 리스트 조회' })
   @ApiSuccessResponse(SuccessStatus.OK(BroadcastListResponseDto), BroadcastListResponseDto)
   @ApiErrorResponse(500, ErrorStatus.INTERNAL_SERVER_ERROR)
-  async getAllWithFilter(@Query('field') field: FieldEnum) {
+  async getAllWithFilterAndPagination(@Query() queries: BroadcastListDto) {
+    const { field } = queries;
+
     if (field && !Object.values(FieldEnum).includes(field as FieldEnum)) {
       throw new CustomException(ErrorStatus.INVALID_FIELD);
     }
 
-    const broadcasts = await this.broadcastService.getAllWithFilter(field);
-    return BroadcastListResponseDto.fromList(broadcasts);
+    const { broadcasts, nextCursor } = await this.broadcastService.getAllWithFilterAndPagination(queries);
+
+    return BroadcastListResponseDto.from(broadcasts, nextCursor);
   }
 
   @Get('/:broadcastId/info')

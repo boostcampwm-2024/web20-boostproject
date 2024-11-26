@@ -2,11 +2,11 @@ import LiveList from '@pages/Home/LiveList';
 import LoadingCharacter from '@components/LoadingCharacter';
 import ErrorCharacter from '@components/ErrorCharacter';
 import { useAPI } from '@hooks/useAPI';
-import { LivePreviewInfo } from '@/types/homeTypes';
+import { LivePreviewListInfo } from '@/types/homeTypes';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const { data: liveList, isLoading, error } = useAPI<LivePreviewInfo[]>({ url: '/v1/broadcasts' });
+  const { data: liveListInfo, isLoading, error } = useAPI<LivePreviewListInfo>({ url: '/v1/broadcasts' });
   const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
@@ -27,8 +27,8 @@ export default function Home() {
         <div className="flex justify-center items-center flex-1">
           <LoadingCharacter />
         </div>
-      ) : liveList && liveList.length > 0 ? (
-        <LiveList liveList={liveList} />
+      ) : liveListInfo?.broadcasts && liveListInfo.broadcasts.length > 0 ? (
+        <LiveList liveList={liveListInfo.broadcasts} />
       ) : (
         <div className="h-full flex items-center">방송 중인 캠퍼가 없습니다.</div>
       )}
