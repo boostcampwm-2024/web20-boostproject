@@ -1,7 +1,7 @@
 import { Tracks } from '@/types/mediasoupTypes';
 import { useEffect, useRef } from 'react';
 
-interface VideoPlayerProps {
+interface BroadcastPlayerProps {
   mediaStream: MediaStream | null;
   screenStream: MediaStream | null;
   isVideoEnabled: boolean;
@@ -9,10 +9,9 @@ interface VideoPlayerProps {
   isStreamReady: boolean;
   setIsStreamReady: (ready: boolean) => void;
   tracksRef: React.MutableRefObject<Tracks>;
-  isAudioEnabled: boolean;
 }
 
-function VideoPlayer({
+function BroadcastPlayer({
   mediaStream,
   screenStream,
   isVideoEnabled,
@@ -20,8 +19,7 @@ function VideoPlayer({
   isStreamReady,
   setIsStreamReady,
   tracksRef,
-  isAudioEnabled,
-}: VideoPlayerProps) {
+}: BroadcastPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const screenShareRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -32,7 +30,7 @@ function VideoPlayer({
       videoRef.current.srcObject = mediaStream;
     }
     tracksRef.current['mediaAudio'] = mediaStream?.getAudioTracks()[0];
-  }, [mediaStream]);
+  }, [mediaStream, tracksRef.current]);
 
   // 화면 공유 스트림 설정
   useEffect(() => {
@@ -40,7 +38,7 @@ function VideoPlayer({
       screenShareRef.current.srcObject = screenStream;
     }
     tracksRef.current['screenAudio'] = screenStream?.getAudioTracks()[0];
-  }, [isScreenSharing, screenStream]);
+  }, [isScreenSharing, screenStream, tracksRef.current]);
 
   // 미디어스트림 캔버스에 넣기
   useEffect(() => {
@@ -56,8 +54,8 @@ function VideoPlayer({
     const draw = () => {
       context.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 화면 공유 on
       if (isScreenSharing && screenShareRef.current) {
+        // 화면 공유 on
         context.drawImage(screenShareRef.current, 0, 0, canvas.width, canvas.height);
         // 캠 on
         if (isVideoEnabled && videoRef.current) {
@@ -90,7 +88,7 @@ function VideoPlayer({
         startDrawing();
       }
     }
-  }, [isVideoEnabled, isAudioEnabled, isScreenSharing, mediaStream, screenStream, isStreamReady, setIsStreamReady]);
+  }, [isVideoEnabled, isScreenSharing, mediaStream, screenStream, isStreamReady]);
 
   return (
     <div className="relative w-full max-h-[310px] aspect-video">
@@ -112,4 +110,4 @@ function VideoPlayer({
   );
 }
 
-export default VideoPlayer;
+export default BroadcastPlayer;

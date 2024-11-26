@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Transport, Device } from 'mediasoup-client/lib/types';
-import { ConnectTransportResponse, Tracks, TransportInfo } from '../types/mediasoupTypes';
+import { ConnectTransportResponse, Tracks, TransportInfo } from '@/types/mediasoupTypes';
 import { Socket } from 'socket.io-client';
 import { checkDependencies } from '@/utils/utils';
 
@@ -114,8 +114,11 @@ export const useProducer = ({
           );
         });
 
-        (Object.keys(tracks) as Array<keyof Tracks>).forEach(track => {
-          transport.current!.produce({ track: tracks[track] });
+        (Object.keys(tracks) as Array<keyof Tracks>).forEach(kind => {
+          if (tracks[kind]) {
+            transport.current!.produce({ track: tracks[kind] });
+            console.log('프로듀스 생성');
+          }
         });
       });
     } catch (err) {
@@ -139,7 +142,7 @@ export const useProducer = ({
         transport.current = null;
       }
     };
-  }, [socket, device, roomId, transportInfo, isMediastreamReady]);
+  }, [socket, device, roomId, transportInfo, isStreamReady]);
 
   return {
     transport: transport.current,
