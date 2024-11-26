@@ -8,6 +8,7 @@ export class ConfigSwagger {
       .setTitle("Cam'ON API 문서")
       .setDescription("Cam'ON 서비스의 api 문서입니다.")
       .setVersion('1.0')
+      .addBearerAuth()
       .addTag(SwaggerTag.HEADER)
       .addTag(SwaggerTag.MAIN)
       .addTag(SwaggerTag.WATCH)

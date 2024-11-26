@@ -25,4 +25,8 @@ export class MemberService {
   async createMember(member: Member) {
     return await this.memberRepository.save(member);
   }
+
+  async updateMemberInfo(id: number, member: Member) {
+    await this.memberRepository.update(id, member);
+  }
 }
