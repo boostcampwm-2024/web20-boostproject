@@ -2,7 +2,7 @@ name: Front Ci/Cd
 on:
   push:
     branches:
-      - develop
+      - Fix/269
     paths:
       - 'apps/client/**'
 jobs:
