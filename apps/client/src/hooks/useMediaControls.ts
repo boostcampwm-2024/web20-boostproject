@@ -41,7 +41,7 @@ export const useMediaControls = (mediaStream: MediaStream | null): MediaControls
     if (!mediaStream) return;
     const audioTrack = mediaStream.getAudioTracks()[0];
     if (audioTrack) {
-      audioTrack.enabled = !audioTrack.enabled;
+      // audioTrack.enabled = !audioTrack.enabled;
       setState(prev => ({ ...prev, isAudioEnabled: audioTrack.enabled }));
     }
   };

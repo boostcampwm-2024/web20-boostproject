@@ -30,7 +30,11 @@ function Broadcast() {
   const { socket, isConnected, socketError } = useSocket(mediaServerUrl);
   const { roomId, roomError } = useRoom(socket, isConnected);
   const { transportInfo, device, transportError } = useTransport({ socket, roomId, isProducer: true });
-  const { transport, error: mediasoupError } = useProducer({
+  const {
+    transport,
+    error: mediasoupError,
+    producers,
+  } = useProducer({
     socket,
     tracks: tracksRef.current,
     isStreamReady,
@@ -79,6 +83,18 @@ function Broadcast() {
     setTitle(newTitle);
   };
 
+  const playPauseAudio = () => {
+    if (isAudioEnabled) {
+      producers.get('mediaAudio')?.pause();
+      if (tracksRef.current.mediaAudio) tracksRef.current.mediaAudio.enabled = false;
+      console.log('오디오 pause');
+    } else {
+      producers.get('mediaAudio')?.resume();
+      if (tracksRef.current.mediaAudio) tracksRef.current.mediaAudio.enabled = true;
+      console.log('오디오 resume');
+    }
+  };
+
   if (socketError || roomError || transportError || screenShareError) {
     return (
       <div className="flex h-full justify-center items-center">
@@ -125,7 +141,14 @@ function Broadcast() {
               </Button>
               <div className="flex items-center gap-4">
                 <button onClick={toggleVideo}>{isVideoEnabled ? <VideoOnIcon /> : <VideoOffIcon />}</button>
-                <button onClick={toggleAudio}>{isAudioEnabled ? <MicrophoneOnIcon /> : <MicrophoneOffIcon />}</button>
+                <button
+                  onClick={() => {
+                    toggleAudio();
+                    playPauseAudio();
+                  }}
+                >
+                  {isAudioEnabled ? <MicrophoneOnIcon /> : <MicrophoneOffIcon />}
+                </button>
                 <button onClick={toggleScreenShare}>
                   <MonitorShareIcon />
                 </button>

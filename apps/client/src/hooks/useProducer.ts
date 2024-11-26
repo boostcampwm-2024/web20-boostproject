@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Transport, Device } from 'mediasoup-client/lib/types';
+import { Transport, Device, Producer } from 'mediasoup-client/lib/types';
 import { ConnectTransportResponse, Tracks, TransportInfo } from '@/types/mediasoupTypes';
 import { Socket } from 'socket.io-client';
 import { checkDependencies } from '@/utils/utils';
@@ -17,6 +17,7 @@ interface UseProducerReturn {
   transport: Transport | null;
   error: Error | null;
   producerId: string;
+  producers: Map<string, Producer>;
 }
 
 export const useProducer = ({
@@ -30,6 +31,7 @@ export const useProducer = ({
   const transport = useRef<Transport | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [producerId, setProducerId] = useState<string>('');
+  const [producers, setProducers] = useState<Map<string, Producer>>(new Map());
 
   const createTransport = async (socket: Socket, device: Device, roomId: string, transportInfo: TransportInfo) => {
     if (!socket || !device || !roomId || !transportInfo) {
@@ -116,8 +118,9 @@ export const useProducer = ({
 
         (Object.keys(tracks) as Array<keyof Tracks>).forEach(kind => {
           if (tracks[kind]) {
-            transport.current!.produce({ track: tracks[kind] });
-            console.log('프로듀스 생성');
+            transport
+              .current!.produce({ track: tracks[kind] })
+              .then(producer => setProducers(prev => new Map(prev).set(kind, producer)));
           }
         });
       });
@@ -148,5 +151,6 @@ export const useProducer = ({
     transport: transport.current,
     error,
     producerId,
+    producers,
   };
 };
