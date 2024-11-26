@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - Feat/279
     paths:
       - 'apps/chat/**'
 
@@ -44,15 +45,20 @@ jobs:
   deploy-and-run:
     runs-on: ubuntu-latest
     needs: build-and-push
-    env:
-      IMAGE_NAME: chat-camon
-      CHAT_PORT: ${{ secrets.CHAT_PORT }}
-      REDIS_HOST: ${{ secrets.REDIS_HOST }}
-      REDIS_PORT: ${{ secrets.REDIS_PORT }}
-      REDIS_CHAT: ${{ secrets.REDIS_CHAT }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
+      - name: Checkout for docker-compose
+        uses: actions/checkout@v2
+
+      - name: Copy docker-compose file
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          source: "docker-compose.yml"
+          target: "/home/${{ secrets.SERVER_USER }}/camon"
+
       - name: SSH and deploy
         uses: appleboy/ssh-action@v0.1.6
         with:
@@ -62,21 +68,15 @@ jobs:
           port: 22
           envs: CHAT_PORT,REDIS_HOST,REDIS_PORT,REDIS_CHAT,JWT_SECRET
           script: |
+            cd /home/${{ secrets.SERVER_USER }}/camon
             sudo docker login -u ${{secrets.NCLOUD_ACCESS_KEY}} -p ${{ secrets.NCLOUD_SECRET_KEY }} ${{ secrets.NCLOUD_REGISTRY_URL }}
+
             sudo docker stop chat-camon || true
             sudo docker rm chat-camon || true
             sudo docker rmi ${{ secrets.NCLOUD_REGISTRY_URL }}/chat-camon:latest || true
+
             sudo docker pull ${{ secrets.NCLOUD_REGISTRY_URL }}/chat-camon:latest
-#            sudo docker tag ${secrets.NCLOUD_REGISTRY_URL}/${IMAGE_NAME}:latest ${IMAGE_NAME}:latest
-#            sudo docker-compose up -d --no-deps --build chat
-            sudo docker run -d --name chat-camon \
-              -p ${CHAT_PORT}:${CHAT_PORT} \
-              -e CHAT_PORT=${CHAT_PORT} \
-              -e REDIS_HOST=${REDIS_HOST} \
-              -e REDIS_PORT=${REDIS_PORT} \
-              -e REDIS_CHAT=${REDIS_CHAT} \
-              -e JWT_SECRET=${JWT_SECRET} \
-              ${{ secrets.NCLOUD_REGISTRY_URL }}/chat-camon:latest
+            sudo docker-compose up -d chat
             sudo docker image prune -f
 
       - name: Check container status
@@ -87,5 +87,5 @@ jobs:
           key: ${{ secrets.SSH_SERVER_KEY }}
           port: 22
           script: |
-            sudo docker ps -f name=chat-camon
-            sudo docker logs chat-camon
+            sudo docker-compose ps chat
+            sudo docker-compose logs --tail=100 chat
