@@ -2,29 +2,46 @@ version: "3.9"
 
 services:
   api:
-    container_name: api
-    image: api-camon
+    container_name: api-camon
+    image: ${NCLOUD_REGISTRY_URL}/api-camon
     networks:
       - camon
-    expose:
-      - "3000"
     ports:
       - "3000:3000"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
 
   media:
-    container_name: media
-    image: media-camon
+    container_name: media-camon
+    image: ${NCLOUD_REGISTRY_URL}/media-camon
     networks:
       - camon
-    expose:
-      - "3001"
     ports:
       - "3001:3001"
       - "30000-31000:30000-31000"
+    environment:
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_MEDIA=${REDIS_MEDIA}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - API_SERVER_URL=${API_SERVER_URL}
+      - HTTP_TIMEOUT=${HTTP_TIMEOUT}
+      - RECORD_SERVER_URL=${RECORD_SERVER_URL}
+      - SERVER_PRIVATE_IP=${SERVER_PRIVATE_IP}
+      - PUBLIC_RECORD_SERVER_URL=${PUBLIC_RECORD_SERVER_URL}
+
 
   chat:
-    container_name: chat
-    image: chat-camon
+    container_name: chat-camon
+    image: ${NCLOUD_REGISTRY_URL}/chat-camon
     networks:
       - camon
     expose:
@@ -33,12 +50,10 @@ services:
       - "3002:3002"
 
   record:
-    container_name: record
-    image: record-camon
+    container_name: record-camon
+    image: ${NCLOUD_REGISTRY_URL}/record-camon
     networks:
       - camon
-    expose:
-      - "3003"
     ports:
       - "3003:3003"
 
