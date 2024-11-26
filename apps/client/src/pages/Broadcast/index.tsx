@@ -9,13 +9,22 @@ import { useSocket } from '@hooks/useSocket';
 import { useTransport } from '@hooks/useTransport';
 import { MicrophoneOffIcon, MicrophoneOnIcon, VideoOffIcon, VideoOnIcon, MonitorShareIcon } from '@/components/Icons';
 import { Button } from '@components/ui/button';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import useScreenShare from '@/hooks/useScreenShare';
+import VideoPlayer from './BroadcastPlayer';
+import { Tracks } from '@/types/mediasoupTypes';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
 function Broadcast() {
-  const { mediaStream, mediaStreamError, isMediastreamReady, videoRef } = useMediaStream();
+  const tracksRef = useRef<Tracks>({ video: undefined, mediaAudio: undefined, screenAudio: undefined });
+  const [isStreamReady, setIsStreamReady] = useState(false);
+  // 미디어 스트림(비디오, 오디오)
+  const { mediaStream, mediaStreamError, isMediastreamReady: _imsr } = useMediaStream();
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
+
+  // 화면 공유
+  const { screenStream, isScreenSharing, screenShareError, toggleScreenShare } = useScreenShare();
 
   // 방송 송출
   const { socket, isConnected, socketError } = useSocket(mediaServerUrl);
@@ -23,8 +32,8 @@ function Broadcast() {
   const { transportInfo, device, transportError } = useTransport({ socket, roomId, isProducer: true });
   const { transport, error: mediasoupError } = useProducer({
     socket,
-    isMediastreamReady,
-    mediaStream,
+    tracks: tracksRef.current,
+    isStreamReady,
     transportInfo,
     device,
     roomId,
@@ -92,15 +101,16 @@ function Broadcast() {
         </>
       ) : (
         <>
-          <div className="relative w-full aspect-video">
-            <video
-              ref={videoRef}
-              autoPlay
-              muted
-              className="absolute top-0 left-0 w-full h-full bg-surface-alt rounded-xl object-cover"
-            />
-            <audio />
-          </div>
+          <VideoPlayer
+            mediaStream={mediaStream}
+            screenStream={screenStream}
+            isVideoEnabled={isVideoEnabled}
+            isScreenSharing={isScreenSharing}
+            isStreamReady={isStreamReady}
+            setIsStreamReady={setIsStreamReady}
+            tracksRef={tracksRef}
+            isAudioEnabled={isAudioEnabled}
+          />
           <div className="w-full">
             <BroadcastTitle currentTitle={title} onTitleChange={handleBroadcastTitle} />
             <div className="flex justify-between items-center m-4">

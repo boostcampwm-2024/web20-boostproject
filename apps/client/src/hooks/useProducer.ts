@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Transport, Device } from 'mediasoup-client/lib/types';
-import { ConnectTransportResponse, TransportInfo } from '../types/mediasoupTypes';
+import { ConnectTransportResponse, Tracks, TransportInfo } from '../types/mediasoupTypes';
 import { Socket } from 'socket.io-client';
 import { checkDependencies } from '@/utils/utils';
 
 interface UseProducerProps {
   socket: Socket | null;
-  mediaStream: MediaStream | null;
-  isMediastreamReady: boolean;
+  tracks: Tracks;
+  isStreamReady: boolean;
   roomId: string;
   device: Device | null;
   transportInfo: TransportInfo | null;
@@ -21,8 +21,8 @@ interface UseProducerReturn {
 
 export const useProducer = ({
   socket,
-  mediaStream,
-  isMediastreamReady,
+  tracks,
+  isStreamReady,
   roomId,
   device,
   transportInfo,
@@ -82,10 +82,11 @@ export const useProducer = ({
   };
 
   const createProducer = async (socket: Socket, transportInfo: TransportInfo) => {
-    if (!transport.current || !socket || !mediaStream) {
+    if (!transport.current || !socket || !tracks) {
+      console.log('useProducer stream:', tracks);
       const dependencyError = checkDependencies('createProducer', {
         socket,
-        mediaStream,
+        tracks,
         transport: transport.current,
       });
       setError(dependencyError);
@@ -113,8 +114,9 @@ export const useProducer = ({
           );
         });
 
-        transport.current!.produce({ track: mediaStream?.getVideoTracks()[0] });
-        transport.current!.produce({ track: mediaStream?.getAudioTracks()[0] });
+        (Object.keys(tracks) as Array<keyof Tracks>).forEach(track => {
+          transport.current!.produce({ track: tracks[track] });
+        });
       });
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Producer creation failed'));
@@ -123,7 +125,7 @@ export const useProducer = ({
   };
 
   useEffect(() => {
-    if (!socket || !device || !roomId || !isMediastreamReady || !mediaStream || !transportInfo) {
+    if (!socket || !device || !roomId || !tracks || !isStreamReady || !transportInfo) {
       return;
     }
 
