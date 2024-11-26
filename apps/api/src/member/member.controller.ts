@@ -1,6 +1,5 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { MemberService } from './member.service';
 import { UserReq } from 'src/common/decorators/user-req.decorator';
 import { Member } from './member.entity';
 import { ApiSuccessResponse } from 'src/common/decorators/success-res.decorator';
@@ -13,7 +12,7 @@ import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 
 @Controller('/v1/members')
 export class MemberController {
-  constructor(private readonly memberService: MemberService) {}
+  constructor() {}
 
   @Get('/info')
   @UseGuards(JWTAuthGuard)
@@ -23,6 +22,6 @@ export class MemberController {
   @ApiErrorResponse(500, ErrorStatus.INTERNAL_SERVER_ERROR)
   @ApiErrorResponse(404, ErrorStatus.MEMBER_NOT_FOUND)
   async getInfo(@UserReq() member: Member) {
-    return await this.memberService.getMemberInfo(member.id);
+    return MemberInfoResponseDto.from(member);
   }
 }
