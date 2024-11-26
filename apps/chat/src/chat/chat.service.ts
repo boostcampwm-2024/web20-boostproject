@@ -80,7 +80,7 @@ export class ChatService {
     const sendClient = room.clients.get(client.id);
 
     room.clients.forEach(anyClient => {
-      anyClient.sendMessage(sendClient.getName(), sendClient.getName(), message);
+      anyClient.sendMessage(sendClient.getCamperId(), sendClient.getName(), message);
     });
 
     this.logger.log(`BroadCast to Clients: room#${roomId} message#${message}}`);
