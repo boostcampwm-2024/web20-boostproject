@@ -39,16 +39,7 @@ class BroadcastDto {
 export class BroadcastListResponseDto {
   @ApiProperty({
     type: BroadcastDto,
-    example: [
-      {
-        id: '73ebe906-0897-478d-b7c6-42f5ba7abc0a',
-        title: '오늘 코딩 켠왕 간다',
-        thumbnail: 'thumbnail.jpg',
-        camperId: 'J219',
-        profileImage: 'profile.jpg',
-        field: 'WEB',
-      },
-    ],
+    isArray: true,
   })
   broadcasts: BroadcastDto[];
 
