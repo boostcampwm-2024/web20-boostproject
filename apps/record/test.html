@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HLS Video Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    video {
+      width: 100%;
+      max-width: 800px;
+    }
+    .status {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .success { background-color: #DFF0D8; }
+    .error { background-color: #F2DEDE; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>HLS Video Streaming Test</h1>
+  <video id="video" controls></video>
+  <div id="status"></div>
+</div>
+<script>
+  const video = document.getElementById('video');
+  const statusDiv = document.getElementById('status');
+  const videoId = 'test'; // 테스트할 비디오 ID
+  function showStatus(message, isError = false) {
+    statusDiv.textContent = message;
+    statusDiv.className = `status ${isError ? 'error' : 'success'}`;
+  }
+  if (Hls.isSupported()) {
+    const hls = new Hls({
+      enableWorker: true,
+      debug: false
+    });
+    hls.loadSource('http://localhost:3003/statics/records/f6cc5449-bb7b-41d0-be2d-15d99e5cde71/f6cc5449-bb7b-41d0-be2d-15d99e5cde71.m3u8');
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      showStatus('Video loaded successfully');
+      video.play().catch(e => {
+        showStatus('Autoplay prevented: ' + e.message, true);
+      });
+    });
+    hls.on(Hls.Events.ERROR, (event, data) => {
+      if (data.fatal) {
+        switch(data.type) {
+          case Hls.ErrorTypes.NETWORK_ERROR:
+            showStatus('Network error, trying to recover...', true);
+            hls.startLoad();
+            break;
+          case Hls.ErrorTypes.MEDIA_ERROR:
+            showStatus('Media error, trying to recover...', true);
+            hls.recoverMediaError();
+            break;
+          default:
+            showStatus('Fatal error: ' + data.details, true);
+            break;
+        }
+      }
+    });
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = `/videos/${videoId}/playlist.m3u8`;
+    showStatus('Using native HLS support');
+  } else {
+    showStatus('HLS is not supported in your browser', true);
+  }
+</script>
+</body>
+</html>
+
+
+
+

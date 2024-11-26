@@ -4,12 +4,15 @@ import dotenv from 'dotenv';
 import { createFfmpegProcess } from './ffmpeg';
 import express from 'express';
 import { getPort, releasePort } from './port';
+import cors from 'cors';
 
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cors());
 
-const dirPath = path.join(__dirname, '../thumbnail');
+const dirPath = path.join(__dirname, '../assets');
+app.use('/statics', express.static(dirPath));
 
 if (!fs.existsSync(dirPath)) {
   fs.mkdirSync(dirPath, { recursive: true });

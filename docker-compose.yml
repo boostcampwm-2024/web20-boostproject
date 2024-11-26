@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  api:
+    container_name: api
+    image: api-camon
+    networks:
+      - camon
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+
+  media:
+    container_name: media
+    image: media-camon
+    networks:
+      - camon
+    expose:
+      - "3001"
+    ports:
+      - "3001:3001"
+      - "30000-31000:30000-31000"
+
+  chat:
+    container_name: chat
+    image: chat-camon
+    networks:
+      - camon
+    expose:
+      - "3002"
+    ports:
+      - "3002:3002"
+
+  record:
+    container_name: record
+    image: record-camon
+    networks:
+      - camon
+    expose:
+      - "3003"
+    ports:
+      - "3003:3003"
+
+networks:
+  camon:
+    driver: bridge

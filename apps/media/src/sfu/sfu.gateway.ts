@@ -96,6 +96,16 @@ export class SfuGateway {
     }
   }
 
+  @SubscribeMessage('record')
+  async handleRecord(@MessageBody('roomId') roomId: string) {
+    await this.sfuService.record(roomId);
+  }
+
+  @SubscribeMessage('stopRecord')
+  async handleStopRecord(@MessageBody('roomId') roomId: string) {
+    await this.sfuService.stopRecord(roomId);
+  }
+
   //시청 종료
   @SubscribeMessage('setVideoQuality')
   handleVideoQuality(@MessageBody() params: SetVideoQualityDto) {

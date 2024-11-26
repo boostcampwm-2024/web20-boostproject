@@ -67,6 +67,8 @@ jobs:
             sudo docker rm chat-camon || true
             sudo docker rmi ${{ secrets.NCLOUD_REGISTRY_URL }}/chat-camon:latest || true
             sudo docker pull ${{ secrets.NCLOUD_REGISTRY_URL }}/chat-camon:latest
+#            sudo docker tag ${secrets.NCLOUD_REGISTRY_URL}/${IMAGE_NAME}:latest ${IMAGE_NAME}:latest
+#            sudo docker-compose up -d --no-deps --build chat
             sudo docker run -d --name chat-camon \
               -p ${CHAT_PORT}:${CHAT_PORT} \
               -e CHAT_PORT=${CHAT_PORT} \

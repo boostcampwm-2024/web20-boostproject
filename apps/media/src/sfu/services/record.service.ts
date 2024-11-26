@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as mediasoup from 'mediasoup';
-import { lastValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class RecordService {
@@ -10,14 +10,15 @@ export class RecordService {
   private readonly serverPrivateIp: string;
   private readonly announcedIp: string;
 
+  private transports = new Map<string, mediasoup.types.Transport>();
+
   constructor(private readonly httpService: HttpService, private readonly configService: ConfigService) {
     this.recordServerUrl = this.configService.get<string>('RECORD_SERVER_URL', 'http://localhost:3003');
     this.serverPrivateIp = this.configService.get<string>('SERVER_PRIVATE_IP', '127.0.0.1');
     this.announcedIp = this.configService.get<string>('ANNOUNCED_IP', '127.0.0.1');
   }
 
-  async sendStream(room: mediasoup.types.Router, producer: mediasoup.types.Producer) {
-    if (producer.kind === 'audio') return;
+  async sendStreamForThumbnail(room: mediasoup.types.Router, producer: mediasoup.types.Producer) {
     const recordTransport = await this.createPlainTransport(room);
     const rtpCapabilities = this.getRtpCapabilities(room, producer.kind);
     const recordConsumer = await recordTransport.consume({
@@ -45,6 +46,43 @@ export class RecordService {
     await this.sendRecordStartRequest(room.id, port);
   }
 
+  async sendStreamForRecord(room: mediasoup.types.Router, producers: mediasoup.types.Producer[]) {
+    const recordTransport = await this.createPlainTransport(room);
+    this.transports.set(room.id, recordTransport);
+    const consumers = await Promise.all(
+      producers.map(async producer => {
+        const rtpCapabilities = this.getRtpCapabilities(room, producer.kind);
+        const recordConsumer = await recordTransport.consume({
+          producerId: producer.id,
+          rtpCapabilities,
+          paused: true,
+        });
+        this.setUpRecordTransportListeners(recordTransport, port, room.id);
+        this.setUpRecordConsumerListeners(recordConsumer);
+        return recordConsumer;
+      }),
+    );
+
+    setTimeout(async () => {
+      for (const consumer of consumers) {
+        await consumer.resume();
+        await consumer.requestKeyFrame();
+      }
+    }, 1000);
+
+    const { port } = await this.getAvailablePort();
+    await recordTransport.connect({ ip: this.serverPrivateIp, port });
+    await this.sendRecordStartRequest(room.id, port);
+  }
+
+  async stopStreamFromRecord(room: mediasoup.types.Router) {
+    const recordTransport = this.transports.get(room.id);
+    if (!recordTransport) {
+      return;
+    }
+    recordTransport.close();
+  }
+
   async createPlainTransport(room: mediasoup.types.Router) {
     return await room.createPlainTransport({
       listenInfo: {
@@ -66,6 +104,14 @@ export class RecordService {
         }),
       );
       recordTransport.close();
+    });
+    recordTransport.observer.on('close', async () => {
+      await firstValueFrom(
+        this.httpService.post(`${this.configService.get('RECORD_SERVER_URL')}/close`, {
+          port,
+          roomId,
+        }),
+      );
     });
   }
 
@@ -92,7 +138,7 @@ export class RecordService {
   }
 
   private async sendRecordStartRequest(roomId: string, port: number) {
-    await lastValueFrom(
+    await firstValueFrom(
       this.httpService.post(`${this.recordServerUrl}/send`, {
         roomId,
         port,
