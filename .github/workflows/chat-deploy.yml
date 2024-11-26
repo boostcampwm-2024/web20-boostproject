@@ -17,6 +17,7 @@ jobs:
       REDIS_HOST: ${{ secrets.REDIS_HOST }}
       REDIS_PORT: ${{ secrets.REDIS_PORT }}
       REDIS_CHAT: ${{ secrets.REDIS_CHAT }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
       - name: Checkout code
@@ -33,7 +34,7 @@ jobs:
 
       # 도커 이미지 빌드
       - name: Build Docker image
-        run: docker build --build-arg CHAT_PORT=$CHAT_PORT --build-arg REDIS_HOST=$REDIS_HOST --build-arg REDIS_PORT=$REDIS_PORT --build-arg REDIS_CHAT=$REDIS_CHAT -f ./apps/chat/Dockerfile -t ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest .
+        run: docker build --build-arg CHAT_PORT=$CHAT_PORT --build-arg REDIS_HOST=$REDIS_HOST --build-arg REDIS_PORT=$REDIS_PORT --build-arg REDIS_CHAT=$REDIS_CHAT --build-arg JWT_SECRET=$JWT_SECRET -f ./apps/chat/Dockerfile -t ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest .
 
       #이미지 ncloud에 업로드
       - name: Push to Ncloud Container Registry
@@ -49,6 +50,7 @@ jobs:
       REDIS_HOST: ${{ secrets.REDIS_HOST }}
       REDIS_PORT: ${{ secrets.REDIS_PORT }}
       REDIS_CHAT: ${{ secrets.REDIS_CHAT }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
       - name: SSH and deploy
@@ -58,7 +60,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_SERVER_KEY }}
           port: 22
-          envs: CHAT_PORT,REDIS_HOST,REDIS_PORT,REDIS_CHAT
+          envs: CHAT_PORT,REDIS_HOST,REDIS_PORT,REDIS_CHAT,JWT_SECRET
           script: |
             sudo docker login -u ${{secrets.NCLOUD_ACCESS_KEY}} -p ${{ secrets.NCLOUD_SECRET_KEY }} ${{ secrets.NCLOUD_REGISTRY_URL }}
             sudo docker stop chat-camon || true
@@ -71,6 +73,7 @@ jobs:
               -e REDIS_HOST=${REDIS_HOST} \
               -e REDIS_PORT=${REDIS_PORT} \
               -e REDIS_CHAT=${REDIS_CHAT} \
+              -e JWT_SECRET=${JWT_SECRET} \
               ${{ secrets.NCLOUD_REGISTRY_URL }}/chat-camon:latest
             sudo docker image prune -f
 

@@ -1,4 +1,4 @@
-interface LivePreviewInfo {
+export interface LivePreviewInfo {
   broadcastId: string;
   broadcastTitle: string;
   camperId: string;
