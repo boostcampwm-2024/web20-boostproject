@@ -5,6 +5,7 @@ import { CustomException } from '../responses/exceptions/custom.exception';
 export class CustomValidationPipe extends ValidationPipe {
   constructor() {
     super({
+      transform: true,
       exceptionFactory: (errors: ValidationError[]) => {
         const messages = this.flattenValidationErrors(errors);
 

@@ -30,6 +30,10 @@ export class MemberService {
     return await this.memberRepository.save(member);
   }
 
+  async updateMemberInfo(id: number, member: Member) {
+    await this.memberRepository.update(id, member);
+  }
+
   async getMemberAttendance(memberId: number): Promise<Attendance[]> {
     const attendances = await this.attendanceRepository.find({
       where: { member: { id: memberId } },

@@ -41,17 +41,10 @@ export class BroadcastService {
   }
 
   async updateTitle(userId: number, { title: broadcastTitle }: UpdateBroadcastTitleDto) {
-    // 임시 broadcastId로 사용
-    const tempBroadcastId = '1';
     const broadcast = await this.broadcastRepository.findOne({
-      where: { id: tempBroadcastId },
+      where: { member: { id: userId } },
+      relations: ['member'],
     });
-
-    // TODO: 현재 userId로 넘어오는 값이 null 임
-    // const broadcast = await this.broadcastRepository.findOne({
-    //   where: { member: { id: userId } },
-    //   relations: ['member'],
-    // });
 
     if (!broadcast) {
       throw new CustomException(ErrorStatus.BROADCAST_NOT_FOUND);
