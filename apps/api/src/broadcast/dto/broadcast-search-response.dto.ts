@@ -16,7 +16,7 @@ export class BroadcastSearchResponseDto {
     dto.thumbnail = broadcast.thumbnail;
     dto.camperId = broadcast.member?.camperId;
     dto.profileImage = broadcast.member?.profileImage;
-    dto.field = broadcast.member?.filed;
+    dto.field = broadcast.member?.field;
     return dto;
   }
 
