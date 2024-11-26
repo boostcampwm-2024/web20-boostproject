@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { BroadcastService } from './broadcast.service';
 import { SuccessStatus } from '../common/responses/bases/successStatus';
 import { BroadcastListResponseDto } from './dto/broadcast-list-response.dto';
@@ -14,6 +14,9 @@ import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { BroadcastSearchResponseDto } from './dto/broadcast-search-response.dto';
 import { FieldEnum } from 'src/member/enum/field.enum';
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
+import { JWTAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { UserReq } from 'src/common/decorators/user-req.decorator';
+import { Member } from 'src/member/member.entity';
 
 @Controller('v1/broadcasts')
 export class BroadcastController {
@@ -45,20 +48,16 @@ export class BroadcastController {
     return BroadcastInfoResponseDto.from(broadcast);
   }
 
-  // TODO: 유저 기능 추가 후 유저의 방송 찾는 로직 구현 필요
   @Patch('/title')
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JWTAuthGuard)
   @ApiTags(SwaggerTag.BROADCAST)
   @ApiOperation({ summary: '방송 제목 수정' })
   @ApiBody({ type: UpdateBroadcastTitleDto })
   @ApiSuccessResponse(SuccessStatus.OK(null))
   @ApiErrorResponse(400, ErrorStatus.BROADCAST_NOT_FOUND)
   @ApiErrorResponse(500, ErrorStatus.INTERNAL_SERVER_ERROR)
-  async updateTitle(
-    // @Request() req,
-    @Body() updateBroadcastTitleDto: UpdateBroadcastTitleDto,
-  ) {
-    await this.broadcastService.updateTitle(null, updateBroadcastTitleDto);
+  async updateTitle(@UserReq() member: Member, @Body() updateBroadcastTitleDto: UpdateBroadcastTitleDto) {
+    await this.broadcastService.updateTitle(member.id, updateBroadcastTitleDto);
 
     return SuccessStatus.OK(null, '제목 수정이 완료 되었습니다.');
   }
