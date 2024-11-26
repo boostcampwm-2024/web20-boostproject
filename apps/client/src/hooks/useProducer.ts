@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Transport, Device } from 'mediasoup-client/lib/types';
-import { ConnectTransportResponse, TransportInfo } from '../types/mediasoupTypes';
+import { ConnectTransportResponse, Tracks, TransportInfo } from '../types/mediasoupTypes';
 import { Socket } from 'socket.io-client';
 import { checkDependencies } from '@/utils/utils';
 
 interface UseProducerProps {
   socket: Socket | null;
-  stream: MediaStream | null;
+  tracks: Tracks;
   isStreamReady: boolean;
   roomId: string;
   device: Device | null;
@@ -21,7 +21,7 @@ interface UseProducerReturn {
 
 export const useProducer = ({
   socket,
-  stream,
+  tracks,
   isStreamReady,
   roomId,
   device,
@@ -82,11 +82,11 @@ export const useProducer = ({
   };
 
   const createProducer = async (socket: Socket, transportInfo: TransportInfo) => {
-    if (!transport.current || !socket || !stream) {
-      console.log('useProducer stream:', stream);
+    if (!transport.current || !socket || !tracks) {
+      console.log('useProducer stream:', tracks);
       const dependencyError = checkDependencies('createProducer', {
         socket,
-        stream,
+        tracks,
         transport: transport.current,
       });
       setError(dependencyError);
@@ -114,8 +114,8 @@ export const useProducer = ({
           );
         });
 
-        stream.getTracks().forEach(track => {
-          transport.current!.produce({ track });
+        (Object.keys(tracks) as Array<keyof Tracks>).forEach(track => {
+          transport.current!.produce({ track: tracks[track] });
         });
       });
     } catch (err) {
@@ -125,7 +125,7 @@ export const useProducer = ({
   };
 
   useEffect(() => {
-    if (!socket || !device || !roomId || !stream || !isStreamReady || !transportInfo) {
+    if (!socket || !device || !roomId || !tracks || !isStreamReady || !transportInfo) {
       return;
     }
     createTransport(socket, device, roomId, transportInfo)

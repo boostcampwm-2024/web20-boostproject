@@ -19,11 +19,12 @@ import { Button } from '@components/ui/button';
 import { useEffect, useRef, useState } from 'react';
 import useScreenShare from '@/hooks/useScreenShare';
 import VideoPlayer from './BroadcastPlayer';
+import { Tracks } from '@/types/mediasoupTypes';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
 function Broadcast() {
-  const stream = useRef<MediaStream | null>(null);
+  const tracksRef = useRef<Tracks>({ video: undefined, mediaAudio: undefined, screenAudio: undefined });
   const [isStreamReady, setIsStreamReady] = useState(false);
   // 미디어 스트림(비디오, 오디오)
   const { mediaStream, mediaStreamError, isMediastreamReady: _imsr } = useMediaStream();
@@ -37,7 +38,7 @@ function Broadcast() {
   const { transportInfo, device, transportError } = useTransport({ socket, roomId, isProducer: true });
   const { transport, error: mediasoupError } = useProducer({
     socket,
-    stream: stream.current,
+    tracks: tracksRef.current,
     isStreamReady,
     transportInfo,
     device,
@@ -119,7 +120,7 @@ function Broadcast() {
             isScreenSharing={isScreenSharing}
             isStreamReady={isStreamReady}
             setIsStreamReady={setIsStreamReady}
-            stream={stream}
+            tracksRef={tracksRef}
             isAudioEnabled={isAudioEnabled}
           />
           <div className="w-full">
