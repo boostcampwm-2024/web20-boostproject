@@ -30,7 +30,7 @@ export class SfuService {
 
   async createRoom(clientId: string) {
     const room = await this.roomService.createRoom();
-    const thumbnail = `${this.configService.get('PUBLIC_RECORD_SERVER_URL')}/images/${room.id}`;
+    const thumbnail = `${this.configService.get('PUBLIC_RECORD_SERVER_URL')}/statics/${room.id}.jpg`;
     await this.broadcasterService.createBroadcast(CreateBroadcastDto.of(room.id, 'J000님의 방송', thumbnail, null));
     this.clientService.addClientToRoom(clientId, room.id);
     return room;
@@ -56,7 +56,7 @@ export class SfuService {
     const room = this.roomService.getRoom(roomId);
     const transport = this.transportService.getTransport(roomId, transportId);
     const producer = await this.producerService.createProducer(transport, kind, rtpParameters);
-    await this.recordService.sendStream(room, producer);
+    await this.recordService.sendStreamForThumbnail(room, producer);
     return producer;
   }
 
@@ -107,6 +107,18 @@ export class SfuService {
       const data = this.clientService.getClientTransport(clientId);
       await this.leaveBroadcast(data.roomId, data.transportId);
     }
+  }
+
+  async record(roomId: string) {
+    const room = this.roomService.getRoom(roomId);
+    const transport = this.transportService.getProducerTransport(roomId);
+    const producers = this.producerService.getProducers(transport.id);
+    await this.recordService.sendStreamForRecord(room, producers);
+  }
+
+  async stopRecord(roomId: string) {
+    const room = this.roomService.getRoom(roomId);
+    await this.recordService.stopStreamFromRecord(room);
   }
 
   setVideoQuality(params: SetVideoQualityDto) {

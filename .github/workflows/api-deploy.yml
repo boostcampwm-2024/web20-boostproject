@@ -2,10 +2,9 @@ name: API Server Ci/Cd
 on:
   push:
     branches:
-      - Feat/256
       - develop
-#    paths:
-#      - 'apps/api/**'
+    paths:
+      - 'apps/api/**'
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -75,9 +74,9 @@ jobs:
             sudo docker rm api-camon || true
             sudo docker rmi ${{ secrets.NCLOUD_REGISTRY_URL }}/api-camon:latest || true
             sudo docker pull ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest
-            docker tag ${secrets.NCLOUD_REGISTRY_URL}/${IMAGE_NAME}:latest ${IMAGE_NAME}:latest
-            docker-compose up -d --no-deps --build api
-#            sudo docker run -d --name api-camon -p 3000:3000 ${{ secrets.NCLOUD_REGISTRY_URL }}/api-camon:latest
+#            sudo docker tag ${secrets.NCLOUD_REGISTRY_URL}/${IMAGE_NAME}:latest ${IMAGE_NAME}:latest
+#            sudo docker-compose up -d --no-deps --build api
+            sudo docker run -d --name api-camon -p 3000:3000 ${{ secrets.NCLOUD_REGISTRY_URL }}/api-camon:latest
             sudo docker image prune -f
 
       - name: Check container status

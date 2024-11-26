@@ -8,7 +8,7 @@ RUN corepack enable
 
 WORKDIR /app
 
-RUN mkdir -p /app/thumbnail && chmod 777 /app/thumbnail
+RUN mkdir -p /app/assets/records /app/assets/thumbnails && chmod -R 777 /app/assets
 
 # Environment variables
 ARG RECORD_PORT
