@@ -52,49 +52,36 @@ export const useConsumer = ({ socket, device, roomId, transportInfo, isConnected
 
     setError(null);
 
-    try {
-      const newTransport = device.createRecvTransport({
-        id: transportInfo.transportId,
-        iceParameters: transportInfo.iceParameters,
-        iceCandidates: transportInfo.iceCandidates,
-        dtlsParameters: transportInfo.dtlsParameters,
+    const newTransport = device.createRecvTransport({
+      id: transportInfo.transportId,
+      iceParameters: transportInfo.iceParameters,
+      iceCandidates: transportInfo.iceCandidates,
+      dtlsParameters: transportInfo.dtlsParameters,
+    });
+
+    transport.current = newTransport;
+
+    transport.current.on('connect', async ({ dtlsParameters }, callback) => {
+      const response = await new Promise<ConnectTransportResponse>((resolve, reject) => {
+        socket.emit(
+          'connectTransport',
+          {
+            roomId,
+            dtlsParameters,
+            transportId: transportInfo.transportId,
+          },
+          (response: ConnectTransportResponse) => {
+            if (response.connected) {
+              resolve(response);
+            } else {
+              reject(new Error('Transport connection failed'));
+            }
+          },
+        );
       });
-
-      transport.current = newTransport;
-
-      transport.current.on('connect', async ({ dtlsParameters }, callback) => {
-        try {
-          const response = await new Promise<ConnectTransportResponse>((resolve, reject) => {
-            socket.emit(
-              'connectTransport',
-              {
-                roomId,
-                dtlsParameters,
-                transportId: transportInfo.transportId,
-              },
-              (response: ConnectTransportResponse) => {
-                if (response.connected) {
-                  resolve(response);
-                } else {
-                  reject(new Error('Transport connection failed'));
-                }
-              },
-            );
-          });
-
-          callback();
-          return response;
-        } catch (error) {
-          const err = error instanceof Error ? error : new Error('Unknown transport error');
-          setError(err);
-          throw err;
-        }
-      });
-    } catch (error) {
-      const err = error instanceof Error ? error : new Error('Transport creation failed');
-      setError(err);
-      throw err;
-    }
+      callback();
+      return response;
+    });
   };
 
   const createConsumer = async ({ socket, roomId, transportInfo, transport }: CreateConsumerParams) => {
@@ -107,46 +94,34 @@ export const useConsumer = ({ socket, device, roomId, transportInfo, isConnected
 
     setError(null);
 
-    try {
-      socket.emit(
-        'createConsumer',
-        {
-          roomId,
-          transportId: transportInfo.transportId,
-        },
-        async ({ consumers }: CreateConsumerResponse) => {
-          console.log('createConsumer emit!');
-          const newMediastream = new MediaStream();
-          for (const consumerData of consumers) {
-            try {
-              const consumer = await transport.consume({
-                id: consumerData.consumerId,
-                producerId: consumerData.producerId,
-                rtpParameters: consumerData.rtpParameters,
-                kind: consumerData.kind,
-              });
+    socket.emit(
+      'createConsumer',
+      {
+        roomId,
+        transportId: transportInfo.transportId,
+      },
+      async ({ consumers }: CreateConsumerResponse) => {
+        console.log('createConsumer emit!');
+        const newMediastream = new MediaStream();
+        for (const consumerData of consumers) {
+          const consumer = await transport.consume({
+            id: consumerData.consumerId,
+            producerId: consumerData.producerId,
+            rtpParameters: consumerData.rtpParameters,
+            kind: consumerData.kind,
+          });
 
-              if (consumer.track.kind === 'video') {
-                consumer.track.enabled = true;
-              }
-              console.log(consumer);
-              newMediastream.addTrack(consumer.track);
-              consumer.resume();
-            } catch (err) {
-              const error = err instanceof Error ? err : new Error('Consumer creation failed');
-              setError(error);
-              console.error(error);
-            }
+          if (consumer.track.kind === 'video') {
+            consumer.track.enabled = true;
           }
+          console.log(consumer);
+          newMediastream.addTrack(consumer.track);
+          consumer.resume();
+        }
 
-          setMediastream(newMediastream);
-        },
-      );
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error('Consumer initialization failed');
-      setError(error);
-      throw error;
-    }
+        setMediastream(newMediastream);
+      },
+    );
   };
 
   useEffect(() => {

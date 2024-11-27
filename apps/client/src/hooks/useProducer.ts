@@ -42,50 +42,34 @@ export const useProducer = ({
 
     setError(null);
 
-    try {
-      const newTransport = device.createSendTransport({
-        id: transportInfo.transportId,
-        iceParameters: transportInfo.iceParameters,
-        iceCandidates: transportInfo.iceCandidates,
-        dtlsParameters: transportInfo.dtlsParameters,
-      });
+    const newTransport = device.createSendTransport({
+      id: transportInfo.transportId,
+      iceParameters: transportInfo.iceParameters,
+      iceCandidates: transportInfo.iceCandidates,
+      dtlsParameters: transportInfo.dtlsParameters,
+    });
 
-      transport.current = newTransport;
+    transport.current = newTransport;
 
-      transport.current.on('connect', async (parameters, callback) => {
-        try {
-          await new Promise<void>((resolve, reject) =>
-            socket.emit(
-              'connectTransport',
-              {
-                roomId,
-                dtlsParameters: parameters.dtlsParameters,
-                transportId: transportInfo.transportId,
-              },
-              (response: ConnectTransportResponse) => {
-                if (response.connected) {
-                  callback();
-                  resolve();
-                } else {
-                  reject(new Error('Transport connection failed'));
-                }
-              },
-            ),
-          );
-        } catch (err) {
-          setError(err instanceof Error ? err : new Error('Transport connection failed'));
-          throw err;
-        }
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Transport creation failed'));
-      throw err;
-    }
+    transport.current.on('connect', async (parameters, callback) => {
+      socket.emit(
+        'connectTransport',
+        {
+          roomId,
+          dtlsParameters: parameters.dtlsParameters,
+          transportId: transportInfo.transportId,
+        },
+        (response: ConnectTransportResponse) => {
+          if (response.connected) {
+            callback();
+          }
+        },
+      );
+    });
   };
 
   const createProducer = async (socket: Socket, transportInfo: TransportInfo) => {
     if (!transport.current || !socket || !tracks) {
-      console.log('useProducer stream:', tracks);
       const dependencyError = checkDependencies('createProducer', {
         socket,
         tracks,
@@ -97,37 +81,31 @@ export const useProducer = ({
 
     setError(null);
 
-    try {
-      await new Promise<string>(resolve => {
-        transport.current!.on('produce', async (parameters, callback) => {
-          socket.emit(
-            'createProducer',
-            {
-              roomId,
-              transportId: transportInfo.transportId,
-              kind: parameters.kind,
-              rtpParameters: parameters.rtpParameters,
-            },
-            (response: { producerId: string }) => {
-              callback({ id: response.producerId });
-              setProducerId(response.producerId);
-              resolve(response.producerId);
-            },
-          );
-        });
+    transport.current!.on('produce', (parameters, callback) => {
+      console.log('produce 발생');
+      socket.emit(
+        'createProducer',
+        {
+          roomId,
+          transportId: transportInfo.transportId,
+          kind: parameters.kind,
+          rtpParameters: parameters.rtpParameters,
+        },
+        (response: { producerId: string }) => {
+          callback({ id: response.producerId });
+          setProducerId(response.producerId);
+        },
+      );
+    });
 
-        (Object.keys(tracks) as Array<keyof Tracks>).forEach(kind => {
-          if (tracks[kind]) {
-            transport
-              .current!.produce({ track: tracks[kind] })
-              .then(producer => setProducers(prev => new Map(prev).set(kind, producer)));
-          }
-        });
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Producer creation failed'));
-      throw err;
-    }
+    (Object.keys(tracks) as Array<keyof Tracks>).forEach(kind => {
+      if (tracks[kind]) {
+        console.log(kind, ':', tracks[kind]);
+        transport
+          .current!.produce({ track: tracks[kind] })
+          .then(producer => setProducers(prev => new Map(prev).set(kind, producer)));
+      }
+    });
   };
 
   useEffect(() => {
