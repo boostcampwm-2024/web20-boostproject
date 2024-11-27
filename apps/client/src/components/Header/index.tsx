@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@utils/utils';
@@ -7,11 +7,14 @@ import { createPortal } from 'react-dom';
 import Modal from '@components/Modal';
 import WelcomeCharacter from '@components/WelcomeCharacter';
 import { useAuth } from '@hooks/useAuth';
+import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
+import axiosInstance from '@/services/axios';
 
 function Header() {
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const broadcastRef = useRef<Window | null>(null);
+  const [profileImgUrl, setProfileImgUrl] = useState<string>('');
   const navigate = useNavigate();
 
   const { isLoggedIn, requestLogIn, logout } = useAuth();
@@ -62,6 +65,13 @@ function Header() {
     }
   };
 
+  useEffect(() => {
+    axiosInstance.get('/v1/members/profile-image').then(response => {
+      if (!response.data.success) return;
+      setProfileImgUrl(response.data.data.profileImage);
+    });
+  }, [isLoggedIn]);
+
   return (
     <header className="fixed top-0 left-0 w-full px-10 py-3 flex justify-between z-10 bg-surface-default">
       <div className="flex flex-row gap-2 hover:cursor-pointer" onClick={handleLogoClick}>
@@ -79,6 +89,16 @@ function Header() {
             체크인
           </Button>
           <Button onClick={handleLogOutClick}>로그아웃</Button>
+          <Avatar
+            onClick={() => {
+              navigate('/profile');
+            }}
+            className="cursor-pointer h-10 w-10"
+            aria-label="마이페이지로 이동"
+          >
+            <AvatarImage src={profileImgUrl} className="h-10 w-10" alt="마이페이지로 이동" />
+            <AvatarFallback className="bg-surface-alt">MY</AvatarFallback>
+          </Avatar>
         </div>
       ) : (
         <Button className="bg-surface-brand-default hover:bg-surface-brand-alt" onClick={handleLogInClick}>
