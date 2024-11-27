@@ -6,13 +6,13 @@ export class Attendance {
   @PrimaryGeneratedColumn({ name: 'attendanceId' })
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   attended: boolean;
 
   @Column()
   startTime: Date;
 
-  @Column()
+  @Column({ nullable: true })
   endTime: Date;
 
   @ManyToOne(() => Member)
