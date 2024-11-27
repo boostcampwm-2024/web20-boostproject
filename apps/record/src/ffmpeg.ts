@@ -1,7 +1,19 @@
 import { spawn } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 
-export const createFfmpegProcess = (port: number, dirPath: string, roomId: string, type: 'thumbnail' | 'record') => {
-  const sdpString = createSdpText(port);
+export const createFfmpegProcess = (
+  videoPort: number,
+  dirPath: string,
+  roomId: string,
+  type: 'thumbnail' | 'record',
+  audioPort?: number,
+) => {
+  if (type === 'record') {
+    const recordsDirPath = path.join(__dirname, '../assets/records');
+    fs.mkdirSync(`${recordsDirPath}/${roomId}`, { recursive: true });
+  }
+  const sdpString = audioPort ? createRecordSdpText(videoPort, audioPort) : createThumbnailSdpText(videoPort);
   const args = type === 'thumbnail' ? thumbnailArgs(dirPath, roomId) : recordArgs(dirPath, roomId);
   const ffmpegProcess = spawn('ffmpeg', args);
 
@@ -24,14 +36,31 @@ const handleFfmpegProcess = (process: ReturnType<typeof spawn>, type: string) =>
   process.on('close', code => console.log(`[FFmpeg ${type}] process exited with code: ${code}`));
 };
 
-const createSdpText = (port: number) => {
+const createThumbnailSdpText = (videoPort: number) => {
   return `v=0
 o=- 0 0 IN IP4 127.0.0.1
 s=FFmpeg
 c=IN IP4 127.0.0.1
 t=0 0
-m=video ${port} RTP/AVP 101 
+m=video ${videoPort} RTP/AVP 101
 a=rtpmap:101 VP8/90000
+a=sendonly
+a=rtcp-mux
+`;
+};
+
+const createRecordSdpText = (videoPort: number, audioPort: number) => {
+  return `v=0
+o=- 0 0 IN IP4 127.0.0.1
+s=FFmpeg
+c=IN IP4 127.0.0.1
+t=0 0
+m=video ${videoPort} RTP/AVP 101
+a=rtpmap:101 VP8/90000
+a=sendonly
+a=rtcp-mux
+m=audio ${audioPort} RTP/AVP 111
+a=rtpmap:111 OPUS/48000/2
 a=sendonly
 a=rtcp-mux
 `;
@@ -71,16 +100,28 @@ const recordArgs = (dirPath: string, roomId: string) => {
     'libx264', // 비디오 코덱
     '-preset',
     'veryfast', // 빠른 인코딩
+    '-profile:v',
+    'high', // H.264 High 프로필
+    '-level:v',
+    '4.1', // H.264 레벨 설정 (4.1)
     '-crf',
-    '20', // 비디오 품질 설정
+    '23', // 비디오 품질 설정
+    '-vf',
+    'mpdecimate', //중복 프레임 제거
     '-c:a',
-    'aac', // 오디오 코덱
+    'libopus', // 오디오 코덱
     '-b:a',
     '128k', // 오디오 비트레이트
+    '-ar',
+    '48000', // 오디오 샘플링 레이트
+    '-af',
+    'aresample=async=1', // 오디오 샘플 동기화
+    '-ac',
+    '2',
     '-f',
     'hls', // HLS 출력 포맷
     '-hls_time',
-    '4', // 각 세그먼트 길이 (초)
+    '6', // 각 세그먼트 길이 (초)
     '-hls_list_size',
     '0', // 유지할 세그먼트 개수
     '-hls_segment_filename',

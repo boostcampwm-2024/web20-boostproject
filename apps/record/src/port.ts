@@ -1,5 +1,5 @@
 const MIN_PORT = 10000;
-const MAX_PORT = 10300;
+const MAX_PORT = 11000;
 
 const takenPort = new Set();
 

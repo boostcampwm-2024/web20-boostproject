@@ -52,20 +52,32 @@ export class RecordService {
   }
 
   async sendStreamForRecord(room: mediasoup.types.Router, producers: mediasoup.types.Producer[]) {
-    const recordTransport = await this.createPlainTransport(room);
-    this.transports.set(room.id, recordTransport);
+    const ports = { video: null, audio: null };
     const consumers = await Promise.all(
       producers.map(async producer => {
+        const recordTransport = await this.createPlainTransport(room);
+        this.transports.set(room.id, recordTransport);
+
         const rtpCapabilities = this.getRtpCapabilities(room, producer.kind);
         const recordConsumer = await recordTransport.consume({
           producerId: producer.id,
           rtpCapabilities,
           paused: true,
           preferredLayers: {
-            spatialLayer: 2,
-            temporalLayer: 2,
+            spatialLayer: 1,
+            temporalLayer: 1,
           },
         });
+
+        const { port } = await this.getAvailablePort();
+
+        if (producer.kind === 'audio') {
+          ports.audio = port;
+        } else {
+          ports.video = port;
+        }
+
+        await recordTransport.connect({ ip: this.serverPrivateIp, port });
         this.setUpRecordTransportListeners(recordTransport, port, room.id);
         this.setUpRecordConsumerListeners(recordConsumer);
         return recordConsumer;
@@ -79,9 +91,7 @@ export class RecordService {
       }
     }, 1000);
 
-    const { port } = await this.getAvailablePort();
-    await recordTransport.connect({ ip: this.serverPrivateIp, port });
-    await this.sendStreamRequest(room.id, port, STREAM_TYPE.RECORD);
+    await this.sendStreamRequest(room.id, ports.video, STREAM_TYPE.RECORD, ports.audio);
   }
 
   async stopStreamFromRecord(room: mediasoup.types.Router, title: string) {
@@ -148,12 +158,13 @@ export class RecordService {
     return response.data;
   }
 
-  private async sendStreamRequest(roomId: string, port: number, type: string) {
+  private async sendStreamRequest(roomId: string, videoPort: number, type: string, audioPort?: number) {
     await firstValueFrom(
       this.httpService.post(`${this.recordServerUrl}/send`, {
         roomId,
-        port,
+        videoPort,
         type,
+        audioPort,
       }),
     );
   }

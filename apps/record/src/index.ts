@@ -31,8 +31,8 @@ if (!fs.existsSync(recordsDirPath)) {
 }
 
 app.post('/send', (req, res) => {
-  const { port, roomId, type } = req.body;
-  createFfmpegProcess(port, assetsDirPath, roomId, type);
+  const { videoPort, roomId, type, audioPort } = req.body;
+  createFfmpegProcess(videoPort, assetsDirPath, roomId, type, audioPort);
   res.send({ success: true });
 });
 
@@ -58,7 +58,7 @@ app.post('/record/stop/:roomId', async (req, res) => {
   await uploadObjectFromDir(roomId, assetsDirPath);
   if (fs.existsSync(roomDirPath)) {
     await deleteAllFiles(roomDirPath);
-    await fs.promises.rmdir(roomDirPath); // 최상위 디렉토리 삭제
+    await fs.promises.rmdir(roomDirPath);
     console.log(`All files in ${roomDirPath} deleted successfully.`);
   }
   res.send({ success: true });
