@@ -58,6 +58,7 @@
 
     /* Red */
     --red-500: #fb4a59;
+    --red-500-alt: rgba(251, 74, 89, 0.7);
   }
   .dark {
     --background: 222.2 84% 4.9%;
