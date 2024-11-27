@@ -27,15 +27,15 @@ function RecordButton({ socket, roomId }: RecordButtonProps) {
 
   const handleStartRecording = () => {
     if (!socket || !roomId) return;
-    socket.emit('startRecord', { roomId: roomId }, () => {
-      setIsRecording(true);
+    socket.emit('startRecord', { roomId: roomId }, (response: { success: boolean }) => {
+      if (response.success) setIsRecording(true);
     });
   };
 
   const handleStopRecording: SubmitHandler<Input> = () => {
     if (!socket || !roomId) return;
-    socket.emit('stopRecord', { roomId: roomId, title: recordTitleRef.current }, () => {
-      setIsRecording(false);
+    socket.emit('stopRecord', { roomId: roomId, title: recordTitleRef.current }, (response: { success: boolean }) => {
+      if (response.success) setIsRecording(false);
     });
   };
 
