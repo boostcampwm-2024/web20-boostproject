@@ -5,7 +5,6 @@ import express from 'express';
 import { getPort, releasePort } from './port';
 import cors from 'cors';
 import { createFfmpegProcess } from './ffmpeg';
-import { uploadObjectFromDir } from './object';
 
 dotenv.config();
 
@@ -52,34 +51,4 @@ app.post('/close', (req, res) => {
   res.send({ success: true });
 });
 
-app.post('/record/stop/:roomId', async (req, res) => {
-  const { roomId } = req.params;
-  const roomDirPath = path.join(assetsDirPath, 'records', roomId);
-  await uploadObjectFromDir(roomId, assetsDirPath);
-  if (fs.existsSync(roomDirPath)) {
-    await deleteAllFiles(roomDirPath);
-    await fs.promises.rmdir(roomDirPath);
-    console.log(`All files in ${roomDirPath} deleted successfully.`);
-  }
-  res.send({ success: true });
-});
-
 app.listen(3003);
-
-async function deleteAllFiles(directoryPath: string): Promise<void> {
-  try {
-    const files = await fs.promises.readdir(directoryPath, { withFileTypes: true });
-    for (const file of files) {
-      const fullPath = path.join(directoryPath, file.name);
-      if (file.isDirectory()) {
-        await deleteAllFiles(fullPath); // 재귀적으로 디렉토리 삭제
-        await fs.promises.rmdir(fullPath); // 빈 디렉토리 삭제
-      } else {
-        await fs.promises.unlink(fullPath); // 파일 삭제
-      }
-    }
-  } catch (error) {
-    console.error(`Error deleting files in directory: ${directoryPath}`, error);
-    throw error;
-  }
-}

@@ -52,10 +52,10 @@ export class RecordService {
   }
 
   async sendStreamForRecord(room: mediasoup.types.Router, producers: mediasoup.types.Producer[]) {
-    const ports = { video: null, audio: null };
+    const recordTransport = await this.createPlainTransport(room);
+
     const consumers = await Promise.all(
       producers.map(async producer => {
-        const recordTransport = await this.createPlainTransport(room);
         this.transports.set(room.id, recordTransport);
 
         const rtpCapabilities = this.getRtpCapabilities(room, producer.kind);
@@ -69,16 +69,6 @@ export class RecordService {
           },
         });
 
-        const { port } = await this.getAvailablePort();
-
-        if (producer.kind === 'audio') {
-          ports.audio = port;
-        } else {
-          ports.video = port;
-        }
-
-        await recordTransport.connect({ ip: this.serverPrivateIp, port });
-        this.setUpRecordTransportListeners(recordTransport, port, room.id);
         this.setUpRecordConsumerListeners(recordConsumer);
         return recordConsumer;
       }),
@@ -91,7 +81,12 @@ export class RecordService {
       }
     }, 1000);
 
-    await this.sendStreamRequest(room.id, ports.video, STREAM_TYPE.RECORD, ports.audio);
+    const { port } = await this.getAvailablePort();
+
+    await recordTransport.connect({ ip: this.serverPrivateIp, port });
+    this.setUpRecordTransportListeners(recordTransport, port, room.id);
+
+    await this.sendStreamRequest(room.id, port, STREAM_TYPE.RECORD);
   }
 
   async stopStreamFromRecord(room: mediasoup.types.Router, title: string) {
@@ -101,7 +96,8 @@ export class RecordService {
     }
     recordTransport.close();
     this.transports.delete(room.id);
-    await this.stopRecordRequest(room.id, title);
+    //TODO:DB 저장 호출 로직으로 변경, http /close 요청 보냄
+    console.log(title);
   }
 
   async createPlainTransport(room: mediasoup.types.Router) {
@@ -165,14 +161,6 @@ export class RecordService {
         videoPort,
         type,
         audioPort,
-      }),
-    );
-  }
-
-  private async stopRecordRequest(roomId: string, title: string) {
-    await firstValueFrom(
-      this.httpService.post(`${this.recordServerUrl}/record/stop/${roomId}`, {
-        title: title,
       }),
     );
   }
