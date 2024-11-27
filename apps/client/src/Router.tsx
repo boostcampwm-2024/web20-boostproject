@@ -4,6 +4,7 @@ import Home from '@pages/Home';
 import Profile from '@pages/Profile';
 import Live from '@pages/Live';
 import Broadcast from '@pages/Broadcast';
+import Auth from '@pages/Auth';
 
 const routerOptions = {
   future: {
@@ -33,6 +34,10 @@ const router = createBrowserRouter(
         {
           path: 'live/:liveId',
           element: <Live />,
+        },
+        {
+          path: 'auth',
+          element: <Auth />,
         },
       ],
     },

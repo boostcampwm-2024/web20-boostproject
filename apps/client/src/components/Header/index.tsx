@@ -1,34 +1,31 @@
 import { useRef, useState } from 'react';
-import { Button } from '../ui/button';
+import { Button } from '@components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@/utils/utils';
-import { Character, GithubIcon, GoogleIcon, Logo } from '@/components/Icons';
+import { cn } from '@utils/utils';
+import { Character, GithubIcon, GoogleIcon, Logo } from '@components/Icons';
 import { createPortal } from 'react-dom';
-import Modal from '../Modal';
-import WelcomeCharacter from '../WelcomeCharacter';
+import Modal from '@components/Modal';
+import WelcomeCharacter from '@components/WelcomeCharacter';
+import { useAuth } from '@hooks/useAuth';
 
 function Header() {
-  const [isLogIn, setIsLogIn] = useState(true);
   const [isCheckedIn, setIsCheckedIn] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const broadcastRef = useRef<Window | null>(null);
   const navigate = useNavigate();
+
+  const { isLoggedIn, requestLogIn, logout } = useAuth();
 
   const handleLogoClick = () => {
     navigate('/');
   };
 
   const handleLogInClick = () => {
-    // TODO: 로그인 로직 구현
-    // alert('로그인 모달 창 구현 예정');
-    // setIsLogIn(true);
     setShowModal(true);
   };
 
   const handleLogOutClick = () => {
-    // TODO: 로그아웃 로직 구현
-    alert('로그아웃');
-    setIsLogIn(false);
+    logout();
     navigate('/');
   };
 
@@ -71,7 +68,7 @@ function Header() {
         <Character size={48} />
         <Logo width={109} height={50} />
       </div>
-      {isLogIn ? (
+      {isLoggedIn ? (
         <div className="flex gap-2 items-center">
           <Button
             className={cn({
@@ -97,13 +94,23 @@ function Header() {
                 <WelcomeCharacter size={80} />
               </div>
               <div className="flex flex-row md:flex-col flex-1 justify-around items-center gap-3 p-4">
-                <button className="flex flex-row items-center h-16 w-15 md:w-4/5 border border-border-bold rounded-circle ">
+                <button
+                  onClick={() => {
+                    requestLogIn('github');
+                  }}
+                  className="flex flex-row items-center h-16 w-15 md:w-4/5 border border-border-bold rounded-circle "
+                >
                   <GithubIcon size={60} />
                   <span className="hidden flex-1 md:flex justify-center text-text-strong text-display-bold16 lg:text-display-bold24">
                     Gihub로 로그인하기
                   </span>
                 </button>
-                <button className="flex flex-row items-center h-16 w-15 md:w-4/5 border border-border-bold rounded-circle ">
+                <button
+                  onClick={() => {
+                    requestLogIn('google');
+                  }}
+                  className="flex flex-row items-center h-16 w-15 md:w-4/5 border border-border-bold rounded-circle "
+                >
                   <GoogleIcon />
                   <span className="hidden md:flex flex-1 justify-center text-text-strong text-display-bold16 lg:text-display-bold24">
                     Google로 로그인하기
