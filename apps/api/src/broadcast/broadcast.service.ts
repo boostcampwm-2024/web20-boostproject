@@ -7,6 +7,7 @@ import { UpdateBroadcastTitleDto } from './dto/update-broadcast-title.request.dt
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { Attendance } from 'src/attendance/attendance.entity';
+import { Member } from '../member/member.entity';
 import { BroadcastListDto } from './dto/broadcast-list.dto';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class BroadcastService {
   constructor(
     @InjectRepository(Broadcast) private readonly broadcastRepository: Repository<Broadcast>,
     @InjectRepository(Attendance) private readonly attendanceRepository: Repository<Attendance>,
+    @InjectRepository(Member) private readonly memberRepository: Repository<Member>,
   ) {}
 
   async getAllWithFilterAndPagination(queries: BroadcastListDto) {
@@ -80,13 +82,24 @@ export class BroadcastService {
       .getMany();
   }
 
-  async createBroadcast({ id, title, thumbnail }: CreateBroadcastDto): Promise<Broadcast> {
+  async createBroadcast({ id, title, thumbnail, memberId }: CreateBroadcastDto): Promise<Broadcast> {
+    const member = await this.memberRepository.findOne({ where: { id: memberId } });
+    if (!member) {
+      throw new CustomException(ErrorStatus.MEMBER_NOT_FOUND);
+    }
+    const existingBroadcast = await this.broadcastRepository.findOne({
+      where: { member: { id: member.id } },
+    });
+    if (existingBroadcast) {
+      throw new CustomException(ErrorStatus.BROADCAST_ALREADY_EXISTS);
+    }
+
     const broadcast = this.broadcastRepository.create({
       id,
       title,
       thumbnail,
       startTime: new Date(),
-      member: null,
+      member: member,
     });
 
     return await this.broadcastRepository.save(broadcast);

@@ -13,6 +13,7 @@ import { BroadcastService } from '../broadcast/broadcast.service';
 import { CreateBroadcastDto } from '../broadcast/dto/createBroadcast.dto';
 import { ClientService } from './services/client.service';
 import { RecordService } from './services/record.service';
+import { User } from '../types/user';
 import { SetVideoQualityDto } from './dto/set-video-quality.dto';
 
 @Injectable()
@@ -28,10 +29,12 @@ export class SfuService {
     private readonly configService: ConfigService,
   ) {}
 
-  async createRoom(clientId: string) {
+  async createRoom(clientId: string, user: User) {
     const room = await this.roomService.createRoom();
     const thumbnail = `${this.configService.get('PUBLIC_RECORD_SERVER_URL')}/statics/${room.id}.jpg`;
-    await this.broadcasterService.createBroadcast(CreateBroadcastDto.of(room.id, 'J000님의 방송', thumbnail, null));
+    await this.broadcasterService.createBroadcast(
+      CreateBroadcastDto.of(room.id, `${user.camperId}님의 방송`, thumbnail, user.id),
+    );
     this.clientService.addClientToRoom(clientId, room.id);
     return room;
   }

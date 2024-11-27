@@ -5,8 +5,9 @@ import { ConnectTransportDto } from './dto/transport-params.interface';
 import { CreateProducerDto } from './dto/create-producer.dto';
 import { CreateConsumerDto } from './dto/create-consumer.dto';
 import { CreateTransportDto } from './dto/create-transport.dto';
-import { UseFilters } from '@nestjs/common';
+import { UseFilters, UseGuards } from '@nestjs/common';
 import { WebSocketExceptionFilter } from 'src/common/filter/webSocketException.filter';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SetVideoQualityDto } from './dto/set-video-quality.dto';
 
 @WebSocketGateway({ cors: { origin: '*', methods: ['GET', 'POST'] } })
@@ -17,9 +18,10 @@ export class SfuGateway {
 
   constructor(private readonly sfuService: SfuService) {}
 
+  @UseGuards(JwtAuthGuard)
   @SubscribeMessage('createRoom')
   async handleCreateRoom(client: Socket) {
-    const room = await this.sfuService.createRoom(client.id);
+    const room = await this.sfuService.createRoom(client.id, client.user);
     return { roomId: room.id };
   }
 
