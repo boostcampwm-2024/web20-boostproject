@@ -37,6 +37,7 @@ export default {
         'surface-brand-default': 'var(--blue-500)',
         'surface-brand-alt': 'var(--blue-500-alt)',
         'surface-danger': 'var(--red-500)',
+        'surface-danger-alt': 'var(--red-500-alt)',
         'border-bold': 'var(--grayscale-white-alt)',
         'border-default': 'var(--grayscale-400)',
         background: 'hsl(var(--background))',

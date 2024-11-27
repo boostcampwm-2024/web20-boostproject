@@ -13,12 +13,11 @@ import { useEffect, useRef, useState } from 'react';
 import useScreenShare from '@/hooks/useScreenShare';
 import BroadcastPlayer from './BroadcastPlayer';
 import { Tracks } from '@/types/mediasoupTypes';
+import RecordButton from './RecordButton';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
 function Broadcast() {
-  const tracksRef = useRef<Tracks>({ video: undefined, mediaAudio: undefined, screenAudio: undefined });
-  const [isStreamReady, setIsStreamReady] = useState(false);
   // 미디어 스트림(비디오, 오디오)
   const { mediaStream, mediaStreamError, isMediastreamReady: _imsr } = useMediaStream();
   const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
@@ -26,6 +25,9 @@ function Broadcast() {
   // 화면 공유
   const { screenStream, isScreenSharing, screenShareError, toggleScreenShare } = useScreenShare();
 
+  // 송출 정보
+  const tracksRef = useRef<Tracks>({ video: undefined, mediaAudio: undefined, screenAudio: undefined });
+  const [isStreamReady, setIsStreamReady] = useState(false);
   // 방송 송출
   const { socket, isConnected, socketError } = useSocket(mediaServerUrl);
   const { roomId, roomError } = useRoom(socket, isConnected);
@@ -42,6 +44,7 @@ function Broadcast() {
     device,
     roomId,
   });
+  // 방송 정보
   const [title, setTitle] = useState<string>('J000님의 방송');
 
   const stopBroadcast = (e?: BeforeUnloadEvent) => {
@@ -136,9 +139,13 @@ function Broadcast() {
           <div className="w-full">
             <BroadcastTitle currentTitle={title} onTitleChange={handleBroadcastTitle} />
             <div className="flex justify-between items-center m-4">
-              <Button onClick={handleCheckout} className="bg-surface-brand-default hover:hover:bg-surface-brand-alt">
-                체크아웃
-              </Button>
+              <div className="flex justify-around gap-2">
+                <Button onClick={handleCheckout} className="bg-surface-brand-default hover:hover:bg-surface-brand-alt">
+                  체크아웃
+                </Button>
+                <RecordButton />
+              </div>
+
               <div className="flex items-center gap-4">
                 <button onClick={toggleVideo}>{isVideoEnabled ? <VideoOnIcon /> : <VideoOffIcon />}</button>
                 <button
