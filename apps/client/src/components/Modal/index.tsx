@@ -4,9 +4,10 @@ import { useEffect, useRef } from 'react';
 interface ModalProps {
   children: React.ReactNode;
   setShowModal: (showModal: boolean) => void;
+  modalClassName?: string;
 }
 
-function Modal({ children, setShowModal }: ModalProps) {
+function Modal({ children, setShowModal, modalClassName }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -24,10 +25,10 @@ function Modal({ children, setShowModal }: ModalProps) {
     <div className="fixed top-0 left-0 w-full h-full z-50 bg-black/30 backdrop-blur-sm flex justify-center items-center">
       {/* 모달 */}
       <div
-        className="flex flex-col min-h-1/3 w-1/3 shadow-3xl bg-surface-default border-border-bold border-2 rounded p-2"
+        className={`flex flex-col shadow-3xl bg-surface-default border-border-bold border-2 rounded ${modalClassName}`}
         ref={modalRef}
       >
-        <div className="h-6 w-full clearfix mt-1 mr-2">
+        <div className="h-6 w-full flex justify-end p-2">
           <button
             className="float-right h-full cursor-pointer text-text-default hover:text-text-strong"
             onClick={() => setShowModal(false)}
@@ -35,7 +36,7 @@ function Modal({ children, setShowModal }: ModalProps) {
             <CloseIcon />
           </button>
         </div>
-        {children}
+        <div className="p-4">{children}</div>
       </div>
     </div>
   );

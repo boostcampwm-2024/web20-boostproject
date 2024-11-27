@@ -87,13 +87,13 @@ function Header() {
       )}
       {showModal &&
         createPortal(
-          <Modal setShowModal={setShowModal}>
+          <Modal setShowModal={setShowModal} modalClassName="h-1/3 w-1/3">
             <div className="flex flex-col flex-1">
               <div className="flex flex-row h-24 text-text-strong font-bold text-5xl items-center justify-center">
                 WELCOME!
                 <WelcomeCharacter size={80} />
               </div>
-              <div className="flex flex-row md:flex-col flex-1 justify-around items-center gap-3 p-4">
+              <div className="flex flex-row md:flex-col h-full justify-around items-center gap-3 p-4">
                 <button
                   onClick={() => {
                     requestLogIn('github');
