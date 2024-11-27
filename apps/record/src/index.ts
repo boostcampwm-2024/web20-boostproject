@@ -10,19 +10,29 @@ import { uploadObjectFromDir } from './object';
 dotenv.config();
 
 const app = express();
-const dirPath = path.join(__dirname, '../assets');
+const assetsDirPath = path.join(__dirname, '../assets');
+const thumbnailsDirPath = path.join(__dirname, '../assets/thumbnails');
+const recordsDirPath = path.join(__dirname, '../assets/records');
 
 app.use(express.json());
 app.use(cors());
-app.use('/statics', express.static(dirPath));
+app.use('/statics', express.static(assetsDirPath));
 
-if (!fs.existsSync(dirPath)) {
-  fs.mkdirSync(dirPath, { recursive: true });
+if (!fs.existsSync(assetsDirPath)) {
+  fs.mkdirSync(assetsDirPath, { recursive: true });
+}
+
+if (!fs.existsSync(thumbnailsDirPath)) {
+  fs.mkdirSync(thumbnailsDirPath, { recursive: true });
+}
+
+if (!fs.existsSync(recordsDirPath)) {
+  fs.mkdirSync(recordsDirPath, { recursive: true });
 }
 
 app.post('/send', (req, res) => {
   const { port, roomId, type } = req.body;
-  createFfmpegProcess(port, dirPath, roomId, type);
+  createFfmpegProcess(port, assetsDirPath, roomId, type);
   res.send({ success: true });
 });
 
@@ -32,7 +42,7 @@ app.get('/availablePort', (req, res) => {
 
 app.get('/images/:roomId', (req, res) => {
   const { roomId } = req.params;
-  const thumbnailPath = path.join(dirPath, `thumbnails/${roomId}.jpg`);
+  const thumbnailPath = path.join(thumbnailsDirPath, `${roomId}.jpg`);
   fs.access(thumbnailPath, fs.constants.F_OK, err => {
     if (err) {
       console.error(`Thumbnail not found for roomId: ${roomId}`);
@@ -45,7 +55,7 @@ app.get('/images/:roomId', (req, res) => {
 app.post('/close', (req, res) => {
   const { port, roomId } = req.body;
   releasePort(port);
-  const thumbnailPath = path.join(dirPath, `thumbnails/${roomId}.jpg`);
+  const thumbnailPath = path.join(thumbnailsDirPath, `${roomId}.jpg`);
   fs.unlink(thumbnailPath, err => {
     if (err) {
       console.error(`Failed to delete thumbnail for roomId: ${roomId}`);
@@ -55,8 +65,8 @@ app.post('/close', (req, res) => {
 });
 app.post('/record/stop/:roomId', async (req, res) => {
   const { roomId } = req.params;
-  const roomDirPath = path.join(dirPath, 'records', roomId);
-  await uploadObjectFromDir(roomId, dirPath);
+  const roomDirPath = path.join(assetsDirPath, 'records', roomId);
+  await uploadObjectFromDir(roomId, assetsDirPath);
   if (fs.existsSync(roomDirPath)) {
     await deleteAllFiles(roomDirPath);
     await fs.promises.rmdir(roomDirPath); // 최상위 디렉토리 삭제
