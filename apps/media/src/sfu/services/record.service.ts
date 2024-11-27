@@ -4,6 +4,11 @@ import { ConfigService } from '@nestjs/config';
 import * as mediasoup from 'mediasoup';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
 
+const STREAM_TYPE = {
+  RECORD: 'record',
+  THUMBNAIL: 'thumbnail',
+};
+
 @Injectable()
 export class RecordService {
   private readonly recordServerUrl: string;
@@ -43,7 +48,7 @@ export class RecordService {
     this.setUpRecordTransportListeners(recordTransport, port, room.id);
     this.setUpRecordConsumerListeners(recordConsumer);
 
-    await this.sendRecordStartRequest(room.id, port);
+    await this.sendStreamRequest(room.id, port, STREAM_TYPE.THUMBNAIL);
   }
 
   async sendStreamForRecord(room: mediasoup.types.Router, producers: mediasoup.types.Producer[]) {
@@ -56,6 +61,10 @@ export class RecordService {
           producerId: producer.id,
           rtpCapabilities,
           paused: true,
+          preferredLayers: {
+            spatialLayer: 2,
+            temporalLayer: 2,
+          },
         });
         this.setUpRecordTransportListeners(recordTransport, port, room.id);
         this.setUpRecordConsumerListeners(recordConsumer);
@@ -72,15 +81,17 @@ export class RecordService {
 
     const { port } = await this.getAvailablePort();
     await recordTransport.connect({ ip: this.serverPrivateIp, port });
-    await this.sendRecordStartRequest(room.id, port);
+    await this.sendStreamRequest(room.id, port, STREAM_TYPE.RECORD);
   }
 
-  async stopStreamFromRecord(room: mediasoup.types.Router) {
+  async stopStreamFromRecord(room: mediasoup.types.Router, title: string) {
     const recordTransport = this.transports.get(room.id);
     if (!recordTransport) {
       return;
     }
     recordTransport.close();
+    this.transports.delete(room.id);
+    await this.stopRecordRequest(room.id, title);
   }
 
   async createPlainTransport(room: mediasoup.types.Router) {
@@ -98,7 +109,7 @@ export class RecordService {
   private setUpRecordTransportListeners(recordTransport: mediasoup.types.Transport, port: number, roomId: string) {
     recordTransport.on('routerclose', async () => {
       await lastValueFrom(
-        this.httpService.post(`${this.configService.get('RECORD_SERVER_URL')}/close`, {
+        this.httpService.post(`${this.recordServerUrl}/close`, {
           port,
           roomId,
         }),
@@ -107,7 +118,7 @@ export class RecordService {
     });
     recordTransport.observer.on('close', async () => {
       await firstValueFrom(
-        this.httpService.post(`${this.configService.get('RECORD_SERVER_URL')}/close`, {
+        this.httpService.post(`${this.recordServerUrl}/close`, {
           port,
           roomId,
         }),
@@ -137,11 +148,20 @@ export class RecordService {
     return response.data;
   }
 
-  private async sendRecordStartRequest(roomId: string, port: number) {
+  private async sendStreamRequest(roomId: string, port: number, type: string) {
     await firstValueFrom(
       this.httpService.post(`${this.recordServerUrl}/send`, {
         roomId,
         port,
+        type,
+      }),
+    );
+  }
+
+  private async stopRecordRequest(roomId: string, title: string) {
+    await firstValueFrom(
+      this.httpService.post(`${this.recordServerUrl}/record/stop/${roomId}`, {
+        title: title,
       }),
     );
   }

@@ -31,7 +31,6 @@ export const uploadObjectFromDir = async (roomId: string, dirPath: string) => {
     const filePath = path.join(folderPath, file);
     const fileStream = fs.createReadStream(filePath);
     const objectKey = `records/${roomId}/${file}`;
-    console.log(BUCKET_NAME, objectKey);
     try {
       const command = new PutObjectCommand({
         Bucket: BUCKET_NAME,
