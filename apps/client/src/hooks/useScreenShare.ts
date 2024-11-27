@@ -30,6 +30,7 @@ const useScreenShare = () => {
     if (screenStreamRef.current) {
       screenStreamRef.current.getTracks().forEach(track => track.stop());
     }
+    screenStreamRef.current = null;
     setIsScreenSharing(false);
   };
 
@@ -51,6 +52,15 @@ const useScreenShare = () => {
       endScreenShare();
     };
   }, []);
+
+  useEffect(() => {
+    if (screenStreamRef.current) {
+      console.log('hi');
+      screenStreamRef.current.getVideoTracks()[0].onended = () => {
+        endScreenShare();
+      };
+    }
+  }, [screenStreamRef.current]);
 
   return {
     screenStream: screenStreamRef.current,
