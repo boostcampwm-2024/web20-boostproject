@@ -45,7 +45,7 @@ export class RecordService {
 
     await recordTransport.connect({ ip: this.serverPrivateIp, port });
 
-    this.setUpRecordTransportListeners(recordTransport, port, room.id);
+    this.setUpRecordTransportListeners(recordTransport, port);
     this.setUpRecordConsumerListeners(recordConsumer);
 
     await this.sendStreamRequest(room.id, port, STREAM_TYPE.THUMBNAIL);
@@ -53,20 +53,22 @@ export class RecordService {
 
   async sendStreamForRecord(room: mediasoup.types.Router, producers: mediasoup.types.Producer[]) {
     const recordTransport = await this.createPlainTransport(room);
-    this.transports.set(room.id, recordTransport);
+
     const consumers = await Promise.all(
       producers.map(async producer => {
+        this.transports.set(room.id, recordTransport);
+
         const rtpCapabilities = this.getRtpCapabilities(room, producer.kind);
         const recordConsumer = await recordTransport.consume({
           producerId: producer.id,
           rtpCapabilities,
           paused: true,
           preferredLayers: {
-            spatialLayer: 2,
-            temporalLayer: 2,
+            spatialLayer: 1,
+            temporalLayer: 1,
           },
         });
-        this.setUpRecordTransportListeners(recordTransport, port, room.id);
+
         this.setUpRecordConsumerListeners(recordConsumer);
         return recordConsumer;
       }),
@@ -80,7 +82,10 @@ export class RecordService {
     }, 1000);
 
     const { port } = await this.getAvailablePort();
+
     await recordTransport.connect({ ip: this.serverPrivateIp, port });
+    this.setUpRecordTransportListeners(recordTransport, port);
+
     await this.sendStreamRequest(room.id, port, STREAM_TYPE.RECORD);
   }
 
@@ -91,7 +96,8 @@ export class RecordService {
     }
     recordTransport.close();
     this.transports.delete(room.id);
-    await this.stopRecordRequest(room.id, title);
+    //TODO:DB 저장 호출 로직으로 변경
+    console.log(title);
   }
 
   async createPlainTransport(room: mediasoup.types.Router) {
@@ -106,12 +112,11 @@ export class RecordService {
     });
   }
 
-  private setUpRecordTransportListeners(recordTransport: mediasoup.types.Transport, port: number, roomId: string) {
+  private setUpRecordTransportListeners(recordTransport: mediasoup.types.Transport, port: number) {
     recordTransport.on('routerclose', async () => {
       await lastValueFrom(
         this.httpService.post(`${this.recordServerUrl}/close`, {
           port,
-          roomId,
         }),
       );
       recordTransport.close();
@@ -120,7 +125,6 @@ export class RecordService {
       await firstValueFrom(
         this.httpService.post(`${this.recordServerUrl}/close`, {
           port,
-          roomId,
         }),
       );
     });
@@ -148,20 +152,13 @@ export class RecordService {
     return response.data;
   }
 
-  private async sendStreamRequest(roomId: string, port: number, type: string) {
+  private async sendStreamRequest(roomId: string, videoPort: number, type: string, audioPort?: number) {
     await firstValueFrom(
       this.httpService.post(`${this.recordServerUrl}/send`, {
         roomId,
-        port,
+        videoPort,
         type,
-      }),
-    );
-  }
-
-  private async stopRecordRequest(roomId: string, title: string) {
-    await firstValueFrom(
-      this.httpService.post(`${this.recordServerUrl}/record/stop/${roomId}`, {
-        title: title,
+        audioPort,
       }),
     );
   }

@@ -11,7 +11,7 @@ export class JWTAuthGuard extends AuthGuard('jwt') {
 
     return {
       headers: {
-        authorization: client.handshake.headers.authorization,
+        authorization: client.handshake.auth.accessToken,
       },
     };
   }

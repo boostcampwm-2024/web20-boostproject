@@ -6,16 +6,16 @@ import { CreateBroadcastDto } from './dto/createBroadcast.dto';
 import { UpdateBroadcastTitleDto } from './dto/update-broadcast-title.request.dto';
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
-import { Attendance } from 'src/attendance/attendance.entity';
 import { Member } from '../member/member.entity';
 import { BroadcastListDto } from './dto/broadcast-list.dto';
+import { AttendanceService } from 'src/attendance/attendance.service';
 
 @Injectable()
 export class BroadcastService {
   constructor(
     @InjectRepository(Broadcast) private readonly broadcastRepository: Repository<Broadcast>,
-    @InjectRepository(Attendance) private readonly attendanceRepository: Repository<Attendance>,
     @InjectRepository(Member) private readonly memberRepository: Repository<Member>,
+    private readonly attendanceService: AttendanceService,
   ) {}
 
   async getAllWithFilterAndPagination(queries: BroadcastListDto) {
@@ -102,6 +102,8 @@ export class BroadcastService {
       member: member,
     });
 
+    this.attendanceService.createAttendance(broadcast);
+
     return await this.broadcastRepository.save(broadcast);
   }
 
@@ -140,16 +142,6 @@ export class BroadcastService {
 
     await this.broadcastRepository.delete({ id: broadcastId });
 
-    // attendance 테이블에 출석 기록 저장 기능
-    const endTime = new Date();
-
-    const attendance = this.attendanceRepository.create({
-      attended: Attendance.isAttended(broadcast.startTime, endTime),
-      startTime: broadcast.startTime,
-      endTime,
-      member: broadcast.member,
-    });
-
-    await this.attendanceRepository.save(attendance);
+    this.attendanceService.updateAttendance(broadcastId);
   }
 }

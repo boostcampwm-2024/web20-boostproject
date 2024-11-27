@@ -31,7 +31,7 @@ export class SfuService {
 
   async createRoom(clientId: string, user: User) {
     const room = await this.roomService.createRoom();
-    const thumbnail = `${this.configService.get('PUBLIC_RECORD_SERVER_URL')}/statics/${room.id}.jpg`;
+    const thumbnail = `${this.configService.get('PUBLIC_RECORD_SERVER_URL')}/statics/thumbnails/${room.id}.jpg`;
     await this.broadcasterService.createBroadcast(
       CreateBroadcastDto.of(room.id, `${user.camperId}님의 방송`, thumbnail, user.id),
     );

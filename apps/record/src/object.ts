@@ -27,10 +27,12 @@ const s3Client = new S3Client({
 export const uploadObjectFromDir = async (roomId: string, dirPath: string) => {
   const folderPath = `${dirPath}/records/${roomId}`;
   const files = fs.readdirSync(folderPath);
+  const endTime = `${formatDate(new Date())}_${formatTime(new Date())}`;
+
   for (const file of files) {
     const filePath = path.join(folderPath, file);
     const fileStream = fs.createReadStream(filePath);
-    const objectKey = `records/${roomId}/${file}`;
+    const objectKey = `records/${roomId}/${endTime}/${file}`;
     try {
       const command = new PutObjectCommand({
         Bucket: BUCKET_NAME,
@@ -44,4 +46,24 @@ export const uploadObjectFromDir = async (roomId: string, dirPath: string) => {
       throw error;
     }
   }
+};
+
+const formatDate = (date: Date) => {
+  return date
+    .toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+    .replace(/\. /g, '.')
+    .slice(0, -1);
+};
+
+const formatTime = (date: Date) => {
+  return date.toLocaleTimeString('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  });
 };
