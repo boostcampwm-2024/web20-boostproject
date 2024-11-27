@@ -7,12 +7,13 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { UseFilters } from '@nestjs/common';
+import { UseFilters, UseGuards } from '@nestjs/common';
 import { WebSocketExceptionFilter } from 'src/common/filter/webSocketExceptionFilter';
 import { ChatService } from './chat.service';
 import { createRoomDto } from './dto/creat-room.dto';
 import { joinRoomDto } from './dto/join-room.dto';
 import { chatDto } from './dto/chat.dto';
+import { JWTAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @WebSocketGateway({ cors: { origin: '*', methods: ['GET', 'POST'] } })
 @UseFilters(WebSocketExceptionFilter)
@@ -23,6 +24,7 @@ export class ChatGateway implements OnGatewayDisconnect {
   constructor(private readonly chatService: ChatService) {}
 
   //룸생성
+  @UseGuards(JWTAuthGuard)
   @SubscribeMessage('createRoom')
   async handleCreateRoom(@MessageBody() params: createRoomDto, @ConnectedSocket() client: Socket) {
     const roomId = this.chatService.createRoom(params, client);
@@ -42,11 +44,13 @@ export class ChatGateway implements OnGatewayDisconnect {
     this.chatService.leaveRoom(roomId, client);
   }
   //룸삭제
+  @UseGuards(JWTAuthGuard)
   @SubscribeMessage('deleteRoom')
   async handleDeleteRoom(@MessageBody('roomId') roomId: string, @ConnectedSocket() client: Socket) {
     this.chatService.deleteRoom(roomId, client);
   }
   //채팅
+  @UseGuards(JWTAuthGuard)
   @SubscribeMessage('chat')
   async handleChat(@MessageBody() params: chatDto, @ConnectedSocket() client: Socket) {
     this.chatService.broadcast(params, client);

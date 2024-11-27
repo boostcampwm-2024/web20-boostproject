@@ -6,6 +6,8 @@ export class ErrorStatus {
 
   static readonly BAD_REQUEST = new ErrorStatus(400, 'COMMON_4000', '잘못된 요청입니다.');
 
+  static readonly UNAUTHORIZED = new ErrorStatus(401, 'COMMON_4001', '인증되지 않은 요청입니다.');
+
   // Chat Errors
   static readonly ROOM_NOT_FOUND = new ErrorStatus(404, 'CHAT_4000', '방 정보가 존재하지 않습니다.');
 
