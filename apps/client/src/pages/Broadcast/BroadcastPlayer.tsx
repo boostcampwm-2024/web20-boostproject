@@ -59,8 +59,32 @@ function BroadcastPlayer({
       context.clearRect(0, 0, canvas.width, canvas.height);
 
       if (isScreenSharing && screenShareRef.current) {
+        const screenVideo = screenShareRef.current;
         // 화면 공유 on
-        context.drawImage(screenShareRef.current, 0, 0, canvas.width, canvas.height);
+        // 화면 비율 계산 및 적용
+        const screenRatio = screenVideo.videoWidth / screenVideo.videoHeight;
+        const canvasRatio = canvas.width / canvas.height;
+
+        let drawWidth = canvas.width;
+        let drawHeight = canvas.height;
+        let drawX = 0;
+        let drawY = 0;
+
+        if (screenRatio > canvasRatio) {
+          // 화면이 더 넓은 경우
+          drawHeight = canvas.width / screenRatio;
+          drawY = (canvas.height - drawHeight) / 2;
+        } else {
+          // 화면이 더 좁은 경우
+          drawWidth = canvas.height * screenRatio;
+          drawX = (canvas.width - drawWidth) / 2;
+        }
+
+        // 화면 공유 그리기
+        context.fillStyle = '#000000';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(screenVideo, drawX, drawY, drawWidth, drawHeight);
+
         // 캠 on
         if (isVideoEnabled && videoRef.current) {
           const pipWidth = canvas.width / 4;
