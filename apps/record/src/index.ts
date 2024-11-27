@@ -40,14 +40,9 @@ app.get('/availablePort', (req, res) => {
 });
 
 app.post('/close', (req, res) => {
-  const { port, roomId } = req.body;
+  const { port } = req.body;
   releasePort(port);
-  const thumbnailPath = path.join(thumbnailsDirPath, `${roomId}.jpg`);
-  fs.unlink(thumbnailPath, err => {
-    if (err) {
-      console.error(`Failed to delete thumbnail for roomId: ${roomId}`);
-    }
-  });
+
   res.send({ success: true });
 });
 

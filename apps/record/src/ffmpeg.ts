@@ -5,30 +5,29 @@ import { uploadObjectFromDir } from './object';
 
 export const createFfmpegProcess = (
   videoPort: number,
-  dirPath: string,
+  assetsDirPath: string,
   roomId: string,
   type: 'thumbnail' | 'record',
   audioPort?: number,
 ) => {
-  const recordsDirPath = path.join(__dirname, '../assets/records');
   if (type === 'record') {
-    fs.mkdirSync(`${recordsDirPath}/${roomId}`, { recursive: true });
+    fs.mkdirSync(`${assetsDirPath}/records/${roomId}`, { recursive: true });
   }
   const sdpString = audioPort ? createThumbnailSdpText(videoPort) : createThumbnailSdpText(videoPort);
-  const args = type === 'thumbnail' ? thumbnailArgs(dirPath, roomId) : recordArgs(dirPath, roomId);
+  const args = type === 'thumbnail' ? thumbnailArgs(assetsDirPath, roomId) : recordArgs(assetsDirPath, roomId);
   const ffmpegProcess = spawn('ffmpeg', args);
 
   ffmpegProcess.stdin.write(sdpString);
   ffmpegProcess.stdin.end();
 
-  handleFfmpegProcess(ffmpegProcess, type, roomId, recordsDirPath);
+  handleFfmpegProcess(ffmpegProcess, type, roomId, assetsDirPath);
 };
 
 const handleFfmpegProcess = (
   process: ReturnType<typeof spawn>,
   type: string,
   roomId: string,
-  recordsDirPath: string,
+  assetsDirPath: string,
 ) => {
   if (process.stderr) {
     process.stderr.setEncoding('utf-8');
@@ -41,7 +40,9 @@ const handleFfmpegProcess = (
   process.on('error', error => console.error(`[FFmpeg ${type}] error:`, error));
   process.on('close', async code => {
     if (type === 'record') {
-      await stopRecord(recordsDirPath, roomId);
+      await stopRecord(assetsDirPath, roomId);
+    } else {
+      await stopMakeThumbnail(assetsDirPath, roomId);
     }
     console.log(`[FFmpeg ${type}] process exited with code: ${code}`);
   });
@@ -140,9 +141,18 @@ const recordArgs = (dirPath: string, roomId: string) => {
   return commandArgs;
 };
 
-async function stopRecord(recordsDirPath: string, roomId: string) {
-  const roomDirPath = path.join(recordsDirPath, roomId);
-  await uploadObjectFromDir(roomId, recordsDirPath);
+async function stopMakeThumbnail(assetsDirPath: string, roomId: string) {
+  const thumbnailPath = path.join(assetsDirPath, 'thumbnails', `${roomId}.jpg`);
+  fs.unlink(thumbnailPath, err => {
+    if (err) {
+      console.error(`Failed to delete thumbnail for roomId: ${roomId}`);
+    }
+  });
+}
+
+async function stopRecord(assetsDirPath: string, roomId: string) {
+  const roomDirPath = path.join(assetsDirPath, 'records', roomId);
+  await uploadObjectFromDir(roomId, assetsDirPath);
   if (fs.existsSync(roomDirPath)) {
     await deleteAllFiles(roomDirPath);
     await fs.promises.rmdir(roomDirPath);

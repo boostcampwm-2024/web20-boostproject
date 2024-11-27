@@ -25,7 +25,7 @@ const s3Client = new S3Client({
 });
 
 export const uploadObjectFromDir = async (roomId: string, dirPath: string) => {
-  const folderPath = `${dirPath}/${roomId}`;
+  const folderPath = `${dirPath}/records/${roomId}`;
   const files = fs.readdirSync(folderPath);
   const endTime = `${formatDate(new Date())}_${formatTime(new Date())}`;
 
