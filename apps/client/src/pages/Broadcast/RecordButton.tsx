@@ -1,11 +1,11 @@
 import Modal from '@/components/Modal';
 import { Button } from '@/components/ui/button';
-import { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Socket } from 'socket.io-client';
 
-interface Input {
+interface FormInput {
   title: string;
 }
 
@@ -16,28 +16,45 @@ interface RecordButtonProps {
 
 function RecordButton({ socket, roomId }: RecordButtonProps) {
   const [isRecording, setIsRecording] = useState(false);
-  const recordTitleRef = useRef<string>('');
   const [isEditing, setIsEditing] = useState(false);
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
-  } = useForm<Input>();
+    reset,
+  } = useForm<FormInput>();
 
   const handleStartRecording = () => {
-    if (!socket || !roomId) return;
+    if (!socket?.connected || !roomId) return;
     socket.emit('startRecord', { roomId: roomId }, (response: { success: boolean }) => {
       if (response.success) setIsRecording(true);
+      else console.error('녹화 시작 실패');
     });
   };
 
-  const handleStopRecording: SubmitHandler<Input> = () => {
-    if (!socket || !roomId) return;
-    socket.emit('stopRecord', { roomId: roomId, title: recordTitleRef.current }, (response: { success: boolean }) => {
-      if (response.success) setIsRecording(false);
+  const handleStopRecording = (data: FormInput) => {
+    if (!socket?.connected || !roomId) return;
+    socket.emit('stopRecord', { roomId: roomId, title: data.title }, (response: { success: boolean }) => {
+      if (response.success) {
+        setIsEditing(false);
+        setIsRecording(false);
+        reset();
+      } else {
+        console.error('녹화 종료 실패');
+      }
     });
   };
+
+  useEffect(() => {
+    setError('title', {
+      types: {
+        required: '제목을 입력해주세요',
+        maxLength: '제목은 255자 이하로 입력해주세요',
+      },
+    });
+  }, [setError]);
 
   return (
     <>
@@ -53,24 +70,29 @@ function RecordButton({ socket, roomId }: RecordButtonProps) {
       )}
       {isEditing &&
         createPortal(
-          <Modal setShowModal={setIsEditing}>
-            <div className="flex flex-row justify-between p-4 w-full h-20">
-              <form onSubmit={handleSubmit(handleStopRecording)} className="flex w-full">
-                <div className="flex-1 mr-2 relative">
+          <Modal setShowModal={setIsEditing} modalClassName="h-fit w-[80vw]">
+            <div className="p-4 w-full">
+              <h2 className="text-text-strong text-display-bold16 font-bold mb-1">녹화 영상 저장</h2>
+              <form onSubmit={handleSubmit(handleStopRecording)} className="flex flex-col gap-2">
+                <div className="relative">
                   <input
-                    defaultValue={recordTitleRef.current}
-                    {...register('title', { required: true, maxLength: 255 })}
+                    {...register('title', {
+                      required: '저장할 제목을 입력해주세요',
+                      maxLength: { value: 255, message: '제목을 255자 이하로 입력해주세요' },
+                    })}
                     className="w-full h-10 bg-transparent border border-default rounded-md focus:border-bold px-3"
                   />
-                  {(errors.title?.type === 'required' || errors.title?.type === 'maxLength') && (
-                    <p role="alert" className="absolute top-11 left-0 text-text-danger text-display-medium12">
-                      {errors.title?.type === 'required' ? '제목을 입력해주세요' : '제목은 255자 이하로 입력해주세요'}
+                  {errors.title && (
+                    <p className="absolute top-11 text-text-danger font-medium text-display-medium12">
+                      {errors.title.message}
                     </p>
                   )}
                 </div>
-                <Button type="submit" className="h-10 shrink-0">
-                  저장
-                </Button>
+                <div className="flex justify-end">
+                  <Button type="submit" className="h-10 shrink-0">
+                    저장
+                  </Button>
+                </div>
               </form>
             </div>
           </Modal>,
