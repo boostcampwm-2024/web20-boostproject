@@ -101,11 +101,19 @@ export class SfuGateway {
   @SubscribeMessage('startRecord')
   async handleRecord(@MessageBody('roomId') roomId: string) {
     await this.sfuService.record(roomId);
+
+    return {
+      success: true,
+    };
   }
 
   @SubscribeMessage('stopRecord')
   async handleStopRecord(@MessageBody('roomId') roomId: string, @MessageBody('title') title: string) {
     await this.sfuService.stopRecord(roomId, title);
+
+    return {
+      success: true,
+    };
   }
 
   //시청 종료
