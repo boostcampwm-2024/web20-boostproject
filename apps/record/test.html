@@ -43,7 +43,7 @@
       enableWorker: true,
       debug: false
     });
-    hls.loadSource('http://localhost:3003/statics/records/f6cc5449-bb7b-41d0-be2d-15d99e5cde71/f6cc5449-bb7b-41d0-be2d-15d99e5cde71.m3u8');
+    hls.loadSource('https://camon.kr.object.ncloudstorage.com/records/51bd4877-9df6-4028-bfa1-75f0765e3c4e/51bd4877-9df6-4028-bfa1-75f0765e3c4e.m3u8');
     hls.attachMedia(video);
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
       showStatus('Video loaded successfully');

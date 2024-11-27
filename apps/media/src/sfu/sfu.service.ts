@@ -116,9 +116,9 @@ export class SfuService {
     await this.recordService.sendStreamForRecord(room, producers);
   }
 
-  async stopRecord(roomId: string) {
+  async stopRecord(roomId: string, title: string) {
     const room = this.roomService.getRoom(roomId);
-    await this.recordService.stopStreamFromRecord(room);
+    await this.recordService.stopStreamFromRecord(room, title);
   }
 
   setVideoQuality(params: SetVideoQualityDto) {

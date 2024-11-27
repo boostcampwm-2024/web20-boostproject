@@ -96,14 +96,14 @@ export class SfuGateway {
     }
   }
 
-  @SubscribeMessage('record')
+  @SubscribeMessage('startRecord')
   async handleRecord(@MessageBody('roomId') roomId: string) {
     await this.sfuService.record(roomId);
   }
 
   @SubscribeMessage('stopRecord')
-  async handleStopRecord(@MessageBody('roomId') roomId: string) {
-    await this.sfuService.stopRecord(roomId);
+  async handleStopRecord(@MessageBody('roomId') roomId: string, @MessageBody('title') title: string) {
+    await this.sfuService.stopRecord(roomId, title);
   }
 
   //시청 종료

@@ -12,8 +12,14 @@ RUN mkdir -p /app/assets/records /app/assets/thumbnails && chmod -R 777 /app/ass
 
 # Environment variables
 ARG RECORD_PORT
+ARG NCLOUD_ACCESS_KEY
+ARG NCLOUD_SECRET_KEY
+ARG NCLOUD_BUCKET_NAME
 
 ENV RECORD_PORT=$RECORD_PORT
+ENV NCLOUD_ACCESS_KEY=$NCLOUD_ACCESS_KEY
+ENV NCLOUD_SECRET_KEY=$NCLOUD_SECRET_KEY
+ENV NCLOUD_BUCKET_NAME=$NCLOUD_BUCKET_NAME
 
 # Copy dependency files
 COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
