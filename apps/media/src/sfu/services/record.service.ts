@@ -45,7 +45,7 @@ export class RecordService {
 
     await recordTransport.connect({ ip: this.serverPrivateIp, port });
 
-    this.setUpRecordTransportListeners(recordTransport, port, room.id);
+    this.setUpRecordTransportListeners(recordTransport, port);
     this.setUpRecordConsumerListeners(recordConsumer);
 
     await this.sendStreamRequest(room.id, port, STREAM_TYPE.THUMBNAIL);
@@ -84,7 +84,7 @@ export class RecordService {
     const { port } = await this.getAvailablePort();
 
     await recordTransport.connect({ ip: this.serverPrivateIp, port });
-    this.setUpRecordTransportListeners(recordTransport, port, room.id);
+    this.setUpRecordTransportListeners(recordTransport, port);
 
     await this.sendStreamRequest(room.id, port, STREAM_TYPE.RECORD);
   }
@@ -96,7 +96,7 @@ export class RecordService {
     }
     recordTransport.close();
     this.transports.delete(room.id);
-    //TODO:DB 저장 호출 로직으로 변경, http /close 요청 보냄
+    //TODO:DB 저장 호출 로직으로 변경
     console.log(title);
   }
 
@@ -112,12 +112,11 @@ export class RecordService {
     });
   }
 
-  private setUpRecordTransportListeners(recordTransport: mediasoup.types.Transport, port: number, roomId: string) {
+  private setUpRecordTransportListeners(recordTransport: mediasoup.types.Transport, port: number) {
     recordTransport.on('routerclose', async () => {
       await lastValueFrom(
         this.httpService.post(`${this.recordServerUrl}/close`, {
           port,
-          roomId,
         }),
       );
       recordTransport.close();
@@ -126,7 +125,6 @@ export class RecordService {
       await firstValueFrom(
         this.httpService.post(`${this.recordServerUrl}/close`, {
           port,
-          roomId,
         }),
       );
     });

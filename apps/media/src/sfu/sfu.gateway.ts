@@ -74,28 +74,22 @@ export class SfuGateway {
   //방송종료
   @SubscribeMessage('stopBroadcast')
   handleStopBroadcast(@MessageBody('roomId') roomId: string) {
-    try {
-      this.sfuService.stopBroadcast(roomId);
-      return {
-        isCleaned: true,
-        roomId,
-      };
-    } catch (error) {
-      return error;
-    }
+    this.sfuService.stopBroadcast(roomId);
+
+    return {
+      isCleaned: true,
+      roomId,
+    };
   }
 
   //시청 종료
   @SubscribeMessage('leaveBroadcast')
   handleLeaveBroadcast(@MessageBody('transportId') transportId: string, @MessageBody('roomId') roomId: string) {
-    try {
-      this.sfuService.leaveBroadcast(roomId, transportId);
-      return {
-        success: true,
-      };
-    } catch (error) {
-      return error;
-    }
+    this.sfuService.leaveBroadcast(roomId, transportId);
+
+    return {
+      success: true,
+    };
   }
 
   @SubscribeMessage('startRecord')
