@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - develop
-      - Feat/279
     paths:
       - 'apps/chat/**'
 

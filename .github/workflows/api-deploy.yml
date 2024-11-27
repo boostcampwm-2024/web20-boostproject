@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - develop
-      - Feat/279
     paths:
       - 'apps/api/**'
 jobs:
@@ -24,6 +23,7 @@ jobs:
       GG_CLIENT_ID: ${{ secrets.GG_CLIENT_ID }}
       GG_SECRET: ${{ secrets.GG_SECRET }}
       GG_CALLBACK_URL: ${{ secrets.GG_CALLBACK_URL }}
+      CALLBACK_URI: ${{ secrets.CALLBACK_URI }}
 
     steps:
       - name: Checkout code
@@ -52,6 +52,7 @@ jobs:
             --build-arg GG_CLIENT_ID=$GG_CLIENT_ID \
             --build-arg GG_SECRET=$GG_SECRET \
             --build-arg GG_CALLBACK_URL=$GG_CALLBACK_URL \
+            --build-arg CALLBACK_URI=$CALLBACK_URI \
             .
 
       - name: Push to Ncloud Container Registry
@@ -81,7 +82,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_SERVER_KEY }}
           port: 22
-          envs: DB_HOST,DB_PORT,DB_USERNAME,DB_PASSWORD,DB_NAME,GH_CLIENT_ID,GH_SECRET,GH_CALLBACK_URL,JWT_SECRET,GG_CLIENT_ID,GG_SECRET,GG_CALLBACK_URL
+          envs: DB_HOST,DB_PORT,DB_USERNAME,DB_PASSWORD,DB_NAME,GH_CLIENT_ID,GH_SECRET,GH_CALLBACK_URL,JWT_SECRET,GG_CLIENT_ID,GG_SECRET,GG_CALLBACK_URL,CALLBACK_URI
           script: |
             cd /home/${{ secrets.SERVER_USER }}/camon
             sudo docker login -u ${{secrets.NCLOUD_ACCESS_KEY}} -p ${{ secrets.NCLOUD_SECRET_KEY }} ${{ secrets.NCLOUD_REGISTRY_URL }}
