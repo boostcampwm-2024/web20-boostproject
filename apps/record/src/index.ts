@@ -40,18 +40,6 @@ app.get('/availablePort', (req, res) => {
   res.send({ port: getPort() });
 });
 
-app.get('/images/:roomId', (req, res) => {
-  const { roomId } = req.params;
-  const thumbnailPath = path.join(thumbnailsDirPath, `${roomId}.jpg`);
-  fs.access(thumbnailPath, fs.constants.F_OK, err => {
-    if (err) {
-      console.error(`Thumbnail not found for roomId: ${roomId}`);
-      return res.status(404).send('Thumbnail not found');
-    }
-    res.sendFile(thumbnailPath);
-  });
-});
-
 app.post('/close', (req, res) => {
   const { port, roomId } = req.body;
   releasePort(port);
@@ -63,6 +51,7 @@ app.post('/close', (req, res) => {
   });
   res.send({ success: true });
 });
+
 app.post('/record/stop/:roomId', async (req, res) => {
   const { roomId } = req.params;
   const roomDirPath = path.join(assetsDirPath, 'records', roomId);

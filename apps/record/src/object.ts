@@ -27,10 +27,12 @@ const s3Client = new S3Client({
 export const uploadObjectFromDir = async (roomId: string, dirPath: string) => {
   const folderPath = `${dirPath}/records/${roomId}`;
   const files = fs.readdirSync(folderPath);
+  const endTime = new Date();
+
   for (const file of files) {
     const filePath = path.join(folderPath, file);
     const fileStream = fs.createReadStream(filePath);
-    const objectKey = `records/${roomId}/${file}`;
+    const objectKey = `records/${roomId}/${endTime}/${file}`;
     try {
       const command = new PutObjectCommand({
         Bucket: BUCKET_NAME,
