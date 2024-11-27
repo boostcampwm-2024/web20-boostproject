@@ -27,8 +27,8 @@ export const useSocket = (url: string) => {
       reconnectionAttempts: 5, // 최대 재연결 시도 횟수
       reconnectionDelay: 1000,
       path: '/socket.io',
-      extraHeaders: {
-        Authorization: accessToken ? `Bearer ${accessToken}` : '',
+      auth: {
+        accessToken: accessToken ? `Bearer ${accessToken}` : '',
       },
     });
     socketRef.current = socket;
