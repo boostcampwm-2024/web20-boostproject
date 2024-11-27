@@ -3,8 +3,9 @@ on:
   push:
     branches:
       - develop
-    paths:
-      - 'apps/media/**'
+      - Feat/279
+    # paths:
+    #   - 'apps/media/**'
 
 jobs:
   build-and-push:
@@ -61,6 +62,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-push
     steps:
+      - name: Checkout for docker-compose
+        uses: actions/checkout@v2
+
+      - name: Copy docker-compose file
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_SERVER_KEY }}
+          source: "docker-compose.yml"
+          target: "/home/${{ secrets.SERVER_USER }}/camon"
 
       - name: SSH and deploy
         uses: appleboy/ssh-action@v0.1.6
@@ -69,34 +81,25 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_SERVER_KEY }}
           port: 22
+          envs: MEDIA_PORT,REDIS_HOST,REDIS_PORT,REDIS_MEDIA,ANNOUNCED_IP,API_SERVER_URL,HTTP_TIMEOUT,RECORD_SERVER_URL,SERVER_PRIVATE_IP,PUBLIC_RECORD_SERVER_URL
           script: |
+            cd /home/${{ secrets.SERVER_USER }}/camon
             sudo lsof -i :3001
             sudo lsof -i :30000-31000
             sudo docker login -u ${{secrets.NCLOUD_ACCESS_KEY}} -p ${{ secrets.NCLOUD_SECRET_KEY }} ${{ secrets.NCLOUD_REGISTRY_URL }}
+
+            echo "API_SERVER_URL=http://api:3000" >> .env
+            echo "HTTP_TIMEOUT=5000" >> .env
+            echo "RECORD_SERVER_URL=http://record:3003" >> .env
+            echo "SERVER_PRIVATE_IP=record" >> .env
+            echo "PUBLIC_RECORD_SERVER_URL=https://record.cam-on.site" >> .env
+
             sudo docker stop media-camon || true
             sudo docker rm media-camon || true
             sudo docker rmi ${{ secrets.NCLOUD_REGISTRY_URL }}/media-camon:latest || true
+
             sudo docker pull ${{ secrets.NCLOUD_REGISTRY_URL }}/media-camon:latest
-#            sudo docker tag ${secrets.NCLOUD_REGISTRY_URL}/${IMAGE_NAME}:latest ${IMAGE_NAME}:latest
-#            sudo docker-compose up -d --no-deps --build media
-            sudo docker run -d --name media-camon \
-              -p 3001:3001 \
-              -p 30000-31000:30000-31000 \
-              --network=bridge \
-              -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
-              -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
-              -e REDIS_MEDIA=${{ secrets.REDIS_MEDIA }} \
-              -e DB_HOST=${{ secrets.DB_HOST }} \
-              -e DB_PORT=${{ secrets.DB_PORT }} \
-              -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-              -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-              -e DB_NAME=${{ secrets.DB_NAME }} \
-              -e API_SERVER_URL=${{ secrets.API_SERVER_URL }} \
-              -e HTTP_TIMEOUT=${{ secrets.HTTP_TIMEOUT }} \
-              -e RECORD_SERVER_URL=${{ secrets.RECORD_SERVER_URL }} \
-              -e SERVER_PRIVATE_IP=${{ secrets.SERVER_PRIVATE_IP }} \
-              -e PUBLIC_RECORD_SERVER_URL=${{ secrets.PUBLIC_RECORD_SERVER_URL }} \
-              ${{ secrets.NCLOUD_REGISTRY_URL }}/media-camon:latest
+            sudo docker-compose up -d media
             sudo docker image prune -f
 
       - name: Check container status
@@ -107,6 +110,6 @@ jobs:
           key: ${{ secrets.SSH_SERVER_KEY }}
           port: 22
           script: |
-            sudo docker ps -f name=media-camon
-            sudo docker exec media-camon env | grep REDIS
-            sudo docker logs media-camon
+            cd /home/${{ secrets.SERVER_USER }}/camon
+            sudo docker-compose ps media
+            sudo docker-compose logs --tail=100 media
