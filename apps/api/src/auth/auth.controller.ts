@@ -39,9 +39,10 @@ export class AuthController {
 
   @Get('/google/callback')
   @UseGuards(GoogleAuthGuard)
-  signinGoogleCallback(@UserReq() member: Member) {
+  signinGoogleCallback(@UserReq() member: Member, @Res() res: Response) {
     const accessToken = this.authService.login(member);
+    const CALLBACK_URI = this.configService.get('CALLBACK_URI');
 
-    return { accessToken };
+    res.redirect(`${CALLBACK_URI}/auth?accessToken=${accessToken}`);
   }
 }

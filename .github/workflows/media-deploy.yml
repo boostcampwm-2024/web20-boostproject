@@ -3,9 +3,8 @@ on:
   push:
     branches:
       - develop
-      - Feat/279
-    # paths:
-    #   - 'apps/media/**'
+    paths:
+      - 'apps/media/**'
 
 jobs:
   build-and-push:
