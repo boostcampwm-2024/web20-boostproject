@@ -143,7 +143,7 @@ function Broadcast() {
                 <Button onClick={handleCheckout} className="bg-surface-brand-default hover:hover:bg-surface-brand-alt">
                   체크아웃
                 </Button>
-                <RecordButton />
+                <RecordButton socket={socket} roomId={roomId} />
               </div>
 
               <div className="flex items-center gap-4">
