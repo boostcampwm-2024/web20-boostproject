@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+
       # ncloud 로그인
       - name: Log in to Ncloud Container Registry
         env:
@@ -40,10 +40,18 @@ jobs:
       - name: Push to Ncloud Container Registry
         run: |
           docker push ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest
-      
+
   deploy-and-run:
     runs-on: ubuntu-latest
     needs: build-and-push
+    env:
+      IMAGE_NAME: chat-camon
+      CHAT_PORT: ${{ secrets.CHAT_PORT }}
+      REDIS_HOST: ${{ secrets.REDIS_HOST }}
+      REDIS_PORT: ${{ secrets.REDIS_PORT }}
+      REDIS_CHAT: ${{ secrets.REDIS_CHAT }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      NCLOUD_REGISTRY_URL: ${{ secrets.NCLOUD_REGISTRY_URL }}
 
     steps:
       - name: Checkout for docker-compose
@@ -68,6 +76,13 @@ jobs:
           envs: CHAT_PORT,REDIS_HOST,REDIS_PORT,REDIS_CHAT,JWT_SECRET
           script: |
             cd /home/${{ secrets.SERVER_USER }}/camon
+            
+            echo "CHAT_PORT=$CHAT_PORT" > .env
+            echo "REDIS_HOST=$REDIS_HOST" >> .env
+            echo "REDIS_PORT=$REDIS_PORT" >> .env
+            echo "REDIS_CHAT=$REDIS_CHAT" >> .env
+            echo "JWT_SECRET=$JWT_SECRET" >> .env
+            
             sudo docker login -u ${{secrets.NCLOUD_ACCESS_KEY}} -p ${{ secrets.NCLOUD_SECRET_KEY }} ${{ secrets.NCLOUD_REGISTRY_URL }}
 
             sudo docker stop chat-camon || true
@@ -75,6 +90,7 @@ jobs:
             sudo docker rmi ${{ secrets.NCLOUD_REGISTRY_URL }}/chat-camon:latest || true
 
             sudo docker pull ${{ secrets.NCLOUD_REGISTRY_URL }}/chat-camon:latest
+            sudo docker tag ${{ secrets.NCLOUD_REGISTRY_URL }}/chat-camon:latest chat-camon
             sudo docker-compose up -d chat
             sudo docker image prune -f
 
