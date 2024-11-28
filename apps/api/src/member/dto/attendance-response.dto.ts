@@ -14,14 +14,15 @@ class AttendanceInfo {
 
 export class AttendanceResponseDto {
   @ApiProperty()
-  id: number;
+  memberId: number;
   @ApiProperty({ type: AttendanceInfo, isArray: true })
   attendances: AttendanceInfo[];
 
   static of(memberId: number, attendances: Attendance[]): AttendanceResponseDto {
     return {
-      id: memberId,
+      memberId: memberId,
       attendances: attendances.map(attendance => ({
+        attendanceId: attendance.id,
         date: this.formatDate(attendance.startTime),
         startTime: this.formatTime(attendance.startTime),
         endTime: this.formatTime(attendance.endTime),
