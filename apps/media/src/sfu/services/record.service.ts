@@ -98,7 +98,7 @@ export class RecordService {
     }
     recordTransport.close();
     this.transports.delete(room.id);
-    console.log(this.apiServerUrl);
+
     await lastValueFrom(this.httpService.post(`${this.apiServerUrl}/v1/records`, { title, roomId: room.id }));
   }
 
