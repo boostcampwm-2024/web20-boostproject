@@ -15,6 +15,8 @@ jobs:
       NCLOUD_ACCESS_KEY: ${{ secrets.NCLOUD_ACCESS_KEY }}
       NCLOUD_SECRET_KEY: ${{ secrets.NCLOUD_SECRET_KEY }}
       NCLOUD_BUCKET_NAME: ${{ secrets.NCLOUD_BUCKET_NAME }}
+      API_SERVER_URL: ${{ secrets.API_SERVER_URL }}
+      CDN_URL: ${{ secrets.CDN_URL }}
 
     steps:
       - name: Checkout code
@@ -35,6 +37,8 @@ jobs:
             --build-arg NCLOUD_ACCESS_KEY=$NCLOUD_ACCESS_KEY \
             --build-arg NCLOUD_SECRET_KEY=$NCLOUD_SECRET_KEY \
             --build-arg NCLOUD_BUCKET_NAME=$NCLOUD_BUCKET_NAME \
+            --build-arg API_SERVER_URL=$API_SERVER_URL \
+            --build-arg CDN_URL=$CDN_URL \
             .
 
       - name: Push to Ncloud Container Registry
@@ -51,6 +55,9 @@ jobs:
       NCLOUD_SECRET_KEY: ${{ secrets.NCLOUD_SECRET_KEY }}
       NCLOUD_BUCKET_NAME: ${{ secrets.NCLOUD_BUCKET_NAME }}
       NCLOUD_REGISTRY_URL: ${{ secrets.NCLOUD_REGISTRY_URL }}
+      API_SERVER_URL: ${{ secrets.API_SERVER_URL }}
+      CDN_URL: ${{ secrets.CDN_URL }}
+
     steps:
       - name: Checkout for docker-compose
         uses: actions/checkout@v2
@@ -71,7 +78,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_SERVER_KEY }}
           port: 22
-          envs: RECORD_PORT,NCLOUD_ACCESS_KEY,NCLOUD_SECRET_KEY,NCLOUD_BUCKET_NAME,NCLOUD_REGISTRY_URL
+          envs: RECORD_PORT,NCLOUD_ACCESS_KEY,NCLOUD_SECRET_KEY,NCLOUD_BUCKET_NAME,NCLOUD_REGISTRY_URL,API_SERVER_URL,CDN_URL
           script: |
             cd /home/${{ secrets.SERVER_USER }}/camon
             
@@ -80,6 +87,8 @@ jobs:
             echo "NCLOUD_SECRET_KEY=$NCLOUD_SECRET_KEY" >> .env
             echo "NCLOUD_BUCKET_NAME=$NCLOUD_BUCKET_NAME" >> .env
             echo "NCLOUD_REGISTRY_URL=$NCLOUD_REGISTRY_URL" >> .env
+            echo "API_SERVER_URL=$API_SERVER_URL" >> .env
+            echo "CDN_URL=$CDN_URL" >> .env
             
             sudo docker login -u $NCLOUD_ACCESS_KEY -p $NCLOUD_SECRET_KEY $NCLOUD_REGISTRY_URL
 
