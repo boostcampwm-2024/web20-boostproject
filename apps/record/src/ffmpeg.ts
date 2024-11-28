@@ -155,7 +155,6 @@ async function stopRecord(assetsDirPath: string, roomId: string) {
   await uploadObjectFromDir(roomId, assetsDirPath);
   if (fs.existsSync(roomDirPath)) {
     await deleteAllFiles(roomDirPath);
-    await fs.promises.rmdir(roomDirPath);
     console.log(`All files in ${roomDirPath} deleted successfully.`);
   }
 }
