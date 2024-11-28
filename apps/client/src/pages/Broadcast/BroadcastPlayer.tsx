@@ -1,3 +1,4 @@
+import { RESOLUTION_OPTIONS } from '@/constants/videoOptions';
 import { Tracks } from '@/types/mediasoupTypes';
 import { useEffect, useRef } from 'react';
 
@@ -45,18 +46,42 @@ function BroadcastPlayer({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    canvas.width = 1280;
-    canvas.height = 720;
+    canvas.width = RESOLUTION_OPTIONS['high'].width;
+    canvas.height = RESOLUTION_OPTIONS['high'].height;
 
     const context = canvas.getContext('2d');
     if (!context) return;
+
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = 'high';
 
     const draw = () => {
       context.clearRect(0, 0, canvas.width, canvas.height);
 
       if (isScreenSharing && screenShareRef.current) {
+        const screenVideo = screenShareRef.current;
         // 화면 공유 on
-        context.drawImage(screenShareRef.current, 0, 0, canvas.width, canvas.height);
+        // 화면 비율 계산 및 적용
+        const screenRatio = screenVideo.videoWidth / screenVideo.videoHeight;
+        const canvasRatio = canvas.width / canvas.height;
+        const draw = { width: canvas.width, height: canvas.height, x: 0, y: 0 };
+
+        if (screenRatio > canvasRatio) {
+          // 화면이 더 넓은 경우
+          draw.height = canvas.width / screenRatio;
+          draw.y = (canvas.height - draw.height) / 2;
+        } else {
+          // 화면이 더 좁은 경우
+          draw.width = canvas.height * screenRatio;
+          console.log('width', canvas.height / screenRatio);
+          draw.x = (canvas.width - draw.height) / 2;
+        }
+
+        // 화면 공유 그리기
+        context.fillStyle = '#000000';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(screenVideo, draw.x, draw.y, draw.width, draw.height);
+
         // 캠 on
         if (isVideoEnabled && videoRef.current) {
           const pipWidth = canvas.width / 4;
@@ -102,8 +127,8 @@ function BroadcastPlayer({
       />
       <canvas
         ref={canvasRef}
-        width={1280}
-        height={720}
+        width={RESOLUTION_OPTIONS['high'].width}
+        height={RESOLUTION_OPTIONS['high'].height}
         className="absolute top-0 left-0 w-full h-full bg-surface-alt object-cover"
       />
     </div>

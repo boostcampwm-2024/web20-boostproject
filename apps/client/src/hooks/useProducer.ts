@@ -3,6 +3,7 @@ import { Transport, Device, Producer } from 'mediasoup-client/lib/types';
 import { ConnectTransportResponse, Tracks, TransportInfo } from '@/types/mediasoupTypes';
 import { Socket } from 'socket.io-client';
 import { checkDependencies } from '@/utils/utils';
+import { ENCODING_OPTIONS } from '@/constants/videoOptions';
 
 interface UseProducerProps {
   socket: Socket | null;
@@ -100,9 +101,19 @@ export const useProducer = ({
 
     (Object.keys(tracks) as Array<keyof Tracks>).forEach(kind => {
       if (tracks[kind]) {
-        console.log(kind, ':', tracks[kind]);
+        const producerConfig: Record<string, unknown> = {
+          track: tracks[kind],
+        };
+
+        if (kind === 'video') {
+          producerConfig['encodings'] = ENCODING_OPTIONS;
+          producerConfig['codecOptions'] = {
+            videoGoogleStartBitrate: 1000,
+          };
+        }
+        
         transport
-          .current!.produce({ track: tracks[kind] })
+          .current!.produce(producerConfig)
           .then(producer => setProducers(prev => new Map(prev).set(kind, producer)));
       }
     });
