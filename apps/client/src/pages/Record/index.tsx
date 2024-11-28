@@ -3,19 +3,21 @@ import RecordInfo from './RecordInfo';
 import RecordList from './RecordList';
 import RecordPlayer from './RecordPlayer';
 
-export interface PlayData {
+export interface RecordData {
+  recordId: number;
   title: string;
-  url: string;
+  video: string;
+  date: string;
 }
 
 function Record() {
-  const [nowPlaying, setIsNowPlaying] = useState<PlayData>({ title: '', url: '' });
+  const [nowPlaying, setIsNowPlaying] = useState<RecordData>({ recordId: 0, title: '', video: '', date: '' });
 
   return (
     <div className="h-[calc(100vh-74px)] flex flex-row w-full gap-10">
       <>
         <div className="flex flex-col flex-grow gap-4 h-full ml-8">
-          <RecordPlayer url={nowPlaying.url} />
+          <RecordPlayer video={nowPlaying.video} />
           <RecordInfo title={nowPlaying.title} />
         </div>
         <div className="h-full w-80 pr-5">

@@ -3,24 +3,24 @@ import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
 
 interface RecordPlayerProps {
-  url: string;
+  video: string;
 }
 
 function RecordPlayer(props: RecordPlayerProps) {
   const [isSelectedVideo, setIsSelectedVideo] = useState(false);
 
   useEffect(() => {
-    if (props.url) {
+    if (props.video) {
       setIsSelectedVideo(true);
     }
-  }, [props.url]);
+  }, [props.video]);
 
   return (
     <div className="h-4/5 w-full">
       {isSelectedVideo ? (
         <div className="h-full w-full">
           <ReactPlayer
-            url={props.url}
+            url={props.video}
             playing
             controls
             width="100%"

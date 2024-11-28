@@ -41,7 +41,7 @@ const router = createBrowserRouter(
           element: <Auth />,
         },
         {
-          path: 'record',
+          path: 'record/:attendanceId',
           element: <Record />,
         },
       ],
