@@ -24,4 +24,7 @@ export class ErrorStatus {
   // Broadcast Errors
   static readonly BROADCAST_NOT_FOUND = new ErrorStatus(404, 'BROADCAST_4000', '방송 정보가 존재하지 않습니다.');
   static readonly BROADCAST_ALREADY_EXISTS = new ErrorStatus(400, 'BROADCAST_4001', '이미 존재하는 방송입니다.');
+
+  //Attendance
+  static readonly ATTENDANCE_NOT_FOUND = new ErrorStatus(404, 'ATTENDANCE_4000', '출석 정보가 존재하지 않습니다.');
 }
