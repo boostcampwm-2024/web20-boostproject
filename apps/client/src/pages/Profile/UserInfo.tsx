@@ -38,6 +38,7 @@ function UserInfo() {
           console.error('유저 정보 조회 실패:', response.data.status);
         }
       })
+      .catch(error => setError(error instanceof Error ? error : new Error(error)))
       .finally(() => setIsLoading(false));
   }, [setUserData]);
 
@@ -56,9 +57,13 @@ function UserInfo() {
   return (
     <div className="flex flex-row h-1/2 w-full justify-center gap-10">
       {showLoading && isLoading ? (
-        <LoadingCharacter size={200} />
+        <div className="flex justify-center items-center">
+          <LoadingCharacter size={200} />
+        </div>
       ) : error ? (
-        <ErrorCharacter size={200} />
+        <div className="flex justify-center items-center">
+          <ErrorCharacter size={200} />
+        </div>
       ) : (
         <>
           <div className="flex flex-col justify-center w-64 h-full gap-5">
