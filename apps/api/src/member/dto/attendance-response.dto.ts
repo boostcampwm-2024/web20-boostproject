@@ -19,16 +19,15 @@ export class AttendanceResponseDto {
   attendances: AttendanceInfo[];
 
   static of(memberId: number, attendances: Attendance[]): AttendanceResponseDto {
-    return {
-      memberId: memberId,
-      attendances: attendances.map(attendance => ({
-        attendanceId: attendance.id,
-        date: this.formatDate(attendance.startTime),
-        startTime: this.formatTime(attendance.startTime),
-        endTime: this.formatTime(attendance.endTime),
-        isAttendance: attendance.attended,
-      })),
-    };
+    const attendanceResponseDto = new AttendanceResponseDto();
+    attendanceResponseDto.memberId = memberId;
+    attendanceResponseDto.attendances = attendances.map(attendance => ({
+      date: this.formatDate(attendance.startTime),
+      startTime: this.formatTime(attendance.startTime),
+      endTime: attendance.endTime ? this.formatTime(attendance.endTime) : '',
+      isAttendance: attendance.attended,
+    }));
+    return attendanceResponseDto;
   }
 
   private static formatDate(date: Date): string {
