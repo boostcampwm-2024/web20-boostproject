@@ -3,7 +3,7 @@ import { PlayIcon } from '@/components/Icons';
 import LoadingCharacter from '@/components/LoadingCharacter';
 import axiosInstance from '@/services/axios';
 import { useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface AttendanceData {
   attendanceId: number;
@@ -19,7 +19,7 @@ function Attendance() {
   const [showLoading, setShowLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axiosInstance
@@ -46,8 +46,8 @@ function Attendance() {
     return () => clearTimeout(timer);
   });
 
-  const handlePlayRecord = () => {
-    alert('녹화 화면 보러가기');
+  const handlePlayRecord = (attendanceId: number) => {
+    navigate(`/record/${attendanceId}`);
   };
 
   return (
@@ -80,7 +80,7 @@ function Attendance() {
                     <span className={data.isAttendance ? 'text-text-default' : 'text-text-danger'}>
                       {data.isAttendance ? '출석' : '결석'}
                     </span>
-                    <button onClick={handlePlayRecord} aria-label="녹화 영상 보기">
+                    <button onClick={() => handlePlayRecord(data.attendanceId)} aria-label="녹화 영상 보기">
                       <PlayIcon />
                     </button>
                   </div>
