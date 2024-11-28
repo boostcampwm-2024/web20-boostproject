@@ -74,7 +74,7 @@ function BroadcastPlayer({
           // 화면이 더 좁은 경우
           draw.width = canvas.height * screenRatio;
           console.log('width', canvas.height / screenRatio);
-          draw.x = (canvas.width - draw.height) / 2;
+          draw.x = (canvas.width - draw.width) / 2;
         }
 
         // 화면 공유 그리기
