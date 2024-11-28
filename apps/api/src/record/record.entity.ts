@@ -6,7 +6,7 @@ export class Record {
   @PrimaryGeneratedColumn({ name: 'recordId' })
   id: number;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text', nullable: true })
   video: string;
 
   @Column({ nullable: false })

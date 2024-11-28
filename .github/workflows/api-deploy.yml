@@ -62,6 +62,25 @@ jobs:
   deploy-and-run:
     runs-on: ubuntu-latest
     needs: build-and-push
+    env:
+      IMAGE_NAME: api-camon
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+      GH_SECRET: ${{ secrets.GH_SECRET }}
+      GH_CALLBACK_URL: ${{ secrets.GH_CALLBACK_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      GG_CLIENT_ID: ${{ secrets.GG_CLIENT_ID }}
+      GG_SECRET: ${{ secrets.GG_SECRET }}
+      GG_CALLBACK_URL: ${{ secrets.GG_CALLBACK_URL }}
+      CALLBACK_URI: ${{ secrets.CALLBACK_URI }}
+      NCLOUD_REGISTRY_URL: ${{ secrets.NCLOUD_REGISTRY_URL }}
+      NCLOUD_ACCESS_KEY: ${{ secrets.NCLOUD_ACCESS_KEY }}
+      NCLOUD_SECRET_KEY: ${{ secrets.NCLOUD_SECRET_KEY }}
+
     steps:
       - name: Checkout for docker-compose
         uses: actions/checkout@v2
@@ -82,16 +101,35 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_SERVER_KEY }}
           port: 22
-          envs: DB_HOST,DB_PORT,DB_USERNAME,DB_PASSWORD,DB_NAME,GH_CLIENT_ID,GH_SECRET,GH_CALLBACK_URL,JWT_SECRET,GG_CLIENT_ID,GG_SECRET,GG_CALLBACK_URL,CALLBACK_URI
+          envs: DB_HOST,DB_PORT,DB_USERNAME,DB_PASSWORD,DB_NAME,GH_CLIENT_ID,GH_SECRET,GH_CALLBACK_URL,JWT_SECRET,GG_CLIENT_ID,GG_SECRET,GG_CALLBACK_URL,CALLBACK_URI,NCLOUD_ACCESS_KEY,NCLOUD_SECRET_KEY,NCLOUD_REGISTRY_URL
           script: |
             cd /home/${{ secrets.SERVER_USER }}/camon
-            sudo docker login -u ${{secrets.NCLOUD_ACCESS_KEY}} -p ${{ secrets.NCLOUD_SECRET_KEY }} ${{ secrets.NCLOUD_REGISTRY_URL }}
+            
+            echo "DB_HOST=$DB_HOST" > .env
+            echo "DB_PORT=$DB_PORT" >> .env
+            echo "DB_USERNAME=$DB_USERNAME" >> .env
+            echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+            echo "DB_NAME=$DB_NAME" >> .env
+            echo "GH_CLIENT_ID=$GH_CLIENT_ID" >> .env
+            echo "GH_SECRET=$GH_SECRET" >> .env
+            echo "GH_CALLBACK_URL=$GH_CALLBACK_URL" >> .env
+            echo "JWT_SECRET=$JWT_SECRET" >> .env
+            echo "GG_CLIENT_ID=$GG_CLIENT_ID" >> .env
+            echo "GG_SECRET=$GG_SECRET" >> .env
+            echo "GG_CALLBACK_URL=$GG_CALLBACK_URL" >> .env
+            echo "CALLBACK_URI=$CALLBACK_URI" >> .env
+            echo "NCLOUD_ACCESS_KEY=$NCLOUD_ACCESS_KEY" >> .env
+            echo "NCLOUD_SECRET_KEY=$NCLOUD_SECRET_KEY" >> .env
+            echo "NCLOUD_REGISTRY_URL=$NCLOUD_REGISTRY_URL" >> .env
+            
+            sudo docker login -u $NCLOUD_ACCESS_KEY -p $NCLOUD_SECRET_KEY $NCLOUD_REGISTRY_URL
 
             sudo docker stop api-camon || true
             sudo docker rm api-camon || true
-            sudo docker rmi ${{ secrets.NCLOUD_REGISTRY_URL }}/api-camon:latest || true
+            sudo docker rmi $NCLOUD_REGISTRY_URL/api-camon:latest || true
 
-            sudo docker pull ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest
+            sudo docker pull $NCLOUD_REGISTRY_URL/api-camon:latest
+            sudo docker tag $NCLOUD_REGISTRY_URL/api-camon:latest api-camon
             sudo docker-compose up -d api
             sudo docker image prune -f
 

@@ -12,6 +12,7 @@ const STREAM_TYPE = {
 @Injectable()
 export class RecordService {
   private readonly recordServerUrl: string;
+  private readonly apiServerUrl: string;
   private readonly serverPrivateIp: string;
   private readonly announcedIp: string;
 
@@ -19,6 +20,7 @@ export class RecordService {
 
   constructor(private readonly httpService: HttpService, private readonly configService: ConfigService) {
     this.recordServerUrl = this.configService.get<string>('RECORD_SERVER_URL', 'http://localhost:3003');
+    this.apiServerUrl = this.configService.get<string>('API_SERVER_URL', '127.0.0.1');
     this.serverPrivateIp = this.configService.get<string>('SERVER_PRIVATE_IP', '127.0.0.1');
     this.announcedIp = this.configService.get<string>('ANNOUNCED_IP', '127.0.0.1');
   }
@@ -96,8 +98,8 @@ export class RecordService {
     }
     recordTransport.close();
     this.transports.delete(room.id);
-    //TODO:DB 저장 호출 로직으로 변경
-    console.log(title);
+
+    await lastValueFrom(this.httpService.post(`${this.apiServerUrl}/v1/records`, { title, roomId: room.id }));
   }
 
   async createPlainTransport(room: mediasoup.types.Router) {

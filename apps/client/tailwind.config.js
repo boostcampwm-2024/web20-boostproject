@@ -82,7 +82,7 @@ export default {
         },
       },
       borderRadius: {
-        DEFAULT: '10px',
+        DEFAULT: '12px',
         circle: '999px',
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

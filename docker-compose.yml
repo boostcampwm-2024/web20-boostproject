@@ -3,7 +3,7 @@ version: "3.9"
 services:
   api:
     container_name: api-camon
-    image: ${NCLOUD_REGISTRY_URL}/api-camon
+    image: api-camon
     networks:
       - camon
     ports:
@@ -14,10 +14,12 @@ services:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
+    env_file:
+      - .env
 
   media:
     container_name: media-camon
-    image: ${NCLOUD_REGISTRY_URL}/media-camon
+    image: media-camon
     networks:
       - camon
     ports:
@@ -38,29 +40,40 @@ services:
       - SERVER_PRIVATE_IP=${SERVER_PRIVATE_IP}
       - PUBLIC_RECORD_SERVER_URL=${PUBLIC_RECORD_SERVER_URL}
 
-
   chat:
     container_name: chat-camon
-    image: ${NCLOUD_REGISTRY_URL}/chat-camon
+    image: chat-camon
     networks:
       - camon
-    expose:
-      - "3002"
     ports:
       - "3002:3002"
+    environment:
+      - CHAT_PORT=${CHAT_PORT}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_CHAT=${REDIS_CHAT}
+      - JWT_SECRET=${JWT_SECRET}
 
   record:
     container_name: record-camon
-    image: ${NCLOUD_REGISTRY_URL}/record-camon
+    image: record-camon
     networks:
-      - camon
+      camon:
+        ipv4_address: 172.19.0.10
+    expose:
+        - "3003"
     ports:
       - "3003:3003"
     environment:
       - NCLOUD_ACCESS_KEY=${NCLOUD_ACCESS_KEY}
       - NCLOUD_SECRET_KEY=${NCLOUD_SECRET_KEY}
       - NCLOUD_BUCKET_NAME=${NCLOUD_BUCKET_NAME}
+      - API_SERVER_URL=${API_SERVER_URL}
+      - CDN_URL=${CDN_URL}
 
 networks:
   camon:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
