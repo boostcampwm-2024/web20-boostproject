@@ -12,18 +12,10 @@ export const useRoom = (socket: Socket | null, isConnected: boolean) => {
     }
 
     setRoomError(null);
-
-    try {
-      const { roomId } = await new Promise<{ roomId: string }>(resolve => {
-        socket.emit('createRoom', (response: { roomId: string }) => {
-          resolve(response);
-        });
-      });
-      setRoomId(roomId);
-      console.log('room 생성: ', roomId);
-    } catch (error) {
-      setRoomError(error instanceof Error ? error : new Error('Room 생성 에러'));
-    }
+    socket.emit('createRoom', (response: { roomId: string }) => {
+      setRoomId(response.roomId);
+    });
+    console.log('room 생성: ', roomId);
   };
 
   useEffect(() => {

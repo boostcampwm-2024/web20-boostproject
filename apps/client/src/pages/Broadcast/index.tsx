@@ -7,7 +7,14 @@ import { useProducer } from '@hooks/useProducer';
 import { useRoom } from '@hooks/useRoom';
 import { useSocket } from '@hooks/useSocket';
 import { useTransport } from '@hooks/useTransport';
-import { MicrophoneOffIcon, MicrophoneOnIcon, VideoOffIcon, VideoOnIcon, MonitorShareIcon } from '@/components/Icons';
+import {
+  MicrophoneOffIcon,
+  MicrophoneOnIcon,
+  VideoOffIcon,
+  VideoOnIcon,
+  ScreenShareIcon,
+  ScreenShareIconOff,
+} from '@/components/Icons';
 import { Button } from '@components/ui/button';
 import { useEffect, useRef, useState } from 'react';
 import useScreenShare from '@/hooks/useScreenShare';
@@ -157,7 +164,7 @@ function Broadcast() {
                   {isAudioEnabled ? <MicrophoneOnIcon /> : <MicrophoneOffIcon />}
                 </button>
                 <button onClick={toggleScreenShare}>
-                  <MonitorShareIcon />
+                  {isScreenSharing ? <ScreenShareIcon /> : <ScreenShareIconOff />}
                 </button>
               </div>
             </div>

@@ -13,8 +13,8 @@ jobs:
       IMAGE_NAME: record-camon
       RECORD_PORT: ${{ secrets.RECORD_PORT }}
       NCLOUD_ACCESS_KEY: ${{ secrets.NCLOUD_ACCESS_KEY }}
-      NCLOUD_SECRET_KEY=: ${{ secrets.NCLOUD_SECRET_KEY }}
-      NCLOUD_BUCKET_NAME=: ${{ secrets.NCLOUD_BUCKET_NAME }}
+      NCLOUD_SECRET_KEY: ${{ secrets.NCLOUD_SECRET_KEY }}
+      NCLOUD_BUCKET_NAME: ${{ secrets.NCLOUD_BUCKET_NAME }}
 
     steps:
       - name: Checkout code
@@ -33,7 +33,7 @@ jobs:
           docker build -f ./apps/record/Dockerfile -t ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest \
             --build-arg RECORD_PORT=$RECORD_PORT \
             --build-arg NCLOUD_ACCESS_KEY=$NCLOUD_ACCESS_KEY \
-            --build-arg NCLOUD_SECRET_KEY=$NCLOUD_ACCESS_KEY \
+            --build-arg NCLOUD_SECRET_KEY=$NCLOUD_SECRET_KEY \
             --build-arg NCLOUD_BUCKET_NAME=$NCLOUD_BUCKET_NAME \
             .
 
@@ -44,6 +44,13 @@ jobs:
   deploy-and-run:
     runs-on: ubuntu-latest
     needs: build-and-push
+    env:
+      IMAGE_NAME: record-camon
+      RECORD_PORT: ${{ secrets.RECORD_PORT }}
+      NCLOUD_ACCESS_KEY: ${{ secrets.NCLOUD_ACCESS_KEY }}
+      NCLOUD_SECRET_KEY: ${{ secrets.NCLOUD_SECRET_KEY }}
+      NCLOUD_BUCKET_NAME: ${{ secrets.NCLOUD_BUCKET_NAME }}
+      NCLOUD_REGISTRY_URL: ${{ secrets.NCLOUD_REGISTRY_URL }}
     steps:
       - name: Checkout for docker-compose
         uses: actions/checkout@v2
@@ -64,19 +71,28 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_SERVER_KEY }}
           port: 22
-          envs: RECORD_PORT,NCLOUD_ACCESS_KEY,NCLOUD_SECRET_KEY,NCLOUD_BUCKET_NAME
+          envs: RECORD_PORT,NCLOUD_ACCESS_KEY,NCLOUD_SECRET_KEY,NCLOUD_BUCKET_NAME,NCLOUD_REGISTRY_URL
           script: |
             cd /home/${{ secrets.SERVER_USER }}/camon
-            sudo docker login -u ${{secrets.NCLOUD_ACCESS_KEY}} -p ${{ secrets.NCLOUD_SECRET_KEY }} ${{ secrets.NCLOUD_REGISTRY_URL }}
+            
+            echo "RECORD_PORT=$RECORD_PORT" > .env
+            echo "NCLOUD_ACCESS_KEY=$NCLOUD_ACCESS_KEY" >> .env
+            echo "NCLOUD_SECRET_KEY=$NCLOUD_SECRET_KEY" >> .env
+            echo "NCLOUD_BUCKET_NAME=$NCLOUD_BUCKET_NAME" >> .env
+            echo "NCLOUD_REGISTRY_URL=$NCLOUD_REGISTRY_URL" >> .env
+            
+            sudo docker login -u $NCLOUD_ACCESS_KEY -p $NCLOUD_SECRET_KEY $NCLOUD_REGISTRY_URL
 
             sudo docker stop record-camon || true
             sudo docker rm record-camon || true
-            sudo docker rmi ${{ secrets.NCLOUD_REGISTRY_URL }}/record-camon:latest || true
-
-            sudo docker pull ${{ secrets.NCLOUD_REGISTRY_URL }}/$IMAGE_NAME:latest
+            sudo docker rmi $NCLOUD_REGISTRY_URL/record-camon:latest || true
+      
+            sudo docker pull $NCLOUD_REGISTRY_URL/record-camon:latest
+            sudo docker tag $NCLOUD_REGISTRY_URL/record-camon:latest record-camon
+      
             sudo docker-compose up -d record
+      
             sudo docker image prune -f
-
       - name: Check container status
         uses: appleboy/ssh-action@v0.1.6
         with:

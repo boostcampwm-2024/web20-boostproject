@@ -20,7 +20,6 @@ ENV RECORD_PORT=$RECORD_PORT
 ENV NCLOUD_ACCESS_KEY=$NCLOUD_ACCESS_KEY
 ENV NCLOUD_SECRET_KEY=$NCLOUD_SECRET_KEY
 ENV NCLOUD_BUCKET_NAME=$NCLOUD_BUCKET_NAME
-
 # Copy dependency files
 COPY pnpm-lock.yaml package.json pnpm-workspace.yaml ./
 COPY apps/record/package.json apps/record/
