@@ -5,6 +5,7 @@ import Profile from '@pages/Profile';
 import Live from '@pages/Live';
 import Broadcast from '@pages/Broadcast';
 import Auth from '@pages/Auth';
+import Record from '@pages/Record';
 
 const routerOptions = {
   future: {
@@ -38,6 +39,10 @@ const router = createBrowserRouter(
         {
           path: 'auth',
           element: <Auth />,
+        },
+        {
+          path: 'record/:attendanceId',
+          element: <Record />,
         },
       ],
     },
