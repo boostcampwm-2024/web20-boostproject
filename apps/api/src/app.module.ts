@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeormConfig } from './config/typeorm.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { RecordModule } from './record/record.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AuthModule } from './auth/auth.module';
     BroadcastModule,
     AttendanceModule,
     AuthModule,
+    RecordModule,
   ],
   controllers: [AppController],
   providers: [AppService],

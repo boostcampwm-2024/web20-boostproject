@@ -19,6 +19,7 @@
     "@babel/preset-env": "^7.26.0",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@types/fluent-ffmpeg": "^2.1.27",
+    "axios": "^1.7.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
