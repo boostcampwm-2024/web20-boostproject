@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { Button } from '@components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@utils/utils';
@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom';
 import Modal from '@components/Modal';
 import WelcomeCharacter from '@components/WelcomeCharacter';
 import { useAuth } from '@hooks/useAuth';
+import { AuthContext } from '@/contexts/AuthContext';
 
 function Header() {
   const [isCheckedIn, setIsCheckedIn] = useState(false);
@@ -14,7 +15,8 @@ function Header() {
   const broadcastRef = useRef<Window | null>(null);
   const navigate = useNavigate();
 
-  const { isLoggedIn, requestLogIn, logout } = useAuth();
+  const { requestLogIn, logout } = useAuth();
+  const { isLoggedIn } = useContext(AuthContext);
 
   const handleLogoClick = () => {
     navigate('/');
