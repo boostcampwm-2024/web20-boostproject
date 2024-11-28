@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Button } from '@components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '@utils/utils';
@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom';
 import Modal from '@components/Modal';
 import WelcomeCharacter from '@components/WelcomeCharacter';
 import { useAuth } from '@hooks/useAuth';
+import { AuthContext } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
 import axiosInstance from '@/services/axios';
 
@@ -17,7 +18,8 @@ function Header() {
   const [profileImgUrl, setProfileImgUrl] = useState<string>('');
   const navigate = useNavigate();
 
-  const { isLoggedIn, requestLogIn, logout } = useAuth();
+  const { requestLogIn, logout } = useAuth();
+  const { isLoggedIn } = useContext(AuthContext);
 
   const handleLogoClick = () => {
     navigate('/');
