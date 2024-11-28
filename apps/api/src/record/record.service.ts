@@ -17,6 +17,14 @@ export class RecordService {
     @InjectRepository(Attendance) private attendanceRepository: Repository<Attendance>,
   ) {}
 
+  async getRecordsByAttendanceId(attendanceId: string) {
+    return await this.recordRepository
+      .createQueryBuilder('record')
+      .innerJoinAndSelect('record.attendance', 'attendance')
+      .where('attendance.id = :attendanceId AND record.video IS NOT NULL', { attendanceId })
+      .getMany();
+  }
+
   async createRecord({ title, roomId }: CreateRecordDto) {
     const attendance = await this.attendanceRepository.findOne({
       where: {
@@ -42,7 +50,7 @@ export class RecordService {
     if (!attendance) new CustomException(ErrorStatus.ATTENDANCE_NOT_FOUND);
 
     await this.recordRepository
-      .createQueryBuilder()
+      .createQueryBuilder('record')
       .update(Record)
       .set({ video })
       .where('attendanceId = :attendanceId AND video IS NULL', { attendanceId: attendance.id })
