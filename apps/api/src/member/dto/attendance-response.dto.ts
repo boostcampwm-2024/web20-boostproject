@@ -3,6 +3,8 @@ import { Attendance } from 'src/attendance/attendance.entity';
 
 class AttendanceInfo {
   @ApiProperty()
+  attendanceId: number;
+  @ApiProperty()
   date: string;
   @ApiProperty()
   startTime: string;
@@ -22,6 +24,7 @@ export class AttendanceResponseDto {
     const attendanceResponseDto = new AttendanceResponseDto();
     attendanceResponseDto.memberId = memberId;
     attendanceResponseDto.attendances = attendances.map(attendance => ({
+      attendanceId: attendance.id,
       date: this.formatDate(attendance.startTime),
       startTime: this.formatTime(attendance.startTime),
       endTime: attendance.endTime ? this.formatTime(attendance.endTime) : '',
