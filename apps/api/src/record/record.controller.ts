@@ -22,7 +22,7 @@ export class RecordController {
   async getRecordsByAttendanceId(@Param('attendanceId') attendanceId: string) {
     const records = await this.recordService.getRecordsByAttendanceId(attendanceId);
 
-    return RecordsResponseDto.fromList(records);
+    return RecordsResponseDto.from(records);
   }
 
   @Post()
