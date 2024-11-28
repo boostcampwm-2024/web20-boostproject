@@ -1,4 +1,9 @@
-function EditIcon() {
+interface IconProps {
+  size?: number;
+  className?: string;
+}
+
+function EditIcon({ size = 24, className }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -6,7 +11,9 @@ function EditIcon() {
       viewBox="0 0 24 24"
       strokeWidth={2}
       stroke="currentColor"
-      className="size-6"
+      className={className}
+      width={size}
+      height={size}
     >
       <path
         strokeLinecap="round"

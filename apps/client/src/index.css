@@ -101,3 +101,19 @@
     height: 100vh;
   }
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--grayscale-white-alt);
+  border-radius: 12px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  box-shadow: none;
+}
