@@ -34,6 +34,7 @@ export default {
         'text-danger': 'var(--red-500)',
         'surface-default': 'var(--grayscale-black)',
         'surface-alt': 'var(--grayscale-700)',
+        'surface-alt-light': 'var(--grayscale-400)',
         'surface-brand-default': 'var(--blue-500)',
         'surface-brand-alt': 'var(--blue-500-alt)',
         'surface-danger': 'var(--red-500)',
