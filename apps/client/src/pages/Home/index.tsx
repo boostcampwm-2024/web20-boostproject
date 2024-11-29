@@ -4,6 +4,7 @@ import ErrorCharacter from '@components/ErrorCharacter';
 import { useAPI } from '@hooks/useAPI';
 import { LivePreviewListInfo } from '@/types/homeTypes';
 import { useEffect, useState } from 'react';
+import Banner from './Banner';
 
 export default function Home() {
   const { data: liveListInfo, isLoading, error } = useAPI<LivePreviewListInfo>({ url: '/v1/broadcasts' });
@@ -27,10 +28,15 @@ export default function Home() {
         <div className="flex justify-center items-center flex-1">
           <LoadingCharacter />
         </div>
-      ) : liveListInfo?.broadcasts && liveListInfo.broadcasts.length > 0 ? (
-        <LiveList liveList={liveListInfo.broadcasts} />
       ) : (
-        <div className="h-full flex items-center">방송 중인 캠퍼가 없습니다.</div>
+        <div className="flex flex-col h-full w-full gap-5">
+          <Banner />
+          {liveListInfo?.broadcasts && liveListInfo.broadcasts.length > 0 ? (
+            <LiveList liveList={liveListInfo.broadcasts} />
+          ) : (
+            <div className="w-full h-full flex justify-center items-center">방송 중인 캠퍼가 없습니다.</div>
+          )}
+        </div>
       )}
     </div>
   );
