@@ -39,6 +39,9 @@ services:
       - RECORD_SERVER_URL=${RECORD_SERVER_URL}
       - SERVER_PRIVATE_IP=${SERVER_PRIVATE_IP}
       - PUBLIC_RECORD_SERVER_URL=${PUBLIC_RECORD_SERVER_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - ANNOUNCED_IP=${ANNOUNCED_IP}
+      - MEDIA_PORT=${MEDIA_PORT}
 
   chat:
     container_name: chat-camon
