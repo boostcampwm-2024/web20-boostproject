@@ -1,24 +1,54 @@
+import FieldFilter from './FieldFilter';
 import LiveCard from './LiveCard';
 import { LivePreviewInfo } from '@/types/homeTypes';
+import { useEffect, useState } from 'react';
+import { Field } from '@/types/liveTypes';
+import axiosInstance from '@/services/axios';
+import Search from './Search';
 
-function LiveList({ liveList }: { liveList: LivePreviewInfo[] }) {
+function LiveList() {
+  const [field, setField] = useState<Field>('');
+  const [liveList, setLiveList] = useState<LivePreviewInfo[]>([]);
+
+  useEffect(() => {
+    axiosInstance.get('/v1/broadcasts', { params: { field: field } }).then(response => {
+      if (response.data.success) {
+        setLiveList(response.data.data.broadcasts);
+      }
+    });
+  }, [field]);
+
+  const handleSelectField = (selected: Field) => {
+    setField(selected);
+  };
+
   return (
-    <div className="grid grid-cols-1 min-[690px]:grid-cols-2 min-[1040px]:grid-cols-3 min-[1380px]:grid-cols-4 min-[1720px]:grid-cols-5 gap-x-[clamp(40px,2vw,60px)] gap-y-12 auto-rows-min p-15 w-[95%] max-w-[1920px] align-items-start">
-      {liveList &&
-        liveList.map(livePreviewInfo => {
-          const { broadcastId, broadcastTitle, camperId, profileImage, thumbnail } = livePreviewInfo;
-          return (
-            <div key={broadcastId} className="flex justify-center">
-              <LiveCard
-                liveId={broadcastId}
-                title={broadcastTitle}
-                userId={camperId}
-                profileUrl={profileImage}
-                thumbnailUrl={thumbnail}
-              />
-            </div>
-          );
-        })}
+    <div className="flex flex-col w-full h-full p-10">
+      <div className="h-14 w-full flex justify-between items-center my-5 px-5">
+        <FieldFilter selectedField={field} onFieldSelect={handleSelectField} />
+        <Search />
+      </div>
+      <div className="grid grid-cols-1 min-[690px]:grid-cols-2 min-[1040px]:grid-cols-3 min-[1380px]:grid-cols-4 min-[1720px]:grid-cols-5 gap-x-[clamp(40px,2vw,60px)] gap-y-12 auto-rows-min p-15 w-[95%] max-w-[1920px] align-items-start">
+        {liveList ? (
+          liveList.map(data => {
+            const { broadcastId, broadcastTitle, camperId, profileImage, thumbnail } = data;
+            console.log(data);
+            return (
+              <div key={broadcastId} className="flex justify-center">
+                <LiveCard
+                  liveId={broadcastId}
+                  title={broadcastTitle}
+                  userId={camperId}
+                  profileUrl={profileImage}
+                  thumbnailUrl={thumbnail}
+                />
+              </div>
+            );
+          })
+        ) : (
+          <div>방송 정보가 없습니다.</div>
+        )}
+      </div>
     </div>
   );
 }
