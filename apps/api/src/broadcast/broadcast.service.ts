@@ -28,7 +28,7 @@ export class BroadcastService {
       .take(limit + 1);
 
     if (field) {
-      query.andWhere('member.filed = :field', { field });
+      query.andWhere('member.field = :field', { field });
     }
 
     if (cursor) {
