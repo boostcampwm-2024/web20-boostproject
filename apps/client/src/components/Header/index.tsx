@@ -109,9 +109,9 @@ function Header() {
       )}
       {showModal &&
         createPortal(
-          <Modal setShowModal={setShowModal} modalClassName="h-1/3 w-1/3">
+          <Modal setShowModal={setShowModal} modalClassName="h-80 w-1/3">
             <div className="flex flex-col flex-1">
-              <div className="flex flex-row h-24 text-text-strong font-bold text-5xl items-center justify-center">
+              <div className="flex flex-row h-24 text-text-strong font-bold text-3xl md:text-5xl items-center justify-center px-5">
                 WELCOME!
                 <WelcomeCharacter size={80} />
               </div>
@@ -123,7 +123,7 @@ function Header() {
                   className="flex flex-row items-center h-16 w-15 md:w-4/5 border border-border-bold rounded-circle "
                 >
                   <GithubIcon size={60} />
-                  <span className="hidden flex-1 md:flex justify-center text-text-strong text-display-bold16 lg:text-display-bold24">
+                  <span className="hidden flex-1 md:flex justify-center text-text-strong text-display-bold16 lg:text-display-bold24 px-5">
                     Gihub로 로그인하기
                   </span>
                 </button>
@@ -134,7 +134,7 @@ function Header() {
                   className="flex flex-row items-center h-16 w-15 md:w-4/5 border border-border-bold rounded-circle "
                 >
                   <GoogleIcon />
-                  <span className="hidden md:flex flex-1 justify-center text-text-strong text-display-bold16 lg:text-display-bold24">
+                  <span className="hidden md:flex flex-1 justify-center text-text-strong text-display-bold16 lg:text-display-bold24 px-5">
                     Google로 로그인하기
                   </span>
                 </button>
