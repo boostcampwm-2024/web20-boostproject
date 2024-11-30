@@ -109,9 +109,9 @@ function Header() {
       )}
       {showModal &&
         createPortal(
-          <Modal setShowModal={setShowModal} modalClassName="h-1/3 w-1/3">
+          <Modal setShowModal={setShowModal} modalClassName="h-80 w-1/3">
             <div className="flex flex-col flex-1">
-              <div className="flex flex-row h-24 text-text-strong font-bold text-5xl items-center justify-center">
+              <div className="flex flex-row h-24 text-text-strong font-bold text-3xl md:text-5xl items-center justify-center">
                 WELCOME!
                 <WelcomeCharacter size={80} />
               </div>
