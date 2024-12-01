@@ -11,11 +11,10 @@ interface FormInput {
 }
 
 function Search({ onSearch }: SearchProps) {
-  const { register, handleSubmit, reset } = useForm<FormInput>();
+  const { register, handleSubmit } = useForm<FormInput>();
 
   const hanldeSearchSubmit = ({ keyword }: FormInput) => {
     onSearch(keyword);
-    reset();
   };
 
   return (
