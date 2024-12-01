@@ -8,6 +8,9 @@
       <a href='https://www.figma.com/design/ckY510YXPKJJUoURVxlmYz/Cam'on?node-id=0-1&node-type=canvas&t=BIq7ck3oUBLHea8J-0'>🎨 피그마</a> | 
       <a href='https://github.com/orgs/boostcampwm-2024/projects/85'on?node-id=0-1&node-type=canvas&t=BIq7ck3oUBLHea8J-0'>🗓️ 백로그</a>
     </h3>
+    <h3>
+      <a href='https://cam-on.site'>👉 camon 서비스 바로가기 👈</a> 
+    </h3>
     <h2>🌟 핵심 가치 🌟</h2>
     <p>
         💻 <b>부스트 캠프 출석 관리</b>&nbsp;&nbsp;|&nbsp;&nbsp;
