@@ -12,6 +12,7 @@ import { typeormConfig } from './config/typeorm.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { RecordModule } from './record/record.module';
+import { BookmarkModule } from './bookmark/bookmark.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RecordModule } from './record/record.module';
     AttendanceModule,
     AuthModule,
     RecordModule,
+    BookmarkModule,
   ],
   controllers: [AppController],
   providers: [AppService],
