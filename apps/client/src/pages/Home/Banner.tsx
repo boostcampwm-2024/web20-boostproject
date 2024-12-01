@@ -1,7 +1,8 @@
 import { CloseIcon } from '@/components/Icons';
 import Modal from '@/components/Modal';
 import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
+import { AuthContext } from '@/contexts/AuthContext';
+import { useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
 
@@ -12,6 +13,7 @@ interface BookmarkData {
 }
 
 function Banner() {
+  const { isLoggedIn } = useContext(AuthContext);
   const [bookmarkList, setBookmarkList] = useState<BookmarkData[]>([]);
   const [showModal, setShowModal] = useState(false);
   const {
@@ -64,30 +66,35 @@ function Banner() {
             </p>
           </div>
         </div>
-        <div className="flex flex-col h-full gap-3 p-3">
-          {bookmarkList &&
-            bookmarkList.map((data, idx) => (
-              <Button
-                key={data.id}
-                onClick={() => handleClickBookmarkButton(data.link)}
-                className="h-14 w-52 bg-surface-alt hover:bg-surface-alt-light relative flex items-center justify-between"
-              >
-                <span className="truncate flex-1">{data.tag}</span>
-                <button
-                  onClick={e => handleDeleteBookmark(e, idx)}
-                  className="flex items-center p-1 hover:text-text-strong"
+        {isLoggedIn && (
+          <div className="flex flex-col h-full gap-3 p-3">
+            {bookmarkList &&
+              bookmarkList.map((data, idx) => (
+                <Button
+                  key={data.id}
+                  onClick={() => handleClickBookmarkButton(data.link)}
+                  className="h-14 w-52 bg-surface-alt hover:bg-surface-alt-light relative flex items-center justify-between"
                 >
-                  <CloseIcon size={36} />
-                </button>
-              </Button>
-            ))}
+                  <span className="truncate flex-1">{data.tag}</span>
+                  <button
+                    onClick={e => handleDeleteBookmark(e, idx)}
+                    className="flex items-center p-1 hover:text-text-strong"
+                  >
+                    <CloseIcon size={36} />
+                  </button>
+                </Button>
+              ))}
 
-          {bookmarkList.length < 5 && (
-            <Button onClick={() => setShowModal(true)} className="h-14 w-52 bg-surface-alt hover:bg-surface-alt-light">
-              +
-            </Button>
-          )}
-        </div>
+            {bookmarkList.length < 5 && (
+              <Button
+                onClick={() => setShowModal(true)}
+                className="h-14 w-52 bg-surface-alt hover:bg-surface-alt-light"
+              >
+                +
+              </Button>
+            )}
+          </div>
+        )}
       </div>
       {showModal &&
         createPortal(
