@@ -1,80 +1,83 @@
 <div align="center">
+    <h1>Cam'On</h1>
     <a href="https://cam-on.site/">
         <img src="https://github.com/user-attachments/assets/c3e159b5-0864-478f-96c0-1739fe50f1aa" alt="Cam'on logo">
     </a>
     <br />
-    <h2>🌟 핵심 가치</h2>
+    <h3>
+      <a href='https://intelligent-broker-ff0.notion.site/Cam-on-1290201238ac808ebb56d75e07685ae4'>📒 팀 노션</a> | 
+      <a href='https://github.com/boostcampwm-2024/web20-camon/wiki'>🔎 위키</a> | 
+      <a href='https://www.figma.com/design/ckY510YXPKJJUoURVxlmYz/Cam'on?node-id=0-1&node-type=canvas&t=BIq7ck3oUBLHea8J-0'>🎨 피그마</a> | 
+      <a href='https://github.com/orgs/boostcampwm-2024/projects/85'on?node-id=0-1&node-type=canvas&t=BIq7ck3oUBLHea8J-0'>🗓️ 백로그</a>
+    </h3>
+    <h2>🌟 핵심 가치 🌟</h2>
     <p>
         💻 <b>부스트 캠프 출석 관리</b>&nbsp;&nbsp;|&nbsp;&nbsp;
         🤝 <b>실시간 네트워킹</b>&nbsp;&nbsp;|&nbsp;&nbsp;
         👥 <b>네부캠 All-in-One</b>
     </p>
 </div>
-
 <br/>
 
-<div align="center">
-<h2>🎯 주요 기능</h2>
+# ⚙️ 전체 서비스 아키텍쳐
+![alt text](image.png)
 
-<div align="left" style="max-width: 800px; margin: 0 auto;">
-  <h3>📍 실시간 방송 및 출석 관리</h3>
-  <div style="background-color: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-    <p style="color: #0366d6; font-weight: 600; margin: 0;">
-      💡 체크인/체크아웃을 기준으로 출석부 반영
-    </p>
-  </div>
-  <p><strong>[ Figma 기준 ]</strong></p>
-  <img src="https://github.com/user-attachments/assets/1139f959-69e7-43f3-bad0-627ddf50de61" alt="log" style="max-width: 100%; height: auto;"/>
-  
-  <h3>📍 네트워킹 및 소통</h3>
-  <div style="background-color: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
-    <p style="color: #0366d6; font-weight: 600; margin: 0;">
-      💡 방송자의 [화면공유/카메라/오디오] 스트림 정보를 실시간으로 공유 및 채팅을 통한 다른 캠퍼들과의 소통
-    </p>
-  </div>
-  <p><strong>[ 현재 구현 상황 ]</strong></p>
-  <img src="https://github.com/user-attachments/assets/b193663d-c22a-4c3d-8b7c-e80336d69d76" alt="broadcasting demo" style="max-width: 100%; height: auto;"/>
-</div>
-</div>
+# 🏗️ 시스템 아키텍처
+<img width="1352" alt="image" src="https://github.com/user-attachments/assets/e8e1eef7-4c3e-46e6-bdae-91934bcc4237">
 
-<hr/>
+# 🎯 핵심 기능
+### 🎥 실시간 방송 송출
+> 1️⃣ 캠퍼들은 코어타임 시간에 실시간 방송을 키면서 부스트 캠프 활동에 참여할 수 있습니다.<br>
+> 2️⃣ 화면공유 on/off, 캠 on/off, 마이크 on/off 기능으로  캠퍼들이 보다 자유로운 방송을 할 수 있도록 돕습니다.<br>
+> 3️⃣ 별도의 송출 소프트웨어 없이 서비스 내에서 방송 송출과 화면 배치 과정이 자동으로 이루어져 캠퍼들이 부담없이 방송할 수 있는 환경을 제공합니다.
+
+### 👀 실시간 방송 시청
+> 1️⃣ 캠퍼들은 서로의 방송을 시청하면서 실시간으로 서로의 학습 경험을 공유할 수 있습니다.<br>
+> 2️⃣ 시청화면 하단에 방송중인 캠퍼의 정보를 제공하여 온라인 네트워킹 환경을 제공합니다.<br>
+
+### 💬 채팅
+> 1️⃣ 캠퍼들은 채팅을 통해 실시간으로 소통할 수 있습니다.<br>
+> 2️⃣ 방송 송출창과 시청창 모두 채팅 기능을 제공하여 방송중인 캠퍼와 시청하는 캠퍼 모두 자유롭게 지식을 공유하고 유대감을 쌓을 수 있습니다.<br>
+
+### 🔴 녹화
+> 1️⃣ 실시간 녹화 기능을 제공하여 코어타임 학습 중 기억하고 싶은 순간을 기록할 수 있습니다.<br>
+> 2️⃣ 방송 중 기록한 녹화본들은 출석 내역에서 확인하며 스스로의 학습 경험을 돌아볼 수 있습니다.<br>
+
+### ✏️ 출석
+> 1️⃣ 캠퍼는 마이페이지에서 본인의 출석 내역을 한 눈에 확인할 수 있습니다.<br>
+> 2️⃣ 코어타임 시간 내에 송출되는 방송 시간을 기반으로 자동으로 캠퍼들의 출석이 관리됩니다.<br>
+
+### 📚 아카이브
+> 1️⃣ 캠퍼들은 메인페이지에서 여러개로 나누어진 베이스캠프를 한 번에 모아서 관리할 수 있습니다.<br>
+> 2️⃣ 자유롭게 하이퍼링크를 등록하여 맞춤형 온라인 베이스 캠프를 구성할 수 있습니다.<br>
+
+# 핵심 기능 개발 과정
+| 핵심 구현 기능 |
+|:---|
+| [방송 송출 및 시청](https://github.com/boostcampwm-2024/web20-camon/wiki/%EB%B0%A9%EC%86%A1-%EC%86%A1%EC%B6%9C-%EB%B0%8F-%EC%8B%9C%EC%B2%AD-%EA%B5%AC%ED%98%84) | 
+| [실시간 썸네일 및 녹화](https://github.com/boostcampwm-2024/web20-camon/wiki/%EC%8B%A4%EC%8B%9C%EA%B0%84-%EC%8D%B8%EB%84%A4%EC%9D%BC%EA%B3%BC-%EB%85%B9%ED%99%94-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84) |
+|[방송 송출 화면 구성](https://github.com/boostcampwm-2024/web20-camon/wiki/Canvas-Api%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EB%B0%A9%EC%86%A1-%EC%86%A1%EC%B6%9C-%ED%99%94%EB%A9%B4-%EA%B5%AC%EC%84%B1)|
 
 
+> 🙇‍♀️ 프로젝트의 개발 과정에 대한 더 자세한 사항은 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)와 [팀 노션](https://intelligent-broker-ff0.notion.site/Cam-on-1290201238ac808ebb56d75e07685ae4)을 참고해 주세요!
 
-## 👨‍👩‍👧‍👦 팀원 소개
+# 🛠️ 기술 스택
+
+| 분야 | 기술 스택 |
+|:---|:---|
+| 공통       | ![PNPM](https://img.shields.io/badge/pnpm-%234a4a4a.svg?style=for-the-badge&logo=pnpm&logoColor=f69220) ![TypeScript](https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![TypeScript](https://img.shields.io/badge/mediasoup-895fde?style=for-the-badge&logoColor=white)                                                                                                                                          |
+| FE | ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB) ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white) |
+| BE     | ![NestJS](https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white) ![MySQL](https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white) ![FFmpeg](https://img.shields.io/badge/FFmpeg-007808?style=for-the-badge&logo=FFmpeg&logoColor=white)                                      |
+| 인프라   |  ![Docker](https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![NginX](https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/githubactions-FF4438?style=for-the-badge&logo=githubactions&logoColor=white)                 |
+
+# 👨‍👩‍👧‍👦 팀원 소개
 | 김광현| 백지연 | 전희선 | 한승헌 |
 |:---:|:---:|:---:|:---:|
 | <img src="https://github.com/g00hyun.png" width="150" height="150"> | <img src="https://github.com/zero0205.png" width="150" height="150"> | <img src="https://github.com/huiseon37.png" width="150" height="150"> | <img src="https://github.com/seungheon123.png" width="150" height="150"> |
 | [@g00hyun](https://github.com/g00hyun) | [@zero0205](https://github.com/zero0205) | [@huiseon37](https://github.com/huiseon37) | [@seungheon123](https://github.com/seungheon123) |
 
 
-## 바로가기 링크
-<p align='left'>
-<a href='https://intelligent-broker-ff0.notion.site/Cam-on-1290201238ac808ebb56d75e07685ae4'>📒 팀 노션</a> | 
-<a href='https://intelligent-broker-ff0.notion.site/410fe8414eee4709b4dc0be015f7cca9'>🖋️ 그라운드 룰</a> | 
-<a href='https://www.figma.com/design/ckY510YXPKJJUoURVxlmYz/Cam'on?node-id=0-1&node-type=canvas&t=BIq7ck3oUBLHea8J-0'>🎨 피그마</a> | 
-</p>
-
-
-
-## 🛠️ 기술 스택
-### Frontend
-![Group 317](https://github.com/user-attachments/assets/392d0b31-1c9c-49c0-b931-aac4fe95eb68)
-
-### Backend
-![Group 318](https://github.com/user-attachments/assets/f67a3f30-d29d-499a-baf0-7b27980fc336)
-
-### Database
-![Group 319](https://github.com/user-attachments/assets/3c0f9308-7b36-481d-9023-965147b5a6f4)
-
-### Infra
-![Group 320](https://github.com/user-attachments/assets/0d4f1d40-c539-4ccd-972c-57dd9d99ade6)
-
-## 🏗️ 시스템 아키텍처
-<img width="1352" alt="image" src="https://github.com/user-attachments/assets/e8e1eef7-4c3e-46e6-bdae-91934bcc4237">
-
-
-## 🚀 시작하기
+<!-- ## 🚀 시작하기
 ### Installation
 ```bash
 # 저장소 클론
@@ -90,7 +93,4 @@ pnpm dev
 # api / media / chat 서버
 cd apps/{SERVER_NAME}
 pnpm start
-```
-
-## 📝 Wiki
-더 자세한 정보는 <a href="https://github.com/boostcampwm-2024/web20-camon/wiki">Wiki</a>를 참고해주세요.
+``` -->
