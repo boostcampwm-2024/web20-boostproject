@@ -11,6 +11,7 @@ export { default as MicrophoneOffIcon } from './MicrophoneOffIcon';
 export { default as MicrophoneOnIcon } from './MicrophoneOnIcon';
 export { default as ScreenShareIcon } from './ScreenShareIcon';
 export { default as ScreenShareIconOff } from './ScreenShareOffIcon';
+export { default as SearchIcon } from './SearchIcon';
 export { default as GoogleIcon } from './GoogleIcon';
 export { default as PauseIcon } from './PauseIcon';
 export { default as PlayIcon } from './PlayIcon';
