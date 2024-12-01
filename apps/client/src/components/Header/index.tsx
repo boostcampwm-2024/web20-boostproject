@@ -22,7 +22,11 @@ function Header() {
   const { isLoggedIn } = useContext(AuthContext);
 
   const handleLogoClick = () => {
-    navigate('/');
+    if (window.location.pathname === '/') {
+      window.location.reload();
+    } else {
+      navigate('/');
+    }
   };
 
   const handleLogInClick = () => {

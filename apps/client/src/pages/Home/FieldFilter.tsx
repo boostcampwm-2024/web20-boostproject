@@ -1,16 +1,20 @@
 import { Button } from '@/components/ui/button';
 import { Field } from '@/types/liveTypes';
+import { useState } from 'react';
 
 const fields: Field[] = ['WEB', 'AND', 'IOS'];
 
 interface FieldFilterProps {
-  selectedField: Field;
-  onFieldSelect: (field: Field) => void;
+  onClickFieldButton: (field: Field) => void;
 }
 
-function FieldFilter({ selectedField, onFieldSelect }: FieldFilterProps) {
+function FieldFilter({ onClickFieldButton }: FieldFilterProps) {
+  const [selected, setSelected] = useState<Field>('');
+
   const handleClick = (field: Field) => {
-    onFieldSelect(selectedField === field ? '' : field);
+    const newField = selected === field ? '' : field;
+    onClickFieldButton(newField);
+    setSelected(newField);
   };
 
   return (
@@ -20,7 +24,7 @@ function FieldFilter({ selectedField, onFieldSelect }: FieldFilterProps) {
           key={field}
           onClick={() => handleClick(field)}
           className={`${
-            selectedField === field
+            selected === field
               ? 'bg-surface-brand-default hover:bg-surface-point-alt'
               : 'bg-transparent border border-border-default hover:bg-surface-alt'
           }`}
