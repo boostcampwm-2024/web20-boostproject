@@ -2,45 +2,18 @@ import ErrorCharacter from '@/components/ErrorCharacter';
 import { BlogIcon, EditIcon, GithubIcon, LinkedInIcon, MailIcon } from '@/components/Icons';
 import LoadingCharacter from '@/components/LoadingCharacter';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import axiosInstance from '@/services/axios';
 import { useEffect, useState } from 'react';
+import { UserData } from '.';
 
-interface UserData {
-  id: number;
-  camperId: string;
-  name: string;
-  field: string;
-  contacts: Contacts;
-  profileImage: string;
+interface UserInfoProps {
+  userData: UserData | undefined;
+  isLoading: boolean;
+  error: Error | null;
+  toggleEditing: () => void;
 }
 
-interface Contacts {
-  email: string;
-  github: string;
-  blog: string;
-  linkedIn: string;
-}
-
-function UserInfo() {
-  const [userData, setUserData] = useState<UserData>();
-  const [isLoading, setIsLoading] = useState(false);
+function UserInfo({ userData, isLoading, error, toggleEditing }: UserInfoProps) {
   const [showLoading, setShowLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    axiosInstance
-      .get('/v1/members/info')
-      .then(response => {
-        if (response.data.success) {
-          setUserData(response.data.data);
-        } else {
-          setError(new Error(response.data.message));
-          console.error('유저 정보 조회 실패:', response.data.status);
-        }
-      })
-      .catch(error => setError(error instanceof Error ? error : new Error(error)))
-      .finally(() => setIsLoading(false));
-  }, [setUserData]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -49,10 +22,6 @@ function UserInfo() {
 
     return () => clearTimeout(timer);
   });
-
-  const handleEditProfile = () => {
-    alert('프로필 수정 구현 예정');
-  };
 
   return (
     <div className="flex flex-row h-1/2 w-full justify-center gap-10">
@@ -82,7 +51,7 @@ function UserInfo() {
                 <div className="flex justify-center items-center bg-surface-brand-default text-text-strong text-display-bold24 h-full w-24 rounded">
                   {userData?.field ? userData.field : '???'}
                 </div>
-                <button onClick={handleEditProfile}>
+                <button onClick={toggleEditing}>
                   <EditIcon size={24} />
                 </button>
               </div>
