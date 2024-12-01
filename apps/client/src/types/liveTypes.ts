@@ -9,7 +9,9 @@ export interface LiveInfo {
   title: string;
   camperId: string;
   viewers: number;
-  field: 'WEB' | 'AND' | 'IOS';
+  field: Field;
   profileImage: string;
   contacts: ContactInfo;
 }
+
+export type Field = 'WEB' | 'AND' | 'IOS' | '';
