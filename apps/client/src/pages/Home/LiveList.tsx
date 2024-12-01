@@ -1,13 +1,21 @@
 import FieldFilter from './FieldFilter';
 import LiveCard from './LiveCard';
 import { LivePreviewInfo } from '@/types/homeTypes';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axiosInstance from '@services/axios';
 import Search from './Search';
 import { Field } from '@/types/liveTypes';
 
 function LiveList() {
   const [liveList, setLiveList] = useState<LivePreviewInfo[]>([]);
+
+  useEffect(() => {
+    axiosInstance.get('v1/broadcasts').then(response => {
+      if (response.data.success) {
+        setLiveList(response.data.data.broadcasts);
+      }
+    });
+  }, []);
 
   const handleFilterField = (field: Field) => {
     axiosInstance.get('/v1/broadcasts', { params: { field: field } }).then(response => {
