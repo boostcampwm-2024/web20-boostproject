@@ -38,7 +38,7 @@ function LiveCamperInfo({ liveId }: { liveId: string }) {
                     variant="outline"
                     className="text-display-medium14 font-medium px-2 py-0.5 text-text-default border-border-default bg-transparent"
                   >
-                    {data.field}
+                    {data.field ? data.field : '???'}
                   </Badge>
                 </div>
                 <span className="text-text-weak text-display-medium12">{data.viewers}명 시청 중</span>
