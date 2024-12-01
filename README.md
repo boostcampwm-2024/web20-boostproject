@@ -1,8 +1,6 @@
 <div align="center">
     <h1>Cam'On</h1>
-    <a href="https://cam-on.site/">
-        <img src="https://github.com/user-attachments/assets/c3e159b5-0864-478f-96c0-1739fe50f1aa" alt="Cam'on logo">
-    </a>
+    <img src="https://github.com/user-attachments/assets/5dbc8d2a-8819-43bf-9d5e-9fd9237c971d">
     <br />
     <h3>
       <a href='https://intelligent-broker-ff0.notion.site/Cam-on-1290201238ac808ebb56d75e07685ae4'>📒 팀 노션</a> | 
@@ -20,7 +18,7 @@
 <br/>
 
 # ⚙️ 전체 서비스 아키텍쳐
-![alt text](image.png)
+![image](https://github.com/user-attachments/assets/f35da73a-0cc6-4aa1-b0aa-36094ffeb87e)
 
 # 🏗️ 시스템 아키텍처
 <img width="1352" alt="image" src="https://github.com/user-attachments/assets/e8e1eef7-4c3e-46e6-bdae-91934bcc4237">
