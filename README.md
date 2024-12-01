@@ -73,6 +73,7 @@
 |:---:|:---:|:---:|:---:|
 | <img src="https://github.com/g00hyun.png" width="150" height="150"> | <img src="https://github.com/zero0205.png" width="150" height="150"> | <img src="https://github.com/huiseon37.png" width="150" height="150"> | <img src="https://github.com/seungheon123.png" width="150" height="150"> |
 | [@g00hyun](https://github.com/g00hyun) | [@zero0205](https://github.com/zero0205) | [@huiseon37](https://github.com/huiseon37) | [@seungheon123](https://github.com/seungheon123) |
+| BE | FE | BE | BE |
 
 
 <!-- ## 🚀 시작하기
