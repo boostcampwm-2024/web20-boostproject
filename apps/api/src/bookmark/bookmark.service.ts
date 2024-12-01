@@ -30,4 +30,14 @@ export class BookmarkService {
 
     return this.bookmarkRepository.save(bookmark);
   }
+
+  async getAllBookmarks(member: Member) {
+    return this.bookmarkRepository.find({
+      where: {
+        member: {
+          id: member.id,
+        },
+      },
+    });
+  }
 }
