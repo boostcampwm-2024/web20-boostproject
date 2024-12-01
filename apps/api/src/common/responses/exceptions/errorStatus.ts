@@ -29,5 +29,6 @@ export class ErrorStatus {
   static readonly ATTENDANCE_NOT_FOUND = new ErrorStatus(404, 'ATTENDANCE_4000', '출석 정보가 존재하지 않습니다.');
 
   //Bookmark
-  static readonly BOOKMARK_LIMIT_EXCEEDED = new ErrorStatus(400, 'BOOKMARK_4000', '이미 북마크가 5개 존재합니다.');
+  static readonly BOOKMARK_NOT_FOUND = new ErrorStatus(404, 'BROADCAST_4000', '북마크 정보가 존재하지 않습니다.');
+  static readonly BOOKMARK_LIMIT_EXCEEDED = new ErrorStatus(400, 'BOOKMARK_4001', '이미 북마크가 5개 존재합니다.');
 }

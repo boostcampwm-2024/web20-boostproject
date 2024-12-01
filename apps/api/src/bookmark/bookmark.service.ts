@@ -40,4 +40,16 @@ export class BookmarkService {
       },
     });
   }
+
+  async deleteBookmark(bookmarkId: number) {
+    const bookmark = await this.bookmarkRepository.findOne({
+      where: { id: bookmarkId },
+    });
+
+    if (!bookmark) {
+      throw new CustomException(ErrorStatus.BOOKMARK_NOT_FOUND);
+    }
+
+    this.bookmarkRepository.delete({ id: bookmarkId });
+  }
 }
