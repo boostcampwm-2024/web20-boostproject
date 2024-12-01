@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Field } from '@/types/liveTypes';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import axiosInstance from '@/services/axios';
 
 interface EditUserInfoProps {
   userData: UserData | undefined;
@@ -54,9 +55,15 @@ function EditUserInfo({ userData, toggleEditing }: EditUserInfoProps) {
         linkedin: data.linkedIn ? data.linkedIn : '',
       },
     };
-    // TODO: 수정 요청
-    alert(formData);
-    toggleEditing();
+
+    axiosInstance.patch('/v1/members/info', formData).then(response => {
+      if (response.data.success) {
+        toggleEditing();
+      } else {
+        alert(`내 정보 수정에 실패했습니다: ${response.data.message}`);
+        console.error(`내 정보 수정 실패: ${response.data.status}`);
+      }
+    });
   };
 
   return (

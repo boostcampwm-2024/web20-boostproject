@@ -28,8 +28,6 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    setIsEditing(false);
-
     axiosInstance
       .get('/v1/members/info')
       .then(response => {
@@ -42,7 +40,7 @@ export default function Profile() {
       })
       .catch(error => setError(error instanceof Error ? error : new Error(error)))
       .finally(() => setIsLoading(false));
-  }, [setUserData]);
+  }, [isEditing]);
 
   const toggleEditing = () => {
     setIsEditing(prev => !prev);
