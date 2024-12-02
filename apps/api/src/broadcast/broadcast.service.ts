@@ -71,15 +71,15 @@ export class BroadcastService {
   }
 
   async searchBroadcasts(keyword: string): Promise<Broadcast[]> {
-    if (!keyword) {
-      return [];
+    const queryBuilder = this.broadcastRepository
+      .createQueryBuilder('broadcast')
+      .leftJoinAndSelect('broadcast.member', 'member');
+
+    if (keyword) {
+      queryBuilder.where('broadcast.title LIKE :keyword', { keyword: `%${keyword}%` });
     }
 
-    return this.broadcastRepository
-      .createQueryBuilder('broadcast')
-      .leftJoinAndSelect('broadcast.member', 'member')
-      .where('broadcast.title LIKE :keyword', { keyword: `%${keyword}%` })
-      .getMany();
+    return queryBuilder.getMany();
   }
 
   async createBroadcast({ id, title, thumbnail, memberId }: CreateBroadcastDto): Promise<Broadcast> {
