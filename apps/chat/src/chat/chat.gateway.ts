@@ -10,8 +10,6 @@ import { Server, Socket } from 'socket.io';
 import { UseFilters, UseGuards } from '@nestjs/common';
 import { WebSocketExceptionFilter } from 'src/common/filter/webSocketExceptionFilter';
 import { ChatService } from './chat.service';
-import { createRoomDto } from './dto/creat-room.dto';
-import { joinRoomDto } from './dto/join-room.dto';
 import { chatDto } from './dto/chat.dto';
 import { JWTAuthGuard } from 'src/auth/jwt-auth.guard';
 
@@ -26,17 +24,17 @@ export class ChatGateway implements OnGatewayDisconnect {
   //룸생성
   @UseGuards(JWTAuthGuard)
   @SubscribeMessage('createRoom')
-  async handleCreateRoom(@MessageBody() params: createRoomDto, @ConnectedSocket() client: Socket) {
-    const roomId = this.chatService.createRoom(params, client);
+  async handleCreateRoom(@MessageBody('roomId') roomId: string, @ConnectedSocket() client: Socket) {
+    const result = await this.chatService.createRoom(roomId, client);
 
     return {
-      roomId,
+      roomId: result,
     };
   }
   //룸입장
   @SubscribeMessage('joinRoom')
-  async handleJoinRoom(@MessageBody() params: joinRoomDto, @ConnectedSocket() client: Socket) {
-    this.chatService.joinRoom(params, client);
+  async handleJoinRoom(@MessageBody('roomId') roomId: string, @ConnectedSocket() client: Socket) {
+    this.chatService.joinRoom(roomId, client);
   }
   //룸나가기
   @SubscribeMessage('leaveRoom')
