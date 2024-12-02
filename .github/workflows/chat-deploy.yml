@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - develop
-    paths:
-      - 'apps/chat/**'
+      - Fix/336
+    # paths:
+    #   - 'apps/chat/**'
 
 jobs:
   build-and-push:
@@ -18,6 +19,8 @@ jobs:
       REDIS_PORT: ${{ secrets.REDIS_PORT }}
       REDIS_CHAT: ${{ secrets.REDIS_CHAT }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      API_SERVER_URL: ${{ secrets.API_SERVER_URL }}
+      HTTP_TIMEOUT: ${{ secrets.HTTP_TIMEOUT }}
 
     steps:
       - name: Checkout code
@@ -52,6 +55,8 @@ jobs:
       REDIS_CHAT: ${{ secrets.REDIS_CHAT }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       NCLOUD_REGISTRY_URL: ${{ secrets.NCLOUD_REGISTRY_URL }}
+      API_SERVER_URL: ${{ secrets.API_SERVER_URL }}
+      HTTP_TIMEOUT: ${{ secrets.HTTP_TIMEOUT }}
 
     steps:
       - name: Checkout for docker-compose
@@ -73,7 +78,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_SERVER_KEY }}
           port: 22
-          envs: CHAT_PORT,REDIS_HOST,REDIS_PORT,REDIS_CHAT,JWT_SECRET
+          envs: CHAT_PORT,REDIS_HOST,REDIS_PORT,REDIS_CHAT,JWT_SECRET,API_SERVER_URL,HTTP_TIMEOUT
           script: |
             cd /home/${{ secrets.SERVER_USER }}/camon
             
@@ -82,6 +87,8 @@ jobs:
             echo "REDIS_PORT=$REDIS_PORT" >> .env
             echo "REDIS_CHAT=$REDIS_CHAT" >> .env
             echo "JWT_SECRET=$JWT_SECRET" >> .env
+            echo "API_SERVER_URL=$API_SERVER_URL" >> .env
+            echo "HTTP_TIMEOUT=$HTTP_TIMEOUT" >> .env
             
             sudo docker login -u ${{secrets.NCLOUD_ACCESS_KEY}} -p ${{ secrets.NCLOUD_SECRET_KEY }} ${{ secrets.NCLOUD_REGISTRY_URL }}
 
