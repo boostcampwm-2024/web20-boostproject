@@ -43,7 +43,6 @@ function LiveList() {
         {liveList ? (
           liveList.map(data => {
             const { broadcastId, broadcastTitle, camperId, profileImage, thumbnail } = data;
-            console.log(data);
             return (
               <div key={broadcastId} className="flex justify-center">
                 <LiveCard
