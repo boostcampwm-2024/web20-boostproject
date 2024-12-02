@@ -77,7 +77,7 @@ function Banner() {
   return (
     <div className="flex w-full h-96 bg-gradient-to-r from-surface-alt to-transparent">
       <div className="flex flex-row justify-between w-full h-96 p-5">
-        <div className="font-bold text-4xl text-text-strong flex flex-row items-center">
+        <div className="font-bold text-4xl text-text-strong flex flex-row items-center ml-16 gap-12">
           <img src="/images/camon_character_200.png" alt="CamOn 배너 캐릭터" />
           <div>
             <p>출석부 관리부터, 소통까지!</p>
