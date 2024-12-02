@@ -56,6 +56,8 @@ function EditUserInfo({ userData, toggleEditing }: EditUserInfoProps) {
       },
     };
 
+    if (!formData.field) return;
+
     axiosInstance.patch('/v1/members/info', formData).then(response => {
       if (response.data.success) {
         toggleEditing();
@@ -73,7 +75,7 @@ function EditUserInfo({ userData, toggleEditing }: EditUserInfoProps) {
         <AvatarFallback>MY</AvatarFallback>
       </Avatar>
       <form onSubmit={handleSubmit(handlePatchUserInfo)} className="flex flex-col w-1/2 gap-5">
-        {(errors.camperId || errors.name) && (
+        {(errors.camperId || errors.name || !selectedField) && (
           <p className="flex justify-end text-text-danger text-display-medium12">
             {errors.camperId ? errors.camperId.message : errors.name ? errors.name.message : '분야를 선택해주세요'}
           </p>
