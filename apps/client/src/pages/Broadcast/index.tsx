@@ -21,7 +21,7 @@ import useScreenShare from '@/hooks/useScreenShare';
 import BroadcastPlayer from './BroadcastPlayer';
 import { Tracks } from '@/types/mediasoupTypes';
 import RecordButton from './RecordButton';
-import { getCamperIdFromJWT } from '@/utils/utils';
+import { getPayloadFromJWT } from '@utils/utils';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
@@ -79,7 +79,7 @@ function Broadcast() {
   useEffect(() => {
     tracksRef.current['mediaAudio'] = mediaStream?.getAudioTracks()[0];
 
-    const camperId = getCamperIdFromJWT();
+    const camperId = getPayloadFromJWT().camperId;
     setTitle(`${camperId}님의 방송`);
 
     window.addEventListener('beforeunload', stopBroadcast);

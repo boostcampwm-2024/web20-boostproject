@@ -12,7 +12,7 @@ export const checkDependencies = (functionName: string, dependencies: { [key: st
   return new Error(`${functionName} Error: ${missing.join(',')}이(가) 없습니다.`);
 };
 
-export const getCamperIdFromJWT = () => {
+export const getPayloadFromJWT = () => {
   const token = localStorage.getItem('accessToken');
   if (!token) return undefined;
   const base64Payload = token.split('.')[1];
@@ -29,5 +29,5 @@ export const getCamperIdFromJWT = () => {
         .join(''),
     ),
   );
-  return decodedJWT.camperId;
+  return decodedJWT;
 };
