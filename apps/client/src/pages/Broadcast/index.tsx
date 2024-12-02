@@ -21,7 +21,7 @@ import useScreenShare from '@/hooks/useScreenShare';
 import BroadcastPlayer from './BroadcastPlayer';
 import { Tracks } from '@/types/mediasoupTypes';
 import RecordButton from './RecordButton';
-import { getPayloadFromJWT } from '@utils/utils';
+import axiosInstance from '@/services/axios';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
@@ -79,8 +79,11 @@ function Broadcast() {
   useEffect(() => {
     tracksRef.current['mediaAudio'] = mediaStream?.getAudioTracks()[0];
 
-    const camperId = getPayloadFromJWT().camperId;
-    setTitle(`${camperId}님의 방송`);
+    axiosInstance.get('/v1/members/info').then(response => {
+      if (response.data.success) {
+        setTitle(`${response.data.data.camperId}님의 방송`);
+      }
+    });
 
     window.addEventListener('beforeunload', stopBroadcast);
     return () => {
