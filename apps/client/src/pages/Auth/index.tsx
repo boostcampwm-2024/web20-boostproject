@@ -18,7 +18,7 @@ function Auth() {
       }
 
       setLogIn(accessToken);
-      if (isNecessaryInfo) navigate('/', { replace: true });
+      if (isNecessaryInfo === 'true') navigate('/', { replace: true });
       else navigate('/profile', { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err : new Error('로그인 처리 중 오류'));
