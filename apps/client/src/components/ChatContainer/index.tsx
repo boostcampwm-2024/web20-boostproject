@@ -32,26 +32,14 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
   const setUpRoom = async (isProducer: boolean) => {
     try {
       if (isProducer) {
-        console.log('채팅룸 생성할거임');
-        await new Promise(resolve =>
-          socket?.emit(
-            'createRoom',
-            { name: '송출자', camperId: 'J111', roomId: roomId },
-            (response: { roomId: string }) => {
-              console.log(`채팅룸 생성 응답: ${JSON.stringify(response)}`);
-              console.log(`채팅룸 생성: ${response.roomId}`);
-              resolve;
-            },
-          ),
-        );
+        socket?.emit('createRoom', { roomId: roomId }, (response: { roomId: string }) => {
+          console.log(`채팅룸 생성: ${response.roomId}`);
+        });
       } else {
         // 채팅방 입장
-        await new Promise(resolve =>
-          socket?.emit('joinRoom', { roomId: roomId, name: '김부캠', camperId: 'J999' }, () => {
-            console.log('채팅방 입장');
-            resolve;
-          }),
-        );
+        socket?.emit('joinRoom', { roomId: roomId }, () => {
+          console.log('채팅방 입장');
+        });
       }
     } catch (err) {
       console.error(`방 생성/입장 실패: ${err}`);
