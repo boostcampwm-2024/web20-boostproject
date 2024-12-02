@@ -16,7 +16,7 @@ export class RecordService {
   private readonly serverPrivateIp: string;
   private readonly announcedIp: string;
 
-  private transports = new Map<string, mediasoup.types.Transport>();
+  private transports = new Map<string, mediasoup.types.Transport[]>();
 
   constructor(private readonly httpService: HttpService, private readonly configService: ConfigService) {
     this.recordServerUrl = this.configService.get<string>('RECORD_SERVER_URL', 'http://localhost:3003');
@@ -54,12 +54,15 @@ export class RecordService {
   }
 
   async sendStreamForRecord(room: mediasoup.types.Router, producers: mediasoup.types.Producer[]) {
-    const recordTransport = await this.createPlainTransport(room);
-
+    const ports = { video: null, audio: null };
     const consumers = await Promise.all(
       producers.map(async producer => {
-        this.transports.set(room.id, recordTransport);
-
+        const recordTransport = await this.createPlainTransport(room);
+        if (this.transports.get(room.id)) {
+          this.transports.get(room.id).push(recordTransport);
+        } else {
+          this.transports.set(room.id, [recordTransport]);
+        }
         const rtpCapabilities = this.getRtpCapabilities(room, producer.kind);
         const recordConsumer = await recordTransport.consume({
           producerId: producer.id,
@@ -70,33 +73,32 @@ export class RecordService {
             temporalLayer: 1,
           },
         });
-
+        const { port } = await this.getAvailablePort();
+        ports[producer.kind] = port;
         this.setUpRecordConsumerListeners(recordConsumer);
+        await recordTransport.connect({ ip: this.serverPrivateIp, port });
+        this.setUpRecordTransportListeners(recordTransport, port);
         return recordConsumer;
       }),
     );
 
+    await this.sendStreamRequest(room.id, ports.video, STREAM_TYPE.RECORD, ports.audio);
     setTimeout(async () => {
       for (const consumer of consumers) {
         await consumer.resume();
         await consumer.requestKeyFrame();
       }
     }, 1000);
-
-    const { port } = await this.getAvailablePort();
-
-    await recordTransport.connect({ ip: this.serverPrivateIp, port });
-    this.setUpRecordTransportListeners(recordTransport, port);
-
-    await this.sendStreamRequest(room.id, port, STREAM_TYPE.RECORD);
   }
 
   async stopStreamFromRecord(room: mediasoup.types.Router, title: string) {
-    const recordTransport = this.transports.get(room.id);
-    if (!recordTransport) {
+    const recordTransports = this.transports.get(room.id);
+    if (!recordTransports) {
       return;
     }
-    recordTransport.close();
+    for (const recordTransport of recordTransports) {
+      recordTransport.close();
+    }
     this.transports.delete(room.id);
 
     await lastValueFrom(this.httpService.post(`${this.apiServerUrl}/v1/records`, { title, roomId: room.id }));
