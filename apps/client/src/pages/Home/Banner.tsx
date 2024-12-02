@@ -2,6 +2,7 @@ import { CloseIcon } from '@/components/Icons';
 import Modal from '@/components/Modal';
 import { Button } from '@/components/ui/button';
 import { AuthContext } from '@/contexts/AuthContext';
+import { useToast } from '@hooks/useToast';
 import axiosInstance from '@/services/axios';
 import { useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -17,13 +18,13 @@ function Banner() {
   const { isLoggedIn } = useContext(AuthContext);
   const [bookmarkList, setBookmarkList] = useState<BookmarkData[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [_bookmarkError, setBookmarkError] = useState<string>('');
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm<BookmarkData>();
+  const { toast } = useToast();
 
   const handleClickBookmarkButton = (url: string) => {
     window.open(url);
@@ -38,7 +39,7 @@ function Banner() {
           const newBookmarkList = [...bookmarkList, addedBookmark];
           setBookmarkList(newBookmarkList);
         } else {
-          setBookmarkError(`북마크 생성 실패: ${response.data.message}`);
+          toast({ variant: 'destructive', title: '북마크 생성 실패', description: response.data.message });
           console.error(`북마크 생성 실패: ${response.data.status}`);
         }
       })
@@ -50,17 +51,16 @@ function Banner() {
 
   const handleDeleteBookmark = (e: React.MouseEvent, bookmarkId: number) => {
     e.stopPropagation();
-    if (confirm('북마크를 삭제하시겠습니까?')) {
-      axiosInstance.delete(`/v1/bookmarks/${bookmarkId}`).then(response => {
-        if (response.data.success) {
-          const newBookmarkList = bookmarkList.filter((data, _) => data.bookmarkId !== bookmarkId);
-          setBookmarkList(newBookmarkList);
-        } else {
-          setBookmarkError(`북마크 삭제 실패: ${response.data.message}`);
-          console.error(`북마크 삭제 실패: ${response.data.status}`);
-        }
-      });
-    }
+
+    axiosInstance.delete(`/v1/bookmarks/${bookmarkId}`).then(response => {
+      if (response.data.success) {
+        const newBookmarkList = bookmarkList.filter((data, _) => data.bookmarkId !== bookmarkId);
+        setBookmarkList(newBookmarkList);
+      } else {
+        toast({ variant: 'destructive', title: '북마크 삭제 실패', description: response.data.message });
+        console.error(`북마크 삭제 실패: ${response.data.status}`);
+      }
+    });
   };
 
   useEffect(() => {
@@ -68,7 +68,7 @@ function Banner() {
       if (response.data.success) {
         setBookmarkList(response.data.data.bookmarks);
       } else {
-        setBookmarkError(`북마크 조회 실패: ${response.data.message}`);
+        toast({ variant: 'destructive', title: '북마크 조회 실패', description: response.data.message });
         console.error(`북마크 조회 실패: ${response.data.status}`);
       }
     });
