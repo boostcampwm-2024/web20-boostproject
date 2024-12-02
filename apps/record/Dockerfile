@@ -10,6 +10,9 @@ WORKDIR /app
 
 RUN mkdir -p /app/assets/records /app/assets/thumbnails && chmod -R 777 /app/assets
 
+COPY ./apps/record/public/default-thumbnail.jpg /app/assets/default-thumbnail.jpg
+RUN chmod 644 /app/assets/default-thumbnail.jpg
+
 # Environment variables
 ARG RECORD_PORT
 ARG NCLOUD_ACCESS_KEY

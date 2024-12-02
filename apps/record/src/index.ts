@@ -12,6 +12,7 @@ const app = express();
 const assetsDirPath = path.join(__dirname, '../assets');
 const thumbnailsDirPath = path.join(__dirname, '../assets/thumbnails');
 const recordsDirPath = path.join(__dirname, '../assets/records');
+const defaultThumbnailPath = path.join(__dirname, '../assets/default-thumbnail.jpg');
 
 app.use(express.json());
 app.use(cors());
@@ -28,6 +29,17 @@ if (!fs.existsSync(thumbnailsDirPath)) {
 if (!fs.existsSync(recordsDirPath)) {
   fs.mkdirSync(recordsDirPath, { recursive: true });
 }
+
+app.post('/thumbnail', (req, res) => {
+  const { roomId } = req.body;
+  try {
+    const newThumbnailPath = path.join(thumbnailsDirPath, `${roomId}.jpg`);
+    fs.copyFileSync(defaultThumbnailPath, newThumbnailPath);
+    res.send({ success: true });
+  } catch (error) {
+    res.status(500).send({ success: false, error: 'Failed to create thumbnail' });
+  }
+});
 
 app.post('/send', (req, res) => {
   const { videoPort, roomId, type, audioPort } = req.body;

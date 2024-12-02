@@ -10,6 +10,7 @@ import { ConsumerService } from './services/consumer.service';
 import { BroadcastModule } from '../broadcast/broadcast.module';
 import { ClientService } from './services/client.service';
 import { RecordService } from './services/record.service';
+import { ApiClient } from 'src/common/clients/api.client';
 
 @Module({
   imports: [BroadcastModule, HttpModule],
@@ -23,6 +24,10 @@ import { RecordService } from './services/record.service';
     ConsumerService,
     RecordService,
     ClientService,
+    {
+      provide: 'API_CLIENT',
+      useClass: ApiClient,
+    },
   ],
 })
 export class SfuModule {}
