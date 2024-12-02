@@ -24,11 +24,11 @@ export class AuthController {
 
   @Get('/github/callback')
   @UseGuards(GithubAuthGuard)
-  signinGithubCallback(@UserReq() member: Member, @Res() res: Response) {
-    const accessToken = this.authService.login(member);
+  async signinGithubCallback(@UserReq() member: Member, @Res() res: Response) {
+    const { accessToken, isNeccessaryInfo } = this.authService.login(member);
     const CALLBACK_URI = this.configService.get('CALLBACK_URI');
 
-    res.redirect(`${CALLBACK_URI}/auth?accessToken=${accessToken}`);
+    res.redirect(`${CALLBACK_URI}/auth?accessToken=${accessToken}&isNeccessaryInfo=${isNeccessaryInfo}`);
   }
 
   @Get('/signin/google')
@@ -39,10 +39,10 @@ export class AuthController {
 
   @Get('/google/callback')
   @UseGuards(GoogleAuthGuard)
-  signinGoogleCallback(@UserReq() member: Member, @Res() res: Response) {
-    const accessToken = this.authService.login(member);
+  async signinGoogleCallback(@UserReq() member: Member, @Res() res: Response) {
+    const { accessToken, isNeccessaryInfo } = this.authService.login(member);
     const CALLBACK_URI = this.configService.get('CALLBACK_URI');
 
-    res.redirect(`${CALLBACK_URI}/auth?accessToken=${accessToken}`);
+    res.redirect(`${CALLBACK_URI}/auth?accessToken=${accessToken}&isNeccessaryInfo=${isNeccessaryInfo}`);
   }
 }

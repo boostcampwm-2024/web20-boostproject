@@ -23,8 +23,9 @@ export class AuthService {
   login(member: Member) {
     const payload = { id: member.id, camperId: member.camperId };
     const accessToken = this.jwtService.sign(payload);
+    const isNeccessaryInfo = (member.field && member.name && member.camperId) !== null;
 
-    return accessToken;
+    return { accessToken, isNeccessaryInfo };
   }
 
   async validateMember(id: number) {
