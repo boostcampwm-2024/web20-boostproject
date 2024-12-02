@@ -64,12 +64,12 @@
 > 1️⃣ 캠퍼들은 메인페이지에서 여러개로 나누어진 베이스캠프를 한 번에 모아서 관리할 수 있습니다.<br>
 > 2️⃣ 자유롭게 하이퍼링크를 등록하여 맞춤형 온라인 베이스 캠프를 구성할 수 있습니다.<br>
 
-# 핵심 기능 개발 과정
-| 핵심 구현 기능 |
-|:---|
-| [방송 송출 및 시청](https://github.com/boostcampwm-2024/web20-camon/wiki/%EB%B0%A9%EC%86%A1-%EC%86%A1%EC%B6%9C-%EB%B0%8F-%EC%8B%9C%EC%B2%AD-%EA%B5%AC%ED%98%84) | 
-| [실시간 썸네일 및 녹화](https://github.com/boostcampwm-2024/web20-camon/wiki/%EC%8B%A4%EC%8B%9C%EA%B0%84-%EC%8D%B8%EB%84%A4%EC%9D%BC%EA%B3%BC-%EB%85%B9%ED%99%94-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84) |
-|[방송 송출 화면 구성](https://github.com/boostcampwm-2024/web20-camon/wiki/Canvas-Api%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EB%B0%A9%EC%86%A1-%EC%86%A1%EC%B6%9C-%ED%99%94%EB%A9%B4-%EA%B5%AC%EC%84%B1)|
+# 핵심 개발 일지
+| **핵심 기능** | **설명** |
+|:---|:---|
+| [방송 송출 및 시청](https://github.com/boostcampwm-2024/web20-camon/wiki/%EB%B0%A9%EC%86%A1-%EC%86%A1%EC%B6%9C-%EB%B0%8F-%EC%8B%9C%EC%B2%AD-%EA%B5%AC%ED%98%84) | 실시간 방송 송출 및 다수의 사용자 시청 기능 구현 |
+| [실시간 썸네일 및 녹화](https://github.com/boostcampwm-2024/web20-camon/wiki/%EC%8B%A4%EC%8B%9C%EA%B0%84-%EC%8D%B8%EB%84%A4%EC%9D%BC%EA%B3%BC-%EB%85%B9%ED%99%94-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84) | 방송 중 실시간 썸네일 생성 및 녹화 저장 기능 구현 |
+| [방송 송출 화면 구성](https://github.com/boostcampwm-2024/web20-camon/wiki/Canvas-Api%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EB%B0%A9%EC%86%A1-%EC%86%A1%EC%B6%9C-%ED%99%94%EB%A9%B4-%EA%B5%AC%EC%84%B1) | Canvas API를 활용한 방송 화면 커스터마이징 및 구성 |
 
 
 > 🙇‍♀️ 프로젝트의 개발 과정에 대한 더 자세한 사항은 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)와 [팀 노션](https://intelligent-broker-ff0.notion.site/Cam-on-1290201238ac808ebb56d75e07685ae4)을 참고해 주세요!
