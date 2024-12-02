@@ -7,6 +7,7 @@ import axiosInstance from '@/services/axios';
 import { useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
+import MoveCharacter from '@/components/Icons/MoveCharacter';
 
 interface BookmarkData {
   bookmarkId: number;
@@ -78,8 +79,8 @@ function Banner() {
     <div className="flex w-full h-96 bg-gradient-to-r from-surface-alt to-transparent">
       <div className="flex flex-row justify-between w-full h-96 p-5">
         <div className="font-bold text-4xl text-text-strong flex flex-row items-center ml-16 gap-12">
-          <img src="/images/camon_character_200.png" alt="CamOn 배너 캐릭터" />
-          <div>
+          <MoveCharacter />
+          <div className="flex flex-col gap-3">
             <p>출석부 관리부터, 소통까지!</p>
             <p>
               부담 없이 함께하는 <span className="text-text-point">네부캠 전용</span> 온라인 캠퍼스
