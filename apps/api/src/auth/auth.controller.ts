@@ -25,10 +25,10 @@ export class AuthController {
   @Get('/github/callback')
   @UseGuards(GithubAuthGuard)
   async signinGithubCallback(@UserReq() member: Member, @Res() res: Response) {
-    const { accessToken, isNeccessaryInfo } = this.authService.login(member);
+    const { accessToken, isNecessaryInfo } = this.authService.login(member);
     const CALLBACK_URI = this.configService.get('CALLBACK_URI');
 
-    res.redirect(`${CALLBACK_URI}/auth?accessToken=${accessToken}&isNeccessaryInfo=${isNeccessaryInfo}`);
+    res.redirect(`${CALLBACK_URI}/auth?accessToken=${accessToken}&isNecessaryInfo=${isNecessaryInfo}`);
   }
 
   @Get('/signin/google')
@@ -40,9 +40,9 @@ export class AuthController {
   @Get('/google/callback')
   @UseGuards(GoogleAuthGuard)
   async signinGoogleCallback(@UserReq() member: Member, @Res() res: Response) {
-    const { accessToken, isNeccessaryInfo } = this.authService.login(member);
+    const { accessToken, isNecessaryInfo } = this.authService.login(member);
     const CALLBACK_URI = this.configService.get('CALLBACK_URI');
 
-    res.redirect(`${CALLBACK_URI}/auth?accessToken=${accessToken}&isNeccessaryInfo=${isNeccessaryInfo}`);
+    res.redirect(`${CALLBACK_URI}/auth?accessToken=${accessToken}&isNecessaryInfo=${isNecessaryInfo}`);
   }
 }

@@ -19,7 +19,7 @@ export class UpdateMemberInfoDto {
   @ApiProperty({ example: 'J000' })
   camperId: string;
   @ApiProperty({ example: 'WEB' })
-  type: FieldEnum;
+  field: FieldEnum;
   @ApiProperty({ type: Contacts })
   contacts: Contacts;
 
@@ -27,7 +27,7 @@ export class UpdateMemberInfoDto {
     const member = new Member();
     member.name = this.name;
     member.camperId = this.camperId;
-    member.field = this.type;
+    member.field = this.field;
     member.email = this.contacts.email;
     member.github = this.contacts.github;
     member.blog = this.contacts.blog;
