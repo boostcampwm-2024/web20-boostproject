@@ -2,20 +2,22 @@ import { CloseIcon } from '@/components/Icons';
 import Modal from '@/components/Modal';
 import { Button } from '@/components/ui/button';
 import { AuthContext } from '@/contexts/AuthContext';
+import axiosInstance from '@/services/axios';
 import { useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
 
 interface BookmarkData {
-  id: number;
-  tag: string;
-  link: string;
+  bookmarkId: number;
+  name: string;
+  url: string;
 }
 
 function Banner() {
   const { isLoggedIn } = useContext(AuthContext);
   const [bookmarkList, setBookmarkList] = useState<BookmarkData[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [_bookmarkError, setBookmarkError] = useState<string>('');
   const {
     register,
     handleSubmit,
@@ -28,30 +30,48 @@ function Banner() {
   };
 
   const handleAddBookmark = (newBookmark: BookmarkData) => {
-    // TODO: Axios GET or POST 요청으로 변경
-    const newList = [...bookmarkList, newBookmark];
-    setBookmarkList(newList);
-    localStorage.setItem('bookmark', JSON.stringify(newList));
-    reset();
-    setShowModal(false);
+    axiosInstance
+      .post('/v1/bookmarks', newBookmark)
+      .then(response => {
+        if (response.data.success) {
+          const addedBookmark = { ...newBookmark, bookmarkId: response.data.data.bookmarkId };
+          const newBookmarkList = [...bookmarkList, addedBookmark];
+          setBookmarkList(newBookmarkList);
+        } else {
+          setBookmarkError(`북마크 생성 실패: ${response.data.message}`);
+          console.error(`북마크 생성 실패: ${response.data.status}`);
+        }
+      })
+      .finally(() => {
+        reset();
+        setShowModal(false);
+      });
   };
 
-  const handleDeleteBookmark = (e: React.MouseEvent, index: number) => {
-    // TODO: Axios DELETE 요청으로 변경
+  const handleDeleteBookmark = (e: React.MouseEvent, bookmarkId: number) => {
     e.stopPropagation();
     if (confirm('북마크를 삭제하시겠습니까?')) {
-      const newList = bookmarkList.filter((_, idx) => idx !== index);
-      setBookmarkList(newList);
-      localStorage.setItem('bookmark', JSON.stringify(newList));
+      axiosInstance.delete(`/v1/bookmarks/${bookmarkId}`).then(response => {
+        if (response.data.success) {
+          const newBookmarkList = bookmarkList.filter((data, _) => data.bookmarkId !== bookmarkId);
+          setBookmarkList(newBookmarkList);
+        } else {
+          setBookmarkError(`북마크 삭제 실패: ${response.data.message}`);
+          console.error(`북마크 삭제 실패: ${response.data.status}`);
+        }
+      });
     }
   };
 
   useEffect(() => {
-    // TODO: Axios GET 요청으로 변경
-    const stored = localStorage.getItem('bookmark');
-    if (stored) {
-      setBookmarkList(JSON.parse(stored) as BookmarkData[]);
-    }
+    axiosInstance.get('/v1/bookmarks').then(response => {
+      if (response.data.success) {
+        setBookmarkList(response.data.data.bookmarks);
+      } else {
+        setBookmarkError(`북마크 조회 실패: ${response.data.message}`);
+        console.error(`북마크 조회 실패: ${response.data.status}`);
+      }
+    });
   }, []);
 
   return (
@@ -69,19 +89,19 @@ function Banner() {
         {isLoggedIn && (
           <div className="flex flex-col h-full gap-3 p-3">
             {bookmarkList &&
-              bookmarkList.map((data, idx) => (
+              bookmarkList.map(data => (
                 <Button
-                  key={data.id}
-                  onClick={() => handleClickBookmarkButton(data.link)}
+                  key={data.bookmarkId}
+                  onClick={() => handleClickBookmarkButton(data.url)}
                   className="h-14 w-52 bg-surface-alt hover:bg-surface-alt-light relative flex items-center justify-between"
                 >
-                  <span className="truncate flex-1">{data.tag}</span>
-                  <button
-                    onClick={e => handleDeleteBookmark(e, idx)}
-                    className="flex items-center p-1 hover:text-text-strong"
+                  <span className="truncate flex-1">{data.name}</span>
+                  <div
+                    onClick={e => handleDeleteBookmark(e, data.bookmarkId)}
+                    className="flex items-center p-1 hover:text-text-strong hover:cursor-pointer"
                   >
                     <CloseIcon size={36} />
-                  </button>
+                  </div>
                 </Button>
               ))}
 
@@ -105,7 +125,7 @@ function Banner() {
                   <div className="flex flex-col w-full">
                     <label>사이트명</label>
                     <input
-                      {...register('tag', {
+                      {...register('name', {
                         required: '북마크 이름을 입력해주세요',
                       })}
                       className="w-full h-10 bg-transparent border border-default rounded-md focus:border-bold px-3"
@@ -114,15 +134,15 @@ function Banner() {
                   <div className="flex flex-col w-full">
                     <label>URL</label>
                     <input
-                      {...register('link', {
+                      {...register('url', {
                         required: '저장할 사이트 URL을 입력해주세요',
                       })}
                       className="w-full h-10 bg-transparent border border-default rounded-md focus:border-bold px-3"
                     />
                   </div>
-                  {(errors.tag || errors.link) && (
+                  {(errors.name || errors.url) && (
                     <p className="absolute top-11 text-text-danger font-medium text-display-medium12">
-                      {errors.tag ? errors.tag.message : errors.link?.message}
+                      {errors.name ? errors.name.message : errors.url?.message}
                     </p>
                   )}
                 </div>
