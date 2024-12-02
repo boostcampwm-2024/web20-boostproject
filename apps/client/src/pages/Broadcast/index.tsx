@@ -21,6 +21,7 @@ import useScreenShare from '@/hooks/useScreenShare';
 import BroadcastPlayer from './BroadcastPlayer';
 import { Tracks } from '@/types/mediasoupTypes';
 import RecordButton from './RecordButton';
+import { getCamperIdFromJWT } from '@/utils/utils';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
@@ -52,7 +53,7 @@ function Broadcast() {
     roomId,
   });
   // 방송 정보
-  const [title, setTitle] = useState<string>('J000님의 방송');
+  const [title, setTitle] = useState<string>('');
 
   const stopBroadcast = (e?: BeforeUnloadEvent) => {
     if (e) {
@@ -76,9 +77,12 @@ function Broadcast() {
   };
 
   useEffect(() => {
-    window.addEventListener('beforeunload', stopBroadcast);
-
     tracksRef.current['mediaAudio'] = mediaStream?.getAudioTracks()[0];
+
+    const camperId = getCamperIdFromJWT();
+    setTitle(`${camperId}님의 방송`);
+
+    window.addEventListener('beforeunload', stopBroadcast);
     return () => {
       window.removeEventListener('beforeunload', stopBroadcast);
     };
