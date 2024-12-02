@@ -14,7 +14,7 @@ interface EditUserInfoProps {
 interface FormInput {
   camperId: string | undefined;
   name: string | undefined;
-  type: Field | undefined;
+  field: Field | undefined;
   email: string | undefined;
   github: string | undefined;
   blog: string | undefined;
@@ -31,7 +31,7 @@ function EditUserInfo({ userData, toggleEditing }: EditUserInfoProps) {
     defaultValues: {
       camperId: userData?.camperId,
       name: userData?.name,
-      type: userData?.field,
+      field: userData?.field,
       email: userData?.contacts.email,
       github: userData?.contacts.github,
       blog: userData?.contacts.blog,
@@ -47,7 +47,7 @@ function EditUserInfo({ userData, toggleEditing }: EditUserInfoProps) {
     const formData = {
       name: data.name,
       camperId: data.camperId,
-      type: selectedField,
+      field: selectedField,
       contacts: {
         email: data.email ? data.email : '',
         github: data.github ? data.github : '',
