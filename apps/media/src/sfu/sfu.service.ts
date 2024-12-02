@@ -15,8 +15,7 @@ import { ClientService } from './services/client.service';
 import { RecordService } from './services/record.service';
 import { User } from '../types/user';
 import { SetVideoQualityDto } from './dto/set-video-quality.dto';
-import { IApiClient } from 'src/common/clients/api-client.interface';
-// import axios from 'axios';
+import { IRecordClient } from 'src/common/clients/record-client.interface';
 
 @Injectable()
 export class SfuService {
@@ -29,17 +28,14 @@ export class SfuService {
     private readonly recordService: RecordService,
     private readonly clientService: ClientService,
     private readonly configService: ConfigService,
-    @Inject('API_CLIENT')
-    private readonly apiClient: IApiClient,
+    @Inject('RECORD_CLIENT')
+    private readonly recordClient: IRecordClient,
   ) {}
 
   async createRoom(clientId: string, user: User) {
     const room = await this.roomService.createRoom();
-    // await axios.post(`${this.configService.get('RECORD_SERVER_URL')}/thumbnail`, {
-    //   roomId: room.id,
-    // });
 
-    this.apiClient.post(`${this.configService.get('RECORD_SERVER_URL')}/thumbnail`, { roomId: room.id });
+    await this.recordClient.post('/thumbnail', { roomId: room.id });
 
     const thumbnail = `${this.configService.get('PUBLIC_RECORD_SERVER_URL')}/statics/thumbnails/${room.id}.jpg`;
     await this.broadcasterService.createBroadcast(

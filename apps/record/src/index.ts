@@ -31,10 +31,17 @@ if (!fs.existsSync(recordsDirPath)) {
 }
 
 app.post('/thumbnail', (req, res) => {
+  console.log('Received thumbnail request:', req.body);
   const { roomId } = req.body;
   try {
+    console.log('Default thumbnail path:', defaultThumbnailPath);
+    if (!fs.existsSync(defaultThumbnailPath)) {
+      console.error('Default thumbnail not found');
+      res.status(404).send({ error: 'Default thumbnail not found' });
+    }
     const newThumbnailPath = path.join(thumbnailsDirPath, `${roomId}.jpg`);
     fs.copyFileSync(defaultThumbnailPath, newThumbnailPath);
+    console.log('Thumbnail created:', newThumbnailPath);
     res.send({ success: true });
   } catch (error) {
     res.status(500).send({ success: false, error: 'Failed to create thumbnail' });

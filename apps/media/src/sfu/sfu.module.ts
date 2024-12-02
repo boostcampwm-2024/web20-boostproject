@@ -10,7 +10,7 @@ import { ConsumerService } from './services/consumer.service';
 import { BroadcastModule } from '../broadcast/broadcast.module';
 import { ClientService } from './services/client.service';
 import { RecordService } from './services/record.service';
-import { ApiClient } from 'src/common/clients/api.client';
+import { RecordClient } from 'src/common/clients/record.client';
 
 @Module({
   imports: [BroadcastModule, HttpModule],
@@ -25,8 +25,8 @@ import { ApiClient } from 'src/common/clients/api.client';
     RecordService,
     ClientService,
     {
-      provide: 'API_CLIENT',
-      useClass: ApiClient,
+      provide: 'RECORD_CLIENT',
+      useClass: RecordClient,
     },
   ],
 })
