@@ -12,12 +12,14 @@ function Auth() {
   useEffect(() => {
     try {
       const accessToken = searchParams.get('accessToken');
+      const isNecessaryInfo = searchParams.get('isNecessaryInfo');
       if (!accessToken) {
         throw new Error('액세스 토큰을 받지 못했습니다.');
       }
 
       setLogIn(accessToken);
-      navigate('/', { replace: true });
+      if (isNecessaryInfo === 'true') navigate('/', { replace: true });
+      else navigate('/profile', { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err : new Error('로그인 처리 중 오류'));
       setTimeout(() => {

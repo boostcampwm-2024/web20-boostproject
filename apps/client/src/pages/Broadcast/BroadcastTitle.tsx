@@ -26,7 +26,6 @@ function BroadcastTitle({ currentTitle, onTitleChange }: BroadcastTitleProps) {
   };
 
   const onSubmit: SubmitHandler<Inputs> = data => {
-    // TODO: 요청 헤더에 Authorization 설정
     axiosInstance.patch('/v1/broadcasts/title', { title: data.title }).then(response => {
       if (!response.data.success) {
         alert('제목 변경에 실패했습니다!');

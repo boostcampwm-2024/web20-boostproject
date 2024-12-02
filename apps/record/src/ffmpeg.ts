@@ -13,7 +13,7 @@ export const createFfmpegProcess = (
   if (type === 'record') {
     fs.mkdirSync(`${assetsDirPath}/records/${roomId}`, { recursive: true });
   }
-  const sdpString = audioPort ? createThumbnailSdpText(videoPort) : createThumbnailSdpText(videoPort);
+  const sdpString = audioPort ? createRecordSdpText(videoPort, audioPort) : createThumbnailSdpText(videoPort);
   const args = type === 'thumbnail' ? thumbnailArgs(assetsDirPath, roomId) : recordArgs(assetsDirPath, roomId);
   const ffmpegProcess = spawn('ffmpeg', args);
 
@@ -61,22 +61,20 @@ a=rtcp-mux
 `;
 };
 
-// const createRecordSdpText = (videoPort: number, audioPort: number) => {
-//   return `v=0
-// o=- 0 0 IN IP4 127.0.0.1
-// s=FFmpeg
-// c=IN IP4 127.0.0.1
-// t=0 0
-// m=video ${videoPort} RTP/AVP 101
-// a=rtpmap:101 VP8/90000
-// a=sendonly
-// a=rtcp-mux
-// m=audio ${audioPort} RTP/AVP 111
-// a=rtpmap:111 OPUS/48000/2
-// a=sendonly
-// a=rtcp-mux
-// `;
-// };
+const createRecordSdpText = (videoPort: number, audioPort: number) => {
+  return `v=0
+o=- 0 0 IN IP4 127.0.0.1
+s=FFmpeg
+c=IN IP4 127.0.0.1
+t=0 0
+m=video ${videoPort} RTP/AVP 101
+a=rtpmap:101 VP8/90000
+a=sendonly
+m=audio ${audioPort} RTP/AVP 100
+a=rtpmap:100 OPUS/48000/2
+a=sendonly
+`;
+};
 
 const thumbnailArgs = (dirPath: string, roomId: string) => {
   const commandArgs = [
@@ -107,17 +105,16 @@ const recordArgs = (dirPath: string, roomId: string) => {
     'sdp', // SDP 입력 포맷
     '-i',
     'pipe:0', // SDP를 파이프로 전달
-    // HLS 스트리밍 저장
     '-c:v',
     'libx264', // 비디오 코덱
     '-preset',
-    'veryfast', // 빠른 인코딩
+    'slow',
     '-profile:v',
     'high', // H.264 High 프로필
     '-level:v',
     '4.1', // H.264 레벨 설정 (4.1)
     '-crf',
-    '23', // 비디오 품질 설정
+    '1', // 비디오 품질 설정
     '-c:a',
     'libmp3lame', // 오디오 코덱
     '-b:a',
@@ -131,7 +128,7 @@ const recordArgs = (dirPath: string, roomId: string) => {
     '-f',
     'hls', // HLS 출력 포맷
     '-hls_time',
-    '6', // 각 세그먼트 길이 (초)
+    '15', // 각 세그먼트 길이 (초)
     '-hls_list_size',
     '0', // 유지할 세그먼트 개수
     '-hls_segment_filename',

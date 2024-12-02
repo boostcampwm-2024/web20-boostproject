@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - develop
-      - Fix/336
-    # paths:
-    #   - 'apps/chat/**'
+    paths:
+      - 'apps/chat/**'
 
 jobs:
   build-and-push:

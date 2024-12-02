@@ -32,9 +32,10 @@ export class ChatGateway implements OnGatewayDisconnect {
     };
   }
   //룸입장
+  @UseGuards(JWTAuthGuard)
   @SubscribeMessage('joinRoom')
   async handleJoinRoom(@MessageBody('roomId') roomId: string, @ConnectedSocket() client: Socket) {
-    this.chatService.joinRoom(roomId, client);
+    await this.chatService.joinRoom(roomId, client);
   }
   //룸나가기
   @SubscribeMessage('leaveRoom')

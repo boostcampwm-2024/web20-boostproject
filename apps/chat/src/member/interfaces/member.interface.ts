@@ -1,4 +1,6 @@
 export class IMember {
-  name: string;
-  camperId: string;
+  data: {
+    name: string;
+    camperId: string;
+  };
 }

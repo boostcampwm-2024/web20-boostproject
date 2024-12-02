@@ -21,6 +21,7 @@ import useScreenShare from '@/hooks/useScreenShare';
 import BroadcastPlayer from './BroadcastPlayer';
 import { Tracks } from '@/types/mediasoupTypes';
 import RecordButton from './RecordButton';
+import axiosInstance from '@/services/axios';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
@@ -52,7 +53,7 @@ function Broadcast() {
     roomId,
   });
   // 방송 정보
-  const [title, setTitle] = useState<string>('J000님의 방송');
+  const [title, setTitle] = useState<string>('');
 
   const stopBroadcast = (e?: BeforeUnloadEvent) => {
     if (e) {
@@ -76,9 +77,15 @@ function Broadcast() {
   };
 
   useEffect(() => {
-    window.addEventListener('beforeunload', stopBroadcast);
-
     tracksRef.current['mediaAudio'] = mediaStream?.getAudioTracks()[0];
+
+    axiosInstance.get('/v1/members/info').then(response => {
+      if (response.data.success) {
+        setTitle(`${response.data.data.camperId}님의 방송`);
+      }
+    });
+
+    window.addEventListener('beforeunload', stopBroadcast);
     return () => {
       window.removeEventListener('beforeunload', stopBroadcast);
     };

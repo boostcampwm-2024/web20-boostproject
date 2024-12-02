@@ -21,7 +21,8 @@ export class ChatService {
   constructor(private readonly memberService: MemberService) {}
 
   async createRoom(roomId: string, client: Socket) {
-    const member = await this.memberService.getMemberInfo(client.token);
+    const response = await this.memberService.getMemberInfo(client.token);
+    const member = response.data;
 
     const newClient = new Client(member.camperId, member.name, client);
 
@@ -39,7 +40,8 @@ export class ChatService {
   }
 
   async joinRoom(roomId: string, client: Socket) {
-    const member = await this.memberService.getMemberInfo(client.token);
+    const response = await this.memberService.getMemberInfo(client.token);
+    const member = response.data;
 
     const room = this.rooms.get(roomId);
     if (!room) new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);

@@ -24,7 +24,7 @@ function Search({ onSearch }: SearchProps) {
         className="flex flex-row h-full w-full border border-1 border-border-bold rounded-circle pl-5 pr-2"
       >
         <input
-          {...register('keyword', { required: true })}
+          {...register('keyword')}
           className="flex-1 bg-transparent focus-visible:outline-none"
           placeholder="검색할 방송 제목을 입력해주세요"
         />
