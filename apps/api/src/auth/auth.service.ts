@@ -23,7 +23,7 @@ export class AuthService {
   login(member: Member) {
     const payload = { id: member.id, camperId: member.camperId };
     const accessToken = this.jwtService.sign(payload);
-    const isNecessaryInfo = (member.field && member.name && member.camperId) !== null;
+    const isNecessaryInfo = Boolean(member.field && member.name && member.camperId);
 
     return { accessToken, isNecessaryInfo };
   }
