@@ -20,7 +20,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       throw new CustomWsException(ErrorStatus.UNAUTHORIZED);
     }
     const client = context.switchToWs().getClient();
-    client.user = user;
+    client.user = user.data;
     return user;
   }
 }

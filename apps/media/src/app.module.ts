@@ -7,6 +7,7 @@ import { SfuModule } from './sfu/sfu.module';
 import { BroadcastModule } from './broadcast/broadcast.module';
 import configuration from './config/configuration';
 import { AuthModule } from './auth/auth.module';
+import { MemberModule } from './member/member.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
     SfuModule,
     BroadcastModule,
     AuthModule,
+    MemberModule,
   ],
   controllers: [AppController],
   providers: [AppService],
