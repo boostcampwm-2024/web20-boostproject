@@ -108,9 +108,9 @@
 
 ### 💡 [실시간 썸네일과 녹화 기능 구현](https://github.com/boostcampwm-2024/web20-camon/wiki/%EC%8B%A4%EC%8B%9C%EA%B0%84-%EC%8D%B8%EB%84%A4%EC%9D%BC%EA%B3%BC-%EB%85%B9%ED%99%94-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84)
 - Mediasoup과 FFmpeg을 활용하여 실시간 스트리밍 중 썸네일을 생성하고, 녹화본을 저장  
-- 녹화된 자료는 Object Storage에 저장하고, 스트리밍 종료 후에도 확인 가능  
+- 녹화된 자료는 Object Storage에 저장하고, 스트리밍 종료 후에도 확인 가능
  
-> 🙇‍♀️ 프로젝트의 **핵심 개발 일지**에 대한 더 자세한 사항은 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)를 참고해 주세요!
+> 🙇‍♀️ 프로젝트의 **개발 일지**에 대한 더 자세한 사항은 [개발 일지 view All](https://github.com/boostcampwm-2024/web20-camon/wiki/%EA%B0%9C%EB%B0%9C-%EC%9D%BC%EC%A7%80-view-All) 및 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)를 참고해 주세요!
 
 <br>
 
@@ -128,7 +128,7 @@
 - **문제**: GitHub Actions에서 Docker 이미지를 빌드하는 데 시간이 과도하게 소요됨
 - **해결**: BuildKit을 활성화하고 type=gha로 Docker 레이어 캐시를 저장 및 재사용하여 빌드 시간 단축  
 
-> 🙇‍♀️ 프로젝트의 **트러블 슈팅**에 대한 더 자세한 사항은 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)를 참고해 주세요!
+> 🙇‍♀️ 프로젝트의 **트러블 슈팅**에 대한 더 자세한 사항은 [트러블 슈팅 view All](https://github.com/boostcampwm-2024/web20-camon/wiki/%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-view-All) 및 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)를 참고해 주세요!
 
 <br>
 
@@ -142,7 +142,7 @@
 - **결론**: 성능 최적화와 낮은 지연 시간을 위해 인메모리 방식을 채택.
 <br>
 
-> 🙇‍♀️ 프로젝트의 **고민**에 대한 더 자세한 사항은 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)를 참고해 주세요!
+> 🙇‍♀️ 프로젝트의 **고민**에 대한 더 자세한 사항은 [고민 view All](https://github.com/boostcampwm-2024/web20-camon/wiki/%EA%B3%A0%EB%AF%BC-view-All) 및 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)를 참고해 주세요!
 
 <br>
 <div align="center">
