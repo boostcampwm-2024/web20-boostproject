@@ -15,41 +15,24 @@
     <br>
     <p>
         <b>Cam’ON</b>은 캠퍼들이 네트워킹과 출석 관리를 한 번에 할 수 있는 실시간 스트리밍 기반 플랫폼입니다.<br>
-        편리한 UI/UX를 통해 캠퍼들의 학습 경험을 업그레이드하세요!<br>
         방송 송출, 녹화, 채팅 등 다양한 기능으로 새로운 온라인 학습 환경을 경험할 수 있습니다.<br>
-        <br>
-        함께 나누는 학습과 이야기로 더 나은 커뮤니티를 만들어보세요! 🎯
         </p>
-    <h3>👩‍💻 누가 사용하면 좋을까요?</h3>
+<!--     <h3>👩‍💻 누가 사용하면 좋을까요?</h3>
     <div>출석을 체계적으로 관리하고 싶은 캠퍼 🙋‍♂️</div>
     <div>학습 경험을 공유하고 싶은 캠퍼 🙋‍♀️</div>
-    <div>온라인에서 동료와 소통하고 싶은 캠퍼 🌐</div>
-    <h3>👍 우리 서비스의 장점</h3>
-    <div>💻 <b>실시간 출석 관리</b>: 캠퍼의 출석 정보를 자동으로 기록하고 확인 가능</div>
-    <div>🎥 <b>스트리밍 기능</b>: 방송 송출부터 녹화까지 한 번에!</div>
-    <div>💬 <b>자유로운 소통</b>: 채팅을 통한 실시간 교류 지원</div>
+    <div>온라인에서 동료와 소통하고 싶은 캠퍼 🌐</div> -->
 <br>
 </div>
 <br/>
 
-# ⚙️ 전체 서비스 아키텍쳐
-![image](https://github.com/user-attachments/assets/f35da73a-0cc6-4aa1-b0aa-36094ffeb87e)
-
-# 🏗️ 시스템 아키텍처
-<img width="1352" alt="image" src="https://github.com/user-attachments/assets/e8e1eef7-4c3e-46e6-bdae-91934bcc4237">
-
 # 🎯 핵심 기능
-### 🎥 실시간 방송 송출
+### 🎥 실시간 방송
 > 1️⃣ 캠퍼들은 코어타임 시간에 실시간 방송을 키면서 부스트 캠프 활동에 참여할 수 있습니다.<br>
 > 2️⃣ 화면공유 on/off, 캠 on/off, 마이크 on/off 기능으로  캠퍼들이 보다 자유로운 방송을 할 수 있도록 돕습니다.<br>
 > 3️⃣ 별도의 송출 소프트웨어 없이 서비스 내에서 방송 송출과 화면 배치 과정이 자동으로 이루어져 캠퍼들이 부담없이 방송할 수 있는 환경을 제공합니다.
-> 
+> 4️⃣ 캠퍼들은 서로의 방송을 시청하면서 실시간으로 서로의 학습 경험을 공유할 수 있습니다.
+
 ![화면 송출 데모](https://github.com/user-attachments/assets/aaf18b1f-9192-4c3e-8059-0d9c0603184d)
-
-### 👀 실시간 방송 시청
-> 1️⃣ 캠퍼들은 서로의 방송을 시청하면서 실시간으로 서로의 학습 경험을 공유할 수 있습니다.<br>
-> 2️⃣ 시청화면 하단에 방송중인 캠퍼의 정보를 제공하여 온라인 네트워킹 환경을 제공합니다.<br>
-
 ![방송 시청 데모](https://github.com/user-attachments/assets/c63cd77a-cc14-49e4-b3ed-36bc6ec26582)
 
 ### 💬 채팅
@@ -84,6 +67,12 @@
 
 > 🙇‍♀️ 프로젝트의 개발 과정에 대한 더 자세한 사항은 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)와 [팀 노션](https://intelligent-broker-ff0.notion.site/Cam-on-1290201238ac808ebb56d75e07685ae4)을 참고해 주세요!
 
+# ⚙️ 전체 서비스 아키텍쳐
+![image](https://github.com/user-attachments/assets/f35da73a-0cc6-4aa1-b0aa-36094ffeb87e)
+
+# 🏗️ 시스템 아키텍처
+<img width="1352" alt="image" src="https://github.com/user-attachments/assets/e8e1eef7-4c3e-46e6-bdae-91934bcc4237">
+
 # 🛠️ 기술 스택
 
 | 분야 | 기술 스택 |
@@ -99,22 +88,3 @@
 | <img src="https://github.com/g00hyun.png" width="150" height="150"> | <img src="https://github.com/zero0205.png" width="150" height="150"> | <img src="https://github.com/huiseon37.png" width="150" height="150"> | <img src="https://github.com/seungheon123.png" width="150" height="150"> |
 | [@g00hyun](https://github.com/g00hyun) | [@zero0205](https://github.com/zero0205) | [@huiseon37](https://github.com/huiseon37) | [@seungheon123](https://github.com/seungheon123) |
 | BE | FE | BE | BE |
-
-
-<!-- ## 🚀 시작하기
-### Installation
-```bash
-# 저장소 클론
-git clone https://github.com/boostcampwm-2024/web20-camon.git
-
-# 의존성 설치
-pnpm install
-
-# client
-cd apps/client
-pnpm dev
-
-# api / media / chat 서버
-cd apps/{SERVER_NAME}
-pnpm start
-``` -->
