@@ -57,23 +57,23 @@
 
 ![아카이브 데모](https://github.com/user-attachments/assets/dafcd2ca-df14-4720-8f54-0ae4eb90be50)
 
-# 핵심 개발 일지
-### **방송 송출 및 시청 구현**  
+# 💻 핵심 개발 일지
+### 💡 **방송 송출 및 시청 구현**  
 - WebRTC와 Mediasoup을 활용해 실시간 송출 및 시청 환경을 구축  
 - 브라우저에서 간편하게 방송을 시작하고 종료할 수 있도록 UI/UX 개선  
   - [방송 송출 및 시청 구현](https://github.com/boostcampwm-2024/web20-camon/wiki/%EB%B0%A9%EC%86%A1-%EC%86%A1%EC%B6%9C-%EB%B0%8F-%EC%8B%9C%EC%B2%AD-%EA%B5%AC%ED%98%84)
 
-### **Canvas Api를 사용한 방송 송출 화면 구성**  
+### 💡 **Canvas Api를 사용한 방송 송출 화면 구성**  
 - Canvas API를 활용해 방송 화면을 실시간으로 커스터마이징
 - 두 개의 스트림을 합친 Canvas를 캡처한 스트림을 송출하는 방식<br>
   - [Canvas Api를 사용한 방송 송출 화면 구성](https://github.com/boostcampwm-2024/web20-camon/wiki/Canvas-Api%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EB%B0%A9%EC%86%A1-%EC%86%A1%EC%B6%9C-%ED%99%94%EB%A9%B4-%EA%B5%AC%EC%84%B1)
 
-### **화질 조정 기능 구현**  
+### 💡 **화질 조정 기능 구현**  
 - WebRTC 스트림의 화질을 상황에 따라 조정하여 최적의 사용자 경험을 제공  
 - 해상도, 비트레이트, 프레임레이트를 유동적으로 설정해 화질 변경   
   - [화질 조정 기능 구현](https://github.com/boostcampwm-2024/web20-camon/wiki/%ED%99%94%EC%A7%88-%EC%A1%B0%EC%A0%95-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84)
 
-### **실시간 썸네일과 녹화 기능 구현**  
+### 💡 **실시간 썸네일과 녹화 기능 구현**  
 - Mediasoup과 FFmpeg을 활용하여 실시간 스트리밍 중 썸네일을 생성하고, 녹화본을 저장  
 - 녹화된 자료는 Object Storage에 저장하고, 스트리밍 종료 후에도 확인 가능  
   - [실시간 썸네일과 녹화 기능 구현](https://github.com/boostcampwm-2024/web20-camon/wiki/%EC%8B%A4%EC%8B%9C%EA%B0%84-%EC%8D%B8%EB%84%A4%EC%9D%BC%EA%B3%BC-%EB%85%B9%ED%99%94-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84)
@@ -82,19 +82,19 @@
 
 <br>
 
-# 트러블 슈팅
+# 🚨 트러블 슈팅
 
-### ❌ Mediasoup 포트 매핑 문제
+### ❓ Mediasoup 포트 매핑 문제
 - **문제**: Mediasoup의 포트가 올바르게 매핑되지 않아 스트림 연결이 실패
 - **해결**: ACG와 Docker Compose 설정에서 포트를 명시적으로 매핑하여 문제 해결  
   - [mediasoup 포트 매핑 문제](https://github.com/boostcampwm-2024/web20-camon/wiki/Mediasoup-%ED%8F%AC%ED%8A%B8-%EB%A7%A4%ED%95%91-%EB%AC%B8%EC%A0%9C)
 
-### ❌ Chrome 자동 재생 문제
+### ❓ Chrome 자동 재생 문제
 - **문제**: Chrome의 정책상 음소거되지 않은 영상은 사용자 상호작용(클릭, 탭 등)이 없으면 자동으로 재생되지 않음
 - **해결**: muted 속성을 사용해 초기에 음소거 상태로 비디오를 자동 재생하고, 사용자에게 음소거 해제 버튼을 제공하여 수동으로 소리를 켤 수 있도록 구현.   
   - [Chrome 자동 재생이 안되는 문제](https://github.com/boostcampwm-2024/web20-camon/wiki/Chrome-%EC%9E%90%EB%8F%99-%EC%9E%AC%EC%83%9D%EC%9D%B4-%EC%95%88%EB%90%98%EB%8A%94-%EB%AC%B8%EC%A0%9C)
 
-### ❌ Git Action에서 도커 이미지 빌드 시간 단축
+### ❓ Git Action에서 도커 이미지 빌드 시간 단축
 - **문제**: GitHub Actions에서 Docker 이미지를 빌드하는 데 시간이 과도하게 소요됨
 - **해결**: BuildKit을 활성화하고 type=gha로 Docker 레이어 캐시를 저장 및 재사용하여 빌드 시간 단축  
   - [Git action에서 도커 이미지 빌드 시간을 단축시켜보자](https://github.com/boostcampwm-2024/web20-camon/wiki/Git-action%EC%97%90%EC%84%9C-%EB%8F%84%EC%BB%A4-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B9%8C%EB%93%9C-%EC%8B%9C%EA%B0%84%EC%9D%84-%EB%8B%A8%EC%B6%95%EC%8B%9C%EC%BC%9C%EB%B3%B4%EC%9E%90)
@@ -103,13 +103,13 @@
 
 <br>
 
-# 고민
-### Release 브랜치? 너 필요해?
+# 🧐 고민
+### 🔍 Release 브랜치? 너 필요해?
 - **고민 이유**: ~~~
 - **결론**: ~~~
   - [Release 브랜치? 너 필요해?](https://github.com/boostcampwm-2024/web20-camon/wiki/Release-%EB%B8%8C%EB%9E%9C%EC%B9%98%3F-%EB%84%88-%ED%95%84%EC%9A%94%ED%95%B4%3F)
  
-### 실시간 채팅 구현: 인메모리 방식을 선택한 이유
+### 🔍 실시간 채팅 구현: 인메모리 방식을 선택한 이유
 - **고민 이유**: ~~~
 - **결론**: ~~~
   - [실시간 채팅 구현: 인메모리 방식을 선택한 이유]([https://github.com/boostcampwm-2024/web20-camon/wiki/Release-%EB%B8%8C%EB%9E%9C%EC%B9%98%3F-%EB%84%88-%ED%95%84%EC%9A%94%ED%95%B4%3F](https://github.com/boostcampwm-2024/web20-camon/wiki/%EC%8B%A4%EC%8B%9C%EA%B0%84-%EC%B1%84%ED%8C%85-%EA%B5%AC%ED%98%84%3A-%EC%9D%B8%EB%A9%94%EB%AA%A8%EB%A6%AC-%EB%B0%A9%EC%8B%9D%EC%9D%84-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0))
