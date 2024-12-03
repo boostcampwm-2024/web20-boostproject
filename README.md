@@ -22,6 +22,8 @@
 <br/>
 
 # 🗒️ 목차
+[🖼️ 프로젝트 기획 배경](https://github.com/boostcampwm-2024/web20-camon/edit/develop/README.md#%EF%B8%8F-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B8%B0%ED%9A%8D-%EB%B0%B0%EA%B2%BD)
+
 [🎯 핵심 기능](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%ED%95%B5%EC%8B%AC-%EA%B8%B0%EB%8A%A5)
 - [실시간 방송](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%EC%8B%A4%EC%8B%9C%EA%B0%84-%EB%B0%A9%EC%86%A1)
 - [채팅](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%EC%B1%84%ED%8C%85)
@@ -51,6 +53,13 @@
 [🛠️ 기술 스택](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#%EF%B8%8F-%EA%B8%B0%EC%88%A0-%EC%8A%A4%ED%83%9D)
 
 [👨‍👩‍👧‍👦 팀원 소개](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%ED%8C%80%EC%9B%90-%EC%86%8C%EA%B0%9C)
+
+# 🖼️ 프로젝트 기획 배경
+
+> 1️⃣ 부스트캠프의 베이스캠프가 슬랙, 부스트코스, zoom 등 여러 개로 나누어져 있어서 다양한 링크와 출석 관리에 불편함을 느꼈습니다.<br>
+> 2️⃣ 소통을 위해 zoom에 "라운지"라는 공간이 존재하지만 많은 캠퍼들이 잘 사용하지 않아서 캠퍼들 간의 실시간 소통이 어려웠습니다.<br>
+
+이런 불편함을 해소하기 위해 하나의 플랫폼에서 출석 관리부터 소통, 그리고 링크 및 자료 아카이브까지 한 번에 관리할 수 있는 서비스를 기획하게 되었습니다.
 
 # 🎯 핵심 기능
 ### 🎥 실시간 방송
