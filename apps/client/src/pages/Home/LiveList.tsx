@@ -59,7 +59,7 @@ function LiveList() {
   }, []);
 
   return (
-    <div className="flex flex-col w-full flex-1 p-10 justify-center">
+    <div className="flex flex-col w-full flex-1 p-10 justify-start">
       <div className="h-14 w-full flex justify-between items-center my-5 px-5">
         <FieldFilter onClickFilterButton={hanldeFilterField} />
         <Search onSearch={handleSearch} />
