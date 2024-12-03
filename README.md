@@ -28,21 +28,28 @@
 - [녹화](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%EB%85%B9%ED%99%94)
 - [출석](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#%EF%B8%8F-%EC%B6%9C%EC%84%9D) 
 - [아카이브](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%EC%95%84%EC%B9%B4%EC%9D%B4%EB%B8%8C)
+  
 [💻 핵심 개발 일지](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%ED%95%B5%EC%8B%AC-%EA%B0%9C%EB%B0%9C-%EC%9D%BC%EC%A7%80)
 - [방송 송출 및 시청 구현](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%EB%B0%A9%EC%86%A1-%EC%86%A1%EC%B6%9C-%EB%B0%8F-%EC%8B%9C%EC%B2%AD-%EA%B5%AC%ED%98%84)
 - [Canvas Api를 사용한 방송 송출 화면 구성](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-canvas-api%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%9C-%EB%B0%A9%EC%86%A1-%EC%86%A1%EC%B6%9C-%ED%99%94%EB%A9%B4-%EA%B5%AC%EC%84%B1)
 - [화질 조정 기능 구현](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%ED%99%94%EC%A7%88-%EC%A1%B0%EC%A0%95-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84)
 - [실시간 썸네일과 녹화 기능 구현](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%EC%8B%A4%EC%8B%9C%EA%B0%84-%EC%8D%B8%EB%84%A4%EC%9D%BC%EA%B3%BC-%EB%85%B9%ED%99%94-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84)
+  
 [🚨 트러블 슈팅](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85)
 - [Mediasoup 포트 매핑 문제](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-mediasoup-%ED%8F%AC%ED%8A%B8-%EB%A7%A4%ED%95%91-%EB%AC%B8%EC%A0%9C)
 - [Chrome 자동 재생 문제](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-chrome-%EC%9E%90%EB%8F%99-%EC%9E%AC%EC%83%9D-%EB%AC%B8%EC%A0%9C)
 - [Git Action에서 도커 이미지 빌드 시간 단축](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-git-action%EC%97%90%EC%84%9C-%EB%8F%84%EC%BB%A4-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B9%8C%EB%93%9C-%EC%8B%9C%EA%B0%84-%EB%8B%A8%EC%B6%95)
+  
 [🧐 고민](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%EA%B3%A0%EB%AF%BC)
 - [Release 브랜치? 너 필요해?](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-release-%EB%B8%8C%EB%9E%9C%EC%B9%98-%EB%84%88-%ED%95%84%EC%9A%94%ED%95%B4)
 - [실시간 채팅 구현: 인메모리 방식을 선택한 이유](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%EC%8B%A4%EC%8B%9C%EA%B0%84-%EC%B1%84%ED%8C%85-%EA%B5%AC%ED%98%84-%EC%9D%B8%EB%A9%94%EB%AA%A8%EB%A6%AC-%EB%B0%A9%EC%8B%9D%EC%9D%84-%EC%84%A0%ED%83%9D%ED%95%9C-%EC%9D%B4%EC%9C%A0)
+  
 [⚙️ 전체 서비스 아키텍쳐](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#%EF%B8%8F-%EC%A0%84%EC%B2%B4-%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%95%84%ED%82%A4%ED%85%8D%EC%B3%90)
+
 [🏗️ 시스템 아키텍처](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#%EF%B8%8F-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98)
+
 [🛠️ 기술 스택](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#%EF%B8%8F-%EA%B8%B0%EC%88%A0-%EC%8A%A4%ED%83%9D)
+
 [👨‍👩‍👧‍👦 팀원 소개](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%ED%8C%80%EC%9B%90-%EC%86%8C%EA%B0%9C)
 
 # 🎯 핵심 기능
