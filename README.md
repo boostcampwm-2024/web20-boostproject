@@ -145,16 +145,6 @@
 > 🙇‍♀️ 프로젝트의 **고민**에 대한 더 자세한 사항은 [고민 view All](https://github.com/boostcampwm-2024/web20-camon/wiki/%EA%B3%A0%EB%AF%BC-view-All) 및 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)를 참고해 주세요!
 
 <br>
-<div align="center">
-    <h3>🙇‍♀️ 외에도 고민, 학습정리 등 프로젝트 전반적인 상황이 궁금하시다면</h2>
-    <h4>
-      <a href='https://intelligent-broker-ff0.notion.site/Cam-on-1290201238ac808ebb56d75e07685ae4'>📒 팀 노션</a> | 
-      <a href='https://github.com/boostcampwm-2024/web20-camon/wiki'>🔎 위키</a> | 
-      <a href='https://www.figma.com/design/ckY510YXPKJJUoURVxlmYz/Cam'on?node-id=0-1&node-type=canvas&t=BIq7ck3oUBLHea8J-0'>🎨 피그마</a> | 
-      <a href='https://github.com/orgs/boostcampwm-2024/projects/85'on?node-id=0-1&node-type=canvas&t=BIq7ck3oUBLHea8J-0'>🗓️ 백로그</a>
-    </h3>
-</div>
-<br>
 
 # ⚙️ 전체 서비스 아키텍쳐
 > 저희 서비스의 전반적인 흐름도를 확인 할 수 있습니다.
@@ -181,3 +171,13 @@
 | <img src="https://github.com/g00hyun.png" width="150" height="150"> | <img src="https://github.com/zero0205.png" width="150" height="150"> | <img src="https://github.com/huiseon37.png" width="150" height="150"> | <img src="https://github.com/seungheon123.png" width="150" height="150"> |
 | [@g00hyun](https://github.com/g00hyun) | [@zero0205](https://github.com/zero0205) | [@huiseon37](https://github.com/huiseon37) | [@seungheon123](https://github.com/seungheon123) |
 | BE | FE | BE | BE |
+
+<div align="center">
+    <h3>🙇‍♀️ 외에도 학습정리, 회고 등 프로젝트 전반적인 상황이 궁금하시다면</h3>
+    <h4>
+      <a href='https://intelligent-broker-ff0.notion.site/Cam-on-1290201238ac808ebb56d75e07685ae4'>📒 팀 노션</a> | 
+      <a href='https://github.com/boostcampwm-2024/web20-camon/wiki'>🔎 위키</a> | 
+      <a href='https://www.figma.com/design/ckY510YXPKJJUoURVxlmYz/Cam'on?node-id=0-1&node-type=canvas&t=BIq7ck3oUBLHea8J-0'>🎨 피그마</a> | 
+      <a href='https://github.com/orgs/boostcampwm-2024/projects/85'on?node-id=0-1&node-type=canvas&t=BIq7ck3oUBLHea8J-0'>🗓️ 백로그</a>
+    </h3>
+</div>
