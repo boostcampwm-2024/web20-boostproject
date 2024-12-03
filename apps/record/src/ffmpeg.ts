@@ -88,8 +88,11 @@ const thumbnailArgs = (dirPath: string, roomId: string) => {
     'pipe:0', // SDP를 파이프로 전달
     '-vf',
     'fps=1/10,scale=1280:720', // 10초마다 한 프레임을 캡처하고 해상도 조정
+    '-f',
+    'image2', // 이미지 출력 포맷 명시
     '-update',
-    '1', // 같은 파일에 덮어쓰기 활성화
+    '1',
+    '-y', // 강제 덮어쓰기
     `${dirPath}/thumbnails/${roomId}.jpg`, // 덮어쓸 출력 파일 이름
   ];
   return commandArgs;

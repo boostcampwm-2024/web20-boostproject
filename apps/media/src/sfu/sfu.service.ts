@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as mediasoup from 'mediasoup';
 import { ConnectTransportDto } from './dto/transport-params.interface';
 import { RoomService } from './services/room.service';
@@ -15,6 +15,7 @@ import { ClientService } from './services/client.service';
 import { RecordService } from './services/record.service';
 import { User } from '../types/user';
 import { SetVideoQualityDto } from './dto/set-video-quality.dto';
+import { IRecordClient } from 'src/common/clients/record-client.interface';
 
 @Injectable()
 export class SfuService {
@@ -27,10 +28,15 @@ export class SfuService {
     private readonly recordService: RecordService,
     private readonly clientService: ClientService,
     private readonly configService: ConfigService,
+    @Inject('RECORD_CLIENT')
+    private readonly recordClient: IRecordClient,
   ) {}
 
   async createRoom(clientId: string, user: User) {
     const room = await this.roomService.createRoom();
+
+    await this.recordClient.post('/thumbnail', { roomId: room.id });
+
     const thumbnail = `${this.configService.get('PUBLIC_RECORD_SERVER_URL')}/statics/thumbnails/${room.id}.jpg`;
     await this.broadcasterService.createBroadcast(
       CreateBroadcastDto.of(room.id, `${user.camperId}님의 방송`, thumbnail, user.id),
