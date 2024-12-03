@@ -6,7 +6,6 @@ import axiosInstance from '@services/axios';
 import Search from './Search';
 import { Field } from '@/types/liveTypes';
 import { useIntersect } from '@/hooks/useIntersect';
-import Footer from '@/components/Footer';
 
 const LIMIT = 12;
 
@@ -58,7 +57,7 @@ function LiveList() {
   };
 
   return (
-    <div className="flex flex-col w-full h-full p-10 justify-center">
+    <div className="flex flex-col w-full flex-1 p-10 justify-center">
       <div className="h-14 w-full flex justify-between items-center my-5 px-5">
         <FieldFilter onClickFieldButton={handleFilterField} />
         <Search onSearch={handleSearch} />
@@ -84,9 +83,7 @@ function LiveList() {
             <div>방송 정보가 없습니다.</div>
           )}
         </div>
-        <div ref={ref} className="h-32">
-          <Footer />
-        </div>
+        <div ref={ref} className="h-32"></div>
       </div>
     </div>
   );
