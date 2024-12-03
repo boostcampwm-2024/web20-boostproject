@@ -56,6 +56,8 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_CHAT=${REDIS_CHAT}
       - JWT_SECRET=${JWT_SECRET}
+      - API_SERVER_URL=${API_SERVER_URL}
+      - HTTP_TIMEOUT=${HTTP_TIMEOUT}
 
   record:
     container_name: record-camon

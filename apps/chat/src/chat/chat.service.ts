@@ -2,10 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { CustomWsException } from 'src/common/responses/exceptions/custom-ws.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
-import { createRoomDto } from './dto/creat-room.dto';
-import { joinRoomDto } from './dto/join-room.dto';
 import { Client } from './client';
 import { chatDto } from './dto/chat.dto';
+import { MemberService } from 'src/member/member.service';
 
 interface IRoom {
   ownerId: string;
@@ -19,9 +18,13 @@ export class ChatService {
   private clientToRoom = new Map<string, string>();
   private readonly logger = new Logger(ChatService.name);
 
-  createRoom(params: createRoomDto, client: Socket) {
-    const { name, camperId, roomId } = params;
-    const newClient = new Client(camperId, name, client);
+  constructor(private readonly memberService: MemberService) {}
+
+  async createRoom(roomId: string, client: Socket) {
+    const response = await this.memberService.getMemberInfo(client.token);
+    const member = response.data;
+
+    const newClient = new Client(member.camperId, member.name, client);
 
     const room = {
       ownerId: client.id,
@@ -36,12 +39,14 @@ export class ChatService {
     return roomId;
   }
 
-  joinRoom(params: joinRoomDto, client: Socket) {
-    const { name, camperId, roomId } = params;
+  async joinRoom(roomId: string, client: Socket) {
+    const response = await this.memberService.getMemberInfo(client.token);
+    const member = response.data;
+
     const room = this.rooms.get(roomId);
     if (!room) new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
 
-    const newClient = new Client(camperId, name, client);
+    const newClient = new Client(member.camperId, member.name, client);
 
     room.clients.set(client.id, newClient);
     this.clientToRoom.set(client.id, roomId);

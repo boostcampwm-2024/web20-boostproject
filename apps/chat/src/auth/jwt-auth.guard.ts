@@ -22,7 +22,7 @@ export class JWTAuthGuard extends AuthGuard('jwt') {
     }
 
     const client = context.switchToWs().getClient();
-    client.user = user;
+    client.token = user;
 
     return user;
   }
