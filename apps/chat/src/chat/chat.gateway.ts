@@ -26,13 +26,11 @@ export class ChatGateway implements OnGatewayDisconnect {
   @SubscribeMessage('createRoom')
   async handleCreateRoom(@MessageBody('roomId') roomId: string, @ConnectedSocket() client: Socket) {
     const result = await this.chatService.createRoom(roomId, client);
-
     return {
       roomId: result,
     };
   }
   //룸입장
-  @UseGuards(JWTAuthGuard)
   @SubscribeMessage('joinRoom')
   async handleJoinRoom(@MessageBody('roomId') roomId: string, @ConnectedSocket() client: Socket) {
     await this.chatService.joinRoom(roomId, client);
