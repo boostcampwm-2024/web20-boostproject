@@ -6,7 +6,7 @@ import Live from '@pages/Live';
 import Broadcast from '@pages/Broadcast';
 import Auth from '@pages/Auth';
 import Record from '@pages/Record';
-import ProtectedRoute from './protectedRoute';
+import ProtectedRoute from './ProtectedRoute';
 
 const routerOptions = {
   future: {

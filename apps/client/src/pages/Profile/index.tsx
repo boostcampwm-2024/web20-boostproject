@@ -78,7 +78,7 @@ export default function Profile() {
         <EditUserInfo userData={userData} toggleEditing={toggleEditing} />
       ) : (
         <>
-          <UserInfo userData={userData} toggleEditing={toggleEditing} />
+          <UserInfo userData={userData} toggleEditing={toggleEditing} error={error} isLoading={isLoading} />
           <Attendance />
         </>
       )}
