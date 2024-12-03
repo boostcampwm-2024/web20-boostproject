@@ -41,7 +41,7 @@ export class ChatService {
 
   async joinRoom(roomId: string, client: Socket) {
     let member: { camperId: string; name: string } | null = null;
-    const token = client.handshake.headers.authorization?.split(' ')[1];
+    const token = client.handshake.auth.accessToken?.split(' ')[1];
     if (token) {
       const response = await this.memberService.getMemberInfo(token);
       member = response.data;
