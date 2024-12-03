@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@components/ui/card';
 import { Input } from '@components/ui/input';
 import { SmileIcon } from '@/components/Icons';
 import { useSocket } from '@hooks/useSocket';
 import ErrorCharacter from '@components/ErrorCharacter';
+import { AuthContext } from '@/contexts/AuthContext';
 
 interface Chat {
   camperId: string;
@@ -14,6 +15,7 @@ interface Chat {
 const chatServerUrl = import.meta.env.VITE_CHAT_SERVER_URL;
 
 const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boolean }) => {
+  const { isLoggedIn } = useContext(AuthContext);
   // 채팅 방 입장
   const [isJoinedRoom, setIsJoinedRoom] = useState(false);
   // 채팅 전송
@@ -72,6 +74,10 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
     setChattings(prev => [...prev, { camperId, name, message }]);
   };
 
+  const handleClickEmoticon = () => {
+    alert('구현 예정');
+  };
+
   useEffect(() => {
     if (!isConnected || !socket || !roomId || isJoinedRoom) return;
     console.log(`roomId: ${JSON.stringify(roomId)}`);
@@ -95,7 +101,7 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
         <CardTitle className="font-bold text-text-strong">Chat</CardTitle>
       </CardHeader>
       {socketError ? (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center w-full h-full">
           <ErrorCharacter size={200} message={socketError.message} />
         </div>
       ) : (
@@ -114,15 +120,20 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
             <div className="flex items-center w-full rounded-xl bg-surface-alt">
               <Input
                 type="text"
-                placeholder="채팅을 입력해주세요"
+                placeholder={isLoggedIn ? '채팅을 입력해주세요' : '로그인 후 이용해주세요'}
                 value={inputValue}
                 onChange={handleInputChange}
                 onCompositionStart={() => setIsComposing(true)}
                 onCompositionEnd={() => setIsComposing(false)}
                 onKeyDown={hanldeKeyDownEnter}
                 className="flex-1 text-text-default border-none focus-visible:outline-none focus-visible:ring-0"
+                disabled={!isLoggedIn}
               />
-              <button className="ml-2 p-2 rounded-full text-text-default">
+              <button
+                onClick={handleClickEmoticon}
+                className="ml-2 p-2 rounded-full text-text-default"
+                disabled={!isLoggedIn}
+              >
                 <SmileIcon />
               </button>
             </div>
