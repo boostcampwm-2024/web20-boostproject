@@ -1,10 +1,12 @@
+import { Field } from './liveTypes';
+
 export interface LivePreviewInfo {
   broadcastId: string;
   broadcastTitle: string;
   camperId: string;
   profileImage: string;
   thumbnail: string;
-  field: 'WEB' | 'AND' | 'IOS';
+  field: Field;
 }
 
 export interface LivePreviewListInfo {
