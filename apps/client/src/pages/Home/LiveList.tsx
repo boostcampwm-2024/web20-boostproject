@@ -17,7 +17,7 @@ function LiveList() {
   const ref = useIntersect({
     onIntersect: (entry, observer) => {
       observer.unobserve(entry.target);
-      if (hasNext) getLiveList();
+      if (hasNext && cursor) getLiveList();
     },
     options: { threshold: 0.3 },
   });
@@ -35,7 +35,6 @@ function LiveList() {
   };
 
   useEffect(() => {
-    getLiveList();
     setHasNext(true);
     setCursor(null);
     setLiveList([]);
