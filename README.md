@@ -106,8 +106,8 @@
 
 <br>
 <div align="center">
-    <h2>🙇‍♀️ 외에도 고민, 학습정리 등 프로젝트 전반적인 상황이 궁금하시다면</h2>
-    <h3>
+    <h3>🙇‍♀️ 외에도 고민, 학습정리 등 프로젝트 전반적인 상황이 궁금하시다면</h2>
+    <h4>
       <a href='https://intelligent-broker-ff0.notion.site/Cam-on-1290201238ac808ebb56d75e07685ae4'>📒 팀 노션</a> | 
       <a href='https://github.com/boostcampwm-2024/web20-camon/wiki'>🔎 위키</a> | 
       <a href='https://www.figma.com/design/ckY510YXPKJJUoURVxlmYz/Cam'on?node-id=0-1&node-type=canvas&t=BIq7ck3oUBLHea8J-0'>🎨 피그마</a> | 
