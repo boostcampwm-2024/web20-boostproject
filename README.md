@@ -70,7 +70,7 @@
 - Mediasoup과 FFmpeg을 활용하여 실시간 스트리밍 중 썸네일을 생성하고, 녹화본을 저장  
 - 녹화된 자료는 Object Storage에 저장하고, 스트리밍 종료 후에도 확인 가능  
  
-> 🙇‍♀️ 프로젝트의 **핵심 개발 일지**에 대한 더 자세한 사항은 [핵심 개발 일지 한 눈에 보기](https://github.com/boostcampwm-2024/web20-camon/wiki)와 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)을 참고해 주세요!
+> 🙇‍♀️ 프로젝트의 **핵심 개발 일지**에 대한 더 자세한 사항은 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)를 참고해 주세요!
 
 <br>
 
@@ -88,7 +88,7 @@
 - **문제**: GitHub Actions에서 Docker 이미지를 빌드하는 데 시간이 과도하게 소요됨
 - **해결**: BuildKit을 활성화하고 type=gha로 Docker 레이어 캐시를 저장 및 재사용하여 빌드 시간 단축  
 
-> 🙇‍♀️ 프로젝트의 **트러블 슈팅**에 대한 더 자세한 사항은 [트러블 슈팅 한 눈에 보기](https://github.com/boostcampwm-2024/web20-camon/wiki)와 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)을 참고해 주세요!
+> 🙇‍♀️ 프로젝트의 **트러블 슈팅**에 대한 더 자세한 사항은 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)를 참고해 주세요!
 
 <br>
 
@@ -102,11 +102,11 @@
 - **결론**: 성능 최적화와 낮은 지연 시간을 위해 인메모리 방식을 채택.
 <br>
 
-> 🙇‍♀️ 프로젝트의 **고민**에 대한 더 자세한 사항은 [고민 한 눈에 보기](https://github.com/boostcampwm-2024/web20-camon/wiki)와 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)을 참고해 주세요!
+> 🙇‍♀️ 프로젝트의 **고민**에 대한 더 자세한 사항은 [위키](https://github.com/boostcampwm-2024/web20-camon/wiki)를 참고해 주세요!
 
 <br>
 <div align="center">
-    <h2>🙇‍♀️ 이 외의 프로젝트의 전반적인 상황이 궁금하시다면</h2>
+    <h2>🙇‍♀️ 외에도 고민, 학습정리 등 프로젝트 전반적인 상황이 궁금하시다면</h2>
     <h3>
       <a href='https://intelligent-broker-ff0.notion.site/Cam-on-1290201238ac808ebb56d75e07685ae4'>📒 팀 노션</a> | 
       <a href='https://github.com/boostcampwm-2024/web20-camon/wiki'>🔎 위키</a> | 
