@@ -6,6 +6,7 @@ import Live from '@pages/Live';
 import Broadcast from '@pages/Broadcast';
 import Auth from '@pages/Auth';
 import Record from '@pages/Record';
+import ProtectedRoute from './protectedRoute';
 
 const routerOptions = {
   future: {
@@ -29,10 +30,6 @@ const router = createBrowserRouter(
           element: <Home />,
         },
         {
-          path: 'profile',
-          element: <Profile />,
-        },
-        {
           path: 'live/:liveId',
           element: <Live />,
         },
@@ -41,14 +38,31 @@ const router = createBrowserRouter(
           element: <Auth />,
         },
         {
-          path: 'record/:attendanceId',
-          element: <Record />,
+          path: '',
+          element: <ProtectedRoute />,
+          children: [
+            {
+              path: 'profile',
+              element: <Profile />,
+            },
+
+            {
+              path: 'record/:attendanceId',
+              element: <Record />,
+            },
+          ],
         },
       ],
     },
     {
       path: 'broadcast',
-      element: <Broadcast />,
+      element: <ProtectedRoute />,
+      children: [
+        {
+          path: '',
+          element: <Broadcast />,
+        },
+      ],
     },
   ],
   routerOptions,

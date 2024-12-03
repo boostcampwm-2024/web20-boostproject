@@ -113,20 +113,10 @@ function Broadcast() {
   };
 
   if (socketError || roomError || transportError || screenShareError) {
+    mediaStream?.getTracks().forEach((track: MediaStreamTrack) => track.stop());
     return (
       <div className="flex h-full justify-center items-center">
-        <ErrorCharacter
-          size={300}
-          message={`방송 연결 중 에러가 발생했습니다: ${
-            socketError
-              ? socketError.message
-              : roomError
-              ? roomError.message
-              : transportError
-              ? transportError.message
-              : screenShareError?.message
-          }`}
-        />
+        <ErrorCharacter size={300} message="방송 연결 중 에러가 발생했습니다" />
       </div>
     );
   }

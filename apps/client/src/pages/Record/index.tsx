@@ -14,7 +14,7 @@ function Record() {
   const [nowPlaying, setIsNowPlaying] = useState<RecordData>({ recordId: 0, title: '', video: '', date: '' });
 
   return (
-    <div className="h-[calc(100vh-74px)] flex flex-row w-full gap-10">
+    <div className="flex flex-row w-full h-full gap-10">
       <>
         <div className="flex flex-col flex-grow gap-4 h-full ml-8">
           <RecordPlayer video={nowPlaying.video} />

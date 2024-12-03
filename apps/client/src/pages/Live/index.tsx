@@ -21,7 +21,7 @@ export default function Live() {
   const {
     transport,
     mediastream: mediaStream,
-    error: _error,
+    error: consumerError,
   } = useConsumer({
     socket,
     device,
@@ -56,19 +56,17 @@ export default function Live() {
 
   return (
     <div className="h-full bottom-0 left-0 right-0 overflow-auto flex flex-row w-full gap-10">
-      {socketError || transportError ? (
-        <div className="flex w-full h-full justify-center items-center">
-          <ErrorCharacter
-            size={400}
-            message={`방송 연결 중 에러가 발생했습니다: ${socketError ? socketError.message : transportError?.message}`}
-          />
-        </div>
-      ) : !liveId ? (
+      {!liveId ? (
         <ErrorCharacter size={400} message="방 정보가 없습니다." />
       ) : (
         <>
           <div className="flex flex-col flex-grow gap-4 h-full ml-8">
-            <LivePlayer mediaStream={mediaStream} transportId={transportInfo?.transportId} socket={socket} />
+            <LivePlayer
+              mediaStream={mediaStream}
+              transportId={transportInfo?.transportId}
+              socket={socket}
+              errors={{ socketError, transportError, consumerError }}
+            />
             <LiveCamperInfo liveId={liveId} />
           </div>
           <div className="flex h-full w-80 pr-5">

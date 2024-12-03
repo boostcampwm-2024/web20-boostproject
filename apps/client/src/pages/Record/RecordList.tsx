@@ -15,20 +15,17 @@ function RecordList(props: RecordListProps) {
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    axiosInstance
-      .get(`/v1/records/${attendanceId}`)
-      .then(response => {
-        if (response.data.success) setRecordList(response.data.data.records);
-        else setError(response.data.message);
-      })
-      .catch(reason => setError(reason));
+    axiosInstance.get(`/v1/records/${attendanceId}`).then(response => {
+      if (response.data.success) setRecordList(response.data.data.records);
+      else setError(response.data.message);
+    });
   }, []);
 
   return (
     <div className="flex h-full w-full border border-border-default rounded p-5 overflow-hidden">
       {error ? (
         <div>
-          <ErrorCharacter size={100} message={error} />
+          <ErrorCharacter size={100} message="녹화 영상 목록 조회에 실패했습니다" />
         </div>
       ) : (
         <div className="h-full w-full overflow-y-auto">

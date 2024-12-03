@@ -31,7 +31,7 @@ function Auth() {
   return (
     <div className="flex items-center justify-center min-h-screen">
       {error ? (
-        <ErrorCharacter size={400} message={error.message} />
+        <ErrorCharacter size={400} message="로그인 처리 중 문제가 발생했습니다." />
       ) : (
         <div>
           <h2 className="text-display-bold24 text-text-strong">로그인 처리 중입니다.</h2>

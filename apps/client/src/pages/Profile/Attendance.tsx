@@ -66,7 +66,7 @@ function Attendance() {
           </div>
         ) : error ? (
           <div className="flex justify-center items-center h-full">
-            <ErrorCharacter size={200} message={error.message} />
+            <ErrorCharacter size={200} message="출석부 조회에 실패했습니다" />
           </div>
         ) : (
           <div className="overflow-y-auto text-text-default text-display-medium16">
