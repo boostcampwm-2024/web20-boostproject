@@ -61,7 +61,7 @@ function LiveList() {
         <FieldFilter onClickFieldButton={handleFilterField} />
         <Search onSearch={handleSearch} />
       </div>
-      <div className="flex flex-col h-full justify-center">
+      <div className="flex flex-col w-full h-full items-center">
         <div className="grid grid-cols-1 min-[690px]:grid-cols-2 min-[1040px]:grid-cols-3 min-[1380px]:grid-cols-4 min-[1720px]:grid-cols-5 gap-x-[clamp(40px,2vw,60px)] gap-y-12 auto-rows-min p-15 w-[95%] max-w-[1920px] align-items-start">
           {liveList ? (
             liveList.map(data => {
