@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <footer className="flex w-full h-32 justify-center items-center">
+    <footer className="relative w-full h-32 translate-y-0 flex justify-center items-center">
       <div className="flex w-2/5 justify-around text-text-weak underline">
         <a href="https://github.com/boostcampwm-2024/web20-camon">Github</a>
         <a href="https://github.com/boostcampwm-2024/web20-camon/wiki">Wiki</a>
