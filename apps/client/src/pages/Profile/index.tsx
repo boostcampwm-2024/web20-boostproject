@@ -4,6 +4,8 @@ import UserInfo from './UserInfo';
 import EditUserInfo from './EditUserInfo';
 import axiosInstance from '@/services/axios';
 import { Field } from '@/types/liveTypes';
+import ErrorCharacter from '@/components/ErrorCharacter';
+import LoadingCharacter from '@/components/LoadingCharacter';
 
 export interface UserData {
   id: number;
@@ -22,10 +24,11 @@ export interface Contacts {
 }
 
 export default function Profile() {
-  const [userData, setUserData] = useState<UserData>();
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
     axiosInstance
@@ -42,17 +45,40 @@ export default function Profile() {
       .finally(() => setIsLoading(false));
   }, [isEditing]);
 
+  useEffect(() => {
+    if (!userData) return;
+    if (!userData.camperId || !userData.name || !userData.field) {
+      if (!isEditing) setIsEditing(true);
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setShowLoading(false);
+    }, 250);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
+
   const toggleEditing = () => {
     setIsEditing(prev => !prev);
   };
 
   return (
     <div className="flex flex-col w-full h-full gap-10">
-      {isEditing ? (
-        <EditUserInfo toggleEditing={toggleEditing} userData={userData} />
+      {showLoading && isLoading ? (
+        <div className="flex justify-center items-center">
+          <LoadingCharacter size={200} />
+        </div>
+      ) : error || !userData ? (
+        <div className="flex justify-center items-center">
+          <ErrorCharacter size={200} message={`${error ? error.message : ' 유저 데이터가 없습니다.'}`} />
+        </div>
+      ) : isEditing ? (
+        <EditUserInfo userData={userData} toggleEditing={toggleEditing} />
       ) : (
         <>
-          <UserInfo toggleEditing={toggleEditing} userData={userData} isLoading={isLoading} error={error} />
+          <UserInfo userData={userData} toggleEditing={toggleEditing} />
           <Attendance />
         </>
       )}
