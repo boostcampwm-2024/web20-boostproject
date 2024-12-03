@@ -65,6 +65,7 @@ function Banner() {
   };
 
   useEffect(() => {
+    if (!isLoggedIn) return;
     axiosInstance.get('/v1/bookmarks').then(response => {
       if (response.data.success) {
         setBookmarkList(response.data.data.bookmarks);
@@ -73,7 +74,7 @@ function Banner() {
         console.error(`북마크 조회 실패: ${response.data.status}`);
       }
     });
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <div className="flex w-full h-96 bg-gradient-to-r from-surface-alt to-transparent">

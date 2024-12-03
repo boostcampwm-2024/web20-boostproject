@@ -72,6 +72,7 @@ function Header() {
   };
 
   useEffect(() => {
+    if (!isLoggedIn) return;
     axiosInstance.get('/v1/members/profile-image').then(response => {
       if (!response.data.success) return;
       setProfileImgUrl(response.data.data.profileImage);
@@ -79,7 +80,7 @@ function Header() {
   }, [isLoggedIn]);
 
   return (
-    <header className="fixed top-0 left-0 w-full px-10 py-3 flex justify-between z-10 bg-surface-default">
+    <header className="fixed top-0 left-0 h-fit w-full px-10 py-3 flex justify-between z-10 bg-surface-default">
       <div className="flex flex-row gap-2 hover:cursor-pointer" onClick={handleLogoClick}>
         <Character size={48} />
         <Logo width={109} height={50} />
