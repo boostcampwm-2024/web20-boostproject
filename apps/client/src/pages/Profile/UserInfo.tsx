@@ -31,7 +31,7 @@ function UserInfo({ userData, isLoading, error, toggleEditing }: UserInfoProps) 
         </div>
       ) : error ? (
         <div className="flex justify-center items-center">
-          <ErrorCharacter size={200} />
+          <ErrorCharacter size={200} message="유저 정보 조회에 실패했습니다" />
         </div>
       ) : (
         <>
