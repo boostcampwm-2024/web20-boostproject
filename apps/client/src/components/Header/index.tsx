@@ -39,10 +39,10 @@ function Header() {
   };
 
   const handleCheckInClick = () => {
-    if (broadcastRef.current && !broadcastRef.current.closed) {
-      broadcastRef.current.focus();
-      return;
-    }
+    // if (broadcastRef.current && !broadcastRef.current.closed) {
+    //   broadcastRef.current.focus();
+    //   return;
+    // }
     const newTapFeature = [
       `width=580`,
       `height=1024`,
@@ -71,6 +71,12 @@ function Header() {
     }
   };
 
+  const handleTest = () => {
+    for (let i = 0; i < 30; i++) {
+      handleCheckInClick();
+    }
+  };
+
   useEffect(() => {
     axiosInstance.get('/v1/members/profile-image').then(response => {
       if (!response.data.success) return;
@@ -90,7 +96,7 @@ function Header() {
             className={cn({
               'bg-surface-brand-default hover:bg-surface-brand-alt': !isCheckedIn,
             })}
-            onClick={handleCheckInClick}
+            onClick={handleTest}
           >
             체크인
           </Button>

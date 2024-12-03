@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - develop
+      - Fix/347
     paths:
       - 'apps/record/**'
 jobs:

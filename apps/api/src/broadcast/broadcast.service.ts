@@ -87,22 +87,22 @@ export class BroadcastService {
     if (!member) {
       throw new CustomException(ErrorStatus.MEMBER_NOT_FOUND);
     }
-    const existingBroadcast = await this.broadcastRepository.findOne({
-      where: { member: { id: member.id } },
-    });
-    if (existingBroadcast) {
-      throw new CustomException(ErrorStatus.BROADCAST_ALREADY_EXISTS);
-    }
+    // const existingBroadcast = await this.broadcastRepository.findOne({
+    //   where: { member: { id: member.id } },
+    // });
+    // if (existingBroadcast) {
+    //   throw new CustomException(ErrorStatus.BROADCAST_ALREADY_EXISTS);
+    // }
 
     const broadcast = this.broadcastRepository.create({
       id,
       title,
       thumbnail,
       startTime: new Date(),
-      member: member,
+      // member: member,
     });
 
-    this.attendanceService.createAttendance(broadcast);
+    await this.attendanceService.createAttendance(broadcast);
 
     return await this.broadcastRepository.save(broadcast);
   }

@@ -47,7 +47,7 @@ export class RoomService {
 
   async deleteRoom(roomId: string) {
     const room = this.getRoom(roomId);
-    await this.broadcastService.deleteBroadcast(roomId);
+    // await this.broadcastService.deleteBroadcast(roomId);
 
     room.close();
   }

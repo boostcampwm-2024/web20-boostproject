@@ -108,13 +108,13 @@ const recordArgs = (dirPath: string, roomId: string) => {
     '-c:v',
     'libx264', // 비디오 코덱
     '-preset',
-    'slow',
+    'veryfast',
     '-profile:v',
     'high', // H.264 High 프로필
     '-level:v',
     '4.1', // H.264 레벨 설정 (4.1)
     '-crf',
-    '1', // 비디오 품질 설정
+    '23', // 비디오 품질 설정
     '-c:a',
     'libmp3lame', // 오디오 코덱
     '-b:a',
@@ -124,11 +124,11 @@ const recordArgs = (dirPath: string, roomId: string) => {
     '-af',
     'aresample=async=1', // 오디오 샘플 동기화
     '-ac',
-    '2',
+    '1',
     '-f',
     'hls', // HLS 출력 포맷
     '-hls_time',
-    '15', // 각 세그먼트 길이 (초)
+    '10', // 각 세그먼트 길이 (초)
     '-hls_list_size',
     '0', // 유지할 세그먼트 개수
     '-hls_segment_filename',
