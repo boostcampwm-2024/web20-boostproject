@@ -8,7 +8,7 @@ function App() {
   return (
     <AuthProvider>
       <Header />
-      <main className="h-full">
+      <main>
         <Outlet />
       </main>
       <Toaster />

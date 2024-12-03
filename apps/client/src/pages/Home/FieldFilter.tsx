@@ -5,16 +5,16 @@ import { useState } from 'react';
 const fields: Field[] = ['WEB', 'AND', 'IOS'];
 
 interface FieldFilterProps {
-  onClickFieldButton: (field: Field) => void;
+  onClickFilterButton: (field: Field) => void;
 }
 
-function FieldFilter({ onClickFieldButton }: FieldFilterProps) {
+function FieldFilter({ onClickFilterButton }: FieldFilterProps) {
   const [selected, setSelected] = useState<Field>('');
 
   const handleClick = (field: Field) => {
     const newField = selected === field ? '' : field;
-    onClickFieldButton(newField);
     setSelected(newField);
+    onClickFilterButton(newField);
   };
 
   return (
