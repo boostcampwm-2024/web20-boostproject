@@ -23,7 +23,7 @@ export class ChatService {
   async createRoom(roomId: string, client: Socket) {
     const response = await this.memberService.getMemberInfo(client.token);
     const member = response.data;
-
+    console.log(member);
     const newClient = new Client(member.camperId, member.name, client);
 
     const room = {
@@ -40,13 +40,17 @@ export class ChatService {
   }
 
   async joinRoom(roomId: string, client: Socket) {
-    const response = await this.memberService.getMemberInfo(client.token);
-    const member = response.data;
+    let member: { camperId: string; name: string } | null = null;
+
+    if (client.token) {
+      const response = await this.memberService.getMemberInfo(client.token);
+      member = response.data;
+    }
 
     const room = this.rooms.get(roomId);
-    if (!room) new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
+    if (!room) throw new CustomWsException(ErrorStatus.ROOM_NOT_FOUND);
 
-    const newClient = new Client(member.camperId, member.name, client);
+    const newClient = new Client(member?.camperId || '', member?.name || '', client);
 
     room.clients.set(client.id, newClient);
     this.clientToRoom.set(client.id, roomId);
