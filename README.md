@@ -74,30 +74,36 @@
 > 3️⃣ 별도의 송출 소프트웨어 없이 서비스 내에서 방송 송출과 화면 배치 과정이 자동으로 이루어져 캠퍼들이 부담없이 방송할 수 있는 환경을 제공합니다.<br>
 > 4️⃣ 캠퍼들은 서로의 방송을 시청하면서 실시간으로 서로의 학습 경험을 공유할 수 있습니다.
 
-![화면 송출 데모](https://github.com/user-attachments/assets/aaf18b1f-9192-4c3e-8059-0d9c0603184d)
-![방송 시청 데모](https://github.com/user-attachments/assets/c63cd77a-cc14-49e4-b3ed-36bc6ec26582)
+![송출및시청](https://github.com/user-attachments/assets/50e8e9da-7b5d-455b-b53d-8a9489288466)
+
 
 ### 💬 채팅
 > 1️⃣ 캠퍼들은 채팅을 통해 실시간으로 소통할 수 있습니다.<br>
 > 2️⃣ 방송 송출창과 시청창 모두 채팅 기능을 제공하여 방송중인 캠퍼와 시청하는 캠퍼 모두 자유롭게 지식을 공유하고 유대감을 쌓을 수 있습니다.<br>
 
+![채팅최종](https://github.com/user-attachments/assets/8974ad8e-f70d-4bc1-a794-502e22ffea35)
+
+
 ### 🔴 녹화
 > 1️⃣ 실시간 녹화 기능을 제공하여 코어타임 학습 중 기억하고 싶은 순간을 기록할 수 있습니다.<br>
 > 2️⃣ 방송 중 기록한 녹화본들은 출석 내역에서 확인하며 스스로의 학습 경험을 돌아볼 수 있습니다.<br>
 
-![녹화 데모](https://github.com/user-attachments/assets/905fa5b5-3531-4dbc-b92d-1dcf94d5fcc9)
+![녹화 최종](https://github.com/user-attachments/assets/8610fcd9-effd-4fb6-bdeb-057ba8c19d20)
+
 
 ### ✏️ 출석
 > 1️⃣ 캠퍼는 마이페이지에서 본인의 출석 내역을 한 눈에 확인할 수 있습니다.<br>
 > 2️⃣ 코어타임 시간 내에 송출되는 방송 시간을 기반으로 자동으로 캠퍼들의 출석이 관리됩니다.<br>
 
-![출석 데모](https://github.com/user-attachments/assets/63adc867-a159-4bb4-a7f2-fea5edd892ab)
+![출석데모최종](https://github.com/user-attachments/assets/32e104b3-daec-4d47-9db6-1898aa48d005)
+
 
 ### 📚 아카이브
 > 1️⃣ 캠퍼들은 메인페이지에서 여러개로 나누어진 베이스캠프를 한 번에 모아서 관리할 수 있습니다.<br>
 > 2️⃣ 자유롭게 하이퍼링크를 등록하여 맞춤형 온라인 베이스 캠프를 구성할 수 있습니다.<br>
 
-![아카이브 데모](https://github.com/user-attachments/assets/dafcd2ca-df14-4720-8f54-0ae4eb90be50)
+![아카이브데모최종](https://github.com/user-attachments/assets/d5c4818c-be47-4851-91c1-4d6128a04aad)
+
 
 # 💻 핵심 개발 일지
 ### 💡 [방송 송출 및 시청 구현](https://github.com/boostcampwm-2024/web20-camon/wiki/%EB%B0%A9%EC%86%A1-%EC%86%A1%EC%B6%9C-%EB%B0%8F-%EC%8B%9C%EC%B2%AD-%EA%B5%AC%ED%98%84)
