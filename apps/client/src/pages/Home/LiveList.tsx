@@ -23,7 +23,6 @@ function LiveList() {
   });
 
   const getLiveList = () => {
-    if (!hasNext) return;
     axiosInstance.get('/v1/broadcasts', { params: { field, cursor, limit: LIMIT } }).then(response => {
       if (response.data.success) {
         const { broadcasts, nextCursor } = response.data.data;
@@ -34,15 +33,15 @@ function LiveList() {
     });
   };
 
-  useEffect(() => {
-    setHasNext(true);
-    setCursor(null);
-    setLiveList([]);
-    getLiveList();
-  }, [field]);
-
-  const handleFilterField = (field: Field) => {
-    setField(field);
+  const hanldeFilterField = (field: Field) => {
+    axiosInstance.get('/v1/broadcasts', { params: { field, cursor: null, limit: LIMIT } }).then(response => {
+      if (response.data.success) {
+        const { broadcasts, nextCursor } = response.data.data;
+        setLiveList(broadcasts);
+        setCursor(nextCursor);
+        setHasNext(nextCursor ? true : false);
+      }
+    });
   };
 
   const handleSearch = (keyword: string) => {
@@ -55,10 +54,14 @@ function LiveList() {
     });
   };
 
+  useEffect(() => {
+    getLiveList();
+  }, []);
+
   return (
     <div className="flex flex-col w-full flex-1 p-10 justify-center">
       <div className="h-14 w-full flex justify-between items-center my-5 px-5">
-        <FieldFilter onClickFieldButton={handleFilterField} />
+        <FieldFilter onClickFilterButton={hanldeFilterField} />
         <Search onSearch={handleSearch} />
       </div>
       <div className="flex flex-col w-full h-full items-center">
@@ -82,7 +85,7 @@ function LiveList() {
             <div>방송 정보가 없습니다.</div>
           )}
         </div>
-        <div ref={ref} className="h-32"></div>
+        <div ref={ref} className="h-1"></div>
       </div>
     </div>
   );
