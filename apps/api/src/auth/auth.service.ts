@@ -45,9 +45,9 @@ export class AuthService {
     member.camperId = `guest${this.GUEST_ID}`;
     member.name = `guest${this.GUEST_ID}`;
     member.field = FieldEnum.WEB;
+    this.GUEST_ID += 1;
     const newMember = await this.memberService.createMember(member);
     const payload = { id: newMember.id, camperId: newMember.camperId };
-    console.log(payload);
     return this.jwtService.sign(payload);
   }
 }
