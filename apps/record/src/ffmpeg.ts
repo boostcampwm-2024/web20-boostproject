@@ -87,7 +87,7 @@ const thumbnailArgs = (dirPath: string, roomId: string) => {
     '-i',
     'pipe:0', // SDP를 파이프로 전달
     '-vf',
-    'fps=1/10,scale=1280:720', // 10초마다 한 프레임을 캡처하고 해상도 조정
+    'fps=1/15', // 10초마다 한 프레임을 캡처
     '-f',
     'image2', // 이미지 출력 포맷 명시
     '-update',
@@ -111,13 +111,13 @@ const recordArgs = (dirPath: string, roomId: string) => {
     '-c:v',
     'libx264', // 비디오 코덱
     '-preset',
-    'slow',
+    'superfast',
     '-profile:v',
     'high', // H.264 High 프로필
     '-level:v',
     '4.1', // H.264 레벨 설정 (4.1)
     '-crf',
-    '1', // 비디오 품질 설정
+    '23', // 비디오 품질 설정
     '-c:a',
     'libmp3lame', // 오디오 코덱
     '-b:a',
