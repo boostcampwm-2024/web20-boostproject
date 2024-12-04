@@ -5,6 +5,8 @@ import { SmileIcon } from '@/components/Icons';
 import { useSocket } from '@hooks/useSocket';
 import ErrorCharacter from '@components/ErrorCharacter';
 import { AuthContext } from '@/contexts/AuthContext';
+import { createPortal } from 'react-dom';
+import ChatEndModal from './ChatEndModal';
 
 interface Chat {
   camperId: string;
@@ -30,6 +32,8 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   };
+  // 채팅 종료
+  const [showModal, setShowModal] = useState(false);
 
   const setUpRoom = async (isProducer: boolean) => {
     try {
@@ -41,6 +45,10 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
         // 채팅방 입장
         socket?.emit('joinRoom', { roomId: roomId }, () => {
           console.log('채팅방 입장');
+        });
+        // 채팅방 종료 이벤트
+        socket?.on('chatClosed', () => {
+          setShowModal(true);
         });
       }
     } catch (err) {
@@ -96,51 +104,54 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
   }, [chattings]);
 
   return (
-    <Card className="flex flex-col flex-1 border-border-default bg-transparent shadow-none overflow-hidden">
-      <CardHeader className="h-[64px]">
-        <CardTitle className="font-bold text-text-strong">Chat</CardTitle>
-      </CardHeader>
-      {socketError ? (
-        <div className="flex justify-center items-center w-full h-full">
-          <ErrorCharacter size={200} message={socketError.message} />
-        </div>
-      ) : (
-        <>
-          <CardContent ref={scrollAreaRef} className="flex flex-1 px-6 pb-2 overflow-y-auto flex-col-reverse">
-            <div className="w-full flex flex-col space-y-1">
-              {chattings.map((chat, index) => (
-                <div key={index}>
-                  <span className="font-medium text-display-medium16 text-text-weak">{chat.camperId} </span>
-                  <span className="font-medium text-display-medium14 text-text-strong">{chat.message}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-          <CardFooter className="h-[64px]">
-            <div className="flex items-center w-full rounded-xl bg-surface-alt">
-              <Input
-                type="text"
-                placeholder={isLoggedIn ? '채팅을 입력해주세요' : '로그인 후 이용해주세요'}
-                value={inputValue}
-                onChange={handleInputChange}
-                onCompositionStart={() => setIsComposing(true)}
-                onCompositionEnd={() => setIsComposing(false)}
-                onKeyDown={hanldeKeyDownEnter}
-                className="flex-1 text-text-default border-none focus-visible:outline-none focus-visible:ring-0"
-                disabled={!isLoggedIn}
-              />
-              <button
-                onClick={handleClickEmoticon}
-                className="ml-2 p-2 rounded-full text-text-default"
-                disabled={!isLoggedIn}
-              >
-                <SmileIcon />
-              </button>
-            </div>
-          </CardFooter>
-        </>
-      )}
-    </Card>
+    <>
+      <Card className="flex flex-col flex-1 border-border-default bg-transparent shadow-none overflow-hidden">
+        <CardHeader className="h-[64px]">
+          <CardTitle className="font-bold text-text-strong">Chat</CardTitle>
+        </CardHeader>
+        {socketError ? (
+          <div className="flex justify-center items-center w-full h-full">
+            <ErrorCharacter size={200} message={socketError.message} />
+          </div>
+        ) : (
+          <>
+            <CardContent ref={scrollAreaRef} className="flex flex-1 px-6 pb-2 overflow-y-auto flex-col-reverse">
+              <div className="w-full flex flex-col space-y-1">
+                {chattings.map((chat, index) => (
+                  <div key={index}>
+                    <span className="font-medium text-display-medium16 text-text-weak">{chat.camperId} </span>
+                    <span className="font-medium text-display-medium14 text-text-strong">{chat.message}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+            <CardFooter className="h-[64px]">
+              <div className="flex items-center w-full rounded-xl bg-surface-alt">
+                <Input
+                  type="text"
+                  placeholder={isLoggedIn ? '채팅을 입력해주세요' : '로그인 후 이용해주세요'}
+                  value={inputValue}
+                  onChange={handleInputChange}
+                  onCompositionStart={() => setIsComposing(true)}
+                  onCompositionEnd={() => setIsComposing(false)}
+                  onKeyDown={hanldeKeyDownEnter}
+                  className="flex-1 text-text-default border-none focus-visible:outline-none focus-visible:ring-0"
+                  disabled={!isLoggedIn}
+                />
+                <button
+                  onClick={handleClickEmoticon}
+                  className="ml-2 p-2 rounded-full text-text-default"
+                  disabled={!isLoggedIn}
+                >
+                  <SmileIcon />
+                </button>
+              </div>
+            </CardFooter>
+          </>
+        )}
+      </Card>
+      {showModal && createPortal(<ChatEndModal setShowModal={setShowModal} />, document.body)}
+    </>
   );
 };
 
