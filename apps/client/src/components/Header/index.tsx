@@ -1,25 +1,21 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Button } from '@components/ui/button';
 import { useNavigate } from 'react-router-dom';
-import { cn } from '@utils/utils';
-import { Character, GithubIcon, GoogleIcon, Logo } from '@components/Icons';
-import { createPortal } from 'react-dom';
-import Modal from '@components/Modal';
-import WelcomeCharacter from '@components/WelcomeCharacter';
-import { useAuth } from '@hooks/useAuth';
-import { AuthContext } from '@/contexts/AuthContext';
+import { Character, Logo } from '@components/Icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@components/ui/avatar';
+import { AuthContext } from '@/contexts/AuthContext';
 import axiosInstance from '@/services/axios';
+import { cn } from '@utils/utils';
+import LogInButton from './LogInButton';
+import { Button } from '../ui/button';
+import { useAuth } from '@/hooks/useAuth';
 
 function Header() {
   const [isCheckedIn, setIsCheckedIn] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [profileImgUrl, setProfileImgUrl] = useState('');
   const broadcastRef = useRef<Window | null>(null);
-  const [profileImgUrl, setProfileImgUrl] = useState<string>('');
-  const navigate = useNavigate();
-
-  const { requestLogIn, logout } = useAuth();
   const { isLoggedIn } = useContext(AuthContext);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogoClick = () => {
     if (window.location.pathname === '/') {
@@ -28,16 +24,6 @@ function Header() {
       navigate('/');
     }
   };
-
-  const handleLogInClick = () => {
-    setShowModal(true);
-  };
-
-  const handleLogOutClick = () => {
-    logout();
-    navigate('/');
-  };
-
   const handleCheckInClick = () => {
     if (broadcastRef.current && !broadcastRef.current.closed) {
       broadcastRef.current.focus();
@@ -71,6 +57,11 @@ function Header() {
     }
   };
 
+  const handleLogOutClick = () => {
+    logout();
+    navigate('/');
+  };
+
   useEffect(() => {
     if (!isLoggedIn) return;
     axiosInstance.get('/v1/members/profile-image').then(response => {
@@ -85,69 +76,33 @@ function Header() {
         <Character size={48} />
         <Logo width={109} height={50} />
       </div>
-      {isLoggedIn ? (
-        <div className="flex gap-2 items-center">
-          <Button
-            className={cn({
-              'bg-surface-brand-default hover:bg-surface-brand-alt': !isCheckedIn,
-            })}
-            onClick={handleCheckInClick}
-          >
-            체크인
-          </Button>
-          <Button onClick={handleLogOutClick}>로그아웃</Button>
-          <Avatar
-            onClick={() => {
-              navigate('/profile');
-            }}
-            className="cursor-pointer h-10 w-10"
-            aria-label="마이페이지로 이동"
-          >
-            <AvatarImage src={profileImgUrl} className="h-10 w-10" alt="마이페이지로 이동" />
-            <AvatarFallback className="bg-surface-alt">MY</AvatarFallback>
-          </Avatar>
-        </div>
-      ) : (
-        <Button className="bg-surface-brand-default hover:bg-surface-brand-alt" onClick={handleLogInClick}>
-          로그인
-        </Button>
-      )}
-      {showModal &&
-        createPortal(
-          <Modal setShowModal={setShowModal} modalClassName="h-80 w-1/3">
-            <div className="flex flex-col flex-1">
-              <div className="flex flex-row h-24 text-text-strong font-bold text-3xl md:text-5xl items-center justify-center px-5">
-                WELCOME!
-                <WelcomeCharacter size={80} />
-              </div>
-              <div className="flex flex-row md:flex-col h-full justify-around items-center gap-3 p-4">
-                <button
-                  onClick={() => {
-                    requestLogIn('github');
-                  }}
-                  className="flex flex-row items-center h-16 w-15 md:w-4/5 border border-border-bold rounded-circle "
-                >
-                  <GithubIcon size={60} />
-                  <span className="hidden flex-1 md:flex justify-center text-text-strong text-display-bold16 lg:text-display-bold24 px-5">
-                    Gihub로 로그인하기
-                  </span>
-                </button>
-                <button
-                  onClick={() => {
-                    requestLogIn('google');
-                  }}
-                  className="flex flex-row items-center h-16 w-15 md:w-4/5 border border-border-bold rounded-circle "
-                >
-                  <GoogleIcon />
-                  <span className="hidden md:flex flex-1 justify-center text-text-strong text-display-bold16 lg:text-display-bold24 px-5">
-                    Google로 로그인하기
-                  </span>
-                </button>
-              </div>
-            </div>
-          </Modal>,
-          document.body,
+      <div className="flex items-center">
+        {isLoggedIn ? (
+          <div className="flex gap-2 items-center">
+            <Button
+              className={cn({
+                'bg-surface-brand-default hover:bg-surface-brand-alt': !isCheckedIn,
+              })}
+              onClick={handleCheckInClick}
+            >
+              체크인
+            </Button>
+            <Button onClick={handleLogOutClick}>로그아웃</Button>
+            <Avatar
+              onClick={() => {
+                navigate('/profile');
+              }}
+              className="cursor-pointer h-10 w-10"
+              aria-label="마이페이지로 이동"
+            >
+              <AvatarImage src={profileImgUrl} className="h-10 w-10" alt="마이페이지로 이동" />
+              <AvatarFallback className="bg-surface-alt">MY</AvatarFallback>
+            </Avatar>
+          </div>
+        ) : (
+          <LogInButton />
         )}
+      </div>
     </header>
   );
 }
