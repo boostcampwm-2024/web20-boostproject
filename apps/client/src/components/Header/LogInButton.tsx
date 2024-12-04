@@ -21,7 +21,7 @@ function LogInButton() {
       </Button>
       {showModal &&
         createPortal(
-          <Modal setShowModal={setShowModal} modalClassName="h-80 w-1/3">
+          <Modal setShowModal={setShowModal} modalClassName="h-[360px] w-1/3">
             <div className="flex flex-col flex-1">
               <div className="flex flex-row h-24 text-text-strong font-bold text-3xl md:text-5xl items-center justify-center px-5">
                 WELCOME!
@@ -50,7 +50,14 @@ function LogInButton() {
                     Google로 로그인하기
                   </span>
                 </button>
-                <button className="border-none">게스트로 로그인하기</button>
+                <button
+                  className="border-none underline"
+                  onClick={() => {
+                    alert('게스트 로그인');
+                  }}
+                >
+                  게스트로 로그인하기
+                </button>
               </div>
             </div>
           </Modal>,
