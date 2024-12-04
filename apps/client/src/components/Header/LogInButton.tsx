@@ -5,13 +5,22 @@ import { Button } from '@components/ui/button';
 import { createPortal } from 'react-dom';
 import Modal from '@components/Modal';
 import { GithubIcon, GoogleIcon } from '@components/Icons';
+import axiosInstance from '@/services/axios';
 
 function LogInButton() {
   const [showModal, setShowModal] = useState(false);
-  const { requestLogIn } = useAuth();
+  const { requestLogIn, setLogIn } = useAuth();
 
   const handleLogInClick = () => {
     setShowModal(true);
+  };
+
+  const handleGuestLogIn = () => {
+    axiosInstance.post('/v1/auth/signin/guest').then(response => {
+      if (response.data.success) {
+        setLogIn(response.data.data.accessToken);
+      }
+    });
   };
 
   return (
@@ -50,12 +59,7 @@ function LogInButton() {
                     Google로 로그인하기
                   </span>
                 </button>
-                <button
-                  className="border-none underline"
-                  onClick={() => {
-                    alert('게스트 로그인');
-                  }}
-                >
+                <button className="border-none underline" onClick={handleGuestLogIn}>
                   게스트로 로그인하기
                 </button>
               </div>
