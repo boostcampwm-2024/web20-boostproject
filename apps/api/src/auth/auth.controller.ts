@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service';
-import { Controller, Get, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { GithubAuthGuard } from './guard/github-auth.guard';
 import { GoogleAuthGuard } from './guard/google-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
@@ -44,5 +44,13 @@ export class AuthController {
     const CALLBACK_URI = this.configService.get('CALLBACK_URI');
 
     res.redirect(`${CALLBACK_URI}/auth?accessToken=${accessToken}&isNecessaryInfo=${isNecessaryInfo}`);
+  }
+
+  @Post('/signin/guest')
+  @ApiTags(SwaggerTag.HEADER)
+  @ApiSuccessResponse(SuccessStatus.OK(SigninResponseDto), SigninResponseDto)
+  async signinGuest() {
+    const accessToken = await this.authService.createGuest();
+    return { accessToken };
   }
 }

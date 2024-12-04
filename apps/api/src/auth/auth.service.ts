@@ -5,9 +5,11 @@ import { SigninDto } from './dto/signin.dto';
 import { CustomException } from 'src/common/responses/exceptions/custom.exception';
 import { ErrorStatus } from 'src/common/responses/exceptions/errorStatus';
 import { Member } from 'src/member/member.entity';
+import { FieldEnum } from '../member/enum/field.enum';
 
 @Injectable()
 export class AuthService {
+  GUEST_ID = 1;
   constructor(private readonly memberService: MemberService, private readonly jwtService: JwtService) {}
 
   async validateOrCreateMember(signinDto: SigninDto) {
@@ -36,5 +38,16 @@ export class AuthService {
     }
 
     return member;
+  }
+
+  async createGuest() {
+    const member = new Member();
+    member.camperId = `guest${this.GUEST_ID}`;
+    member.name = `guest${this.GUEST_ID}`;
+    member.field = FieldEnum.WEB;
+    const newMember = await this.memberService.createMember(member);
+    const payload = { id: newMember.id, camperId: newMember.camperId };
+    console.log(payload);
+    return this.jwtService.sign(payload);
   }
 }
