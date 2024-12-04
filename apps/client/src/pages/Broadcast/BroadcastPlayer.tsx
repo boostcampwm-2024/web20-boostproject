@@ -73,7 +73,7 @@ function BroadcastPlayer({
         } else {
           // 화면이 더 좁은 경우
           draw.width = canvas.height * screenRatio;
-          console.log('width', canvas.height / screenRatio);
+          // console.log('width', canvas.height / screenRatio);
           draw.x = (canvas.width - draw.width) / 2;
         }
 
@@ -107,30 +107,61 @@ function BroadcastPlayer({
       if (!isStreamReady) setIsStreamReady(true);
     };
 
-    if (videoRef.current) {
-      videoRef.current.onloadedmetadata = startDrawing;
-      if (videoRef.current.readyState >= 2) {
-        startDrawing();
-      }
+    if (isVideoEnabled && isScreenSharing && mediaStream && screenStream) {
+      mediaStream.getVideoTracks()[0].enabled = true;
+      screenStream.getVideoTracks()[0].enabled = true;
+      startDrawing();
     }
   }, [isVideoEnabled, isScreenSharing, mediaStream, screenStream, isStreamReady]);
 
   return (
     <div className="relative w-full max-h-[310px] aspect-video">
-      <video ref={videoRef} autoPlay muted playsInline className="absolute top-0 left-0 w-full h-full object-cover" />
-      <video
-        ref={screenShareRef}
-        autoPlay
-        muted
-        playsInline
-        className="absolute top-0 left-0 w-full h-full object-cover"
-      />
-      <canvas
-        ref={canvasRef}
-        width={RESOLUTION_OPTIONS['high'].width}
-        height={RESOLUTION_OPTIONS['high'].height}
-        className="absolute top-0 left-0 w-full h-full bg-surface-alt object-cover"
-      />
+      {isVideoEnabled && isScreenSharing ? (
+        <>
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+            className="absolute top-0 left-0 w-full h-full object-cover"
+          />
+          <video
+            ref={screenShareRef}
+            autoPlay
+            muted
+            playsInline
+            className="absolute top-0 left-0 w-full h-full object-cover"
+          />
+          <canvas
+            ref={canvasRef}
+            width={RESOLUTION_OPTIONS['high'].width}
+            height={RESOLUTION_OPTIONS['high'].height}
+            className="absolute top-0 left-0 w-full h-full bg-surface-alt object-cover"
+          />
+        </>
+      ) : isVideoEnabled && !isScreenSharing ? (
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          playsInline
+          width={RESOLUTION_OPTIONS['high'].width}
+          height={RESOLUTION_OPTIONS['high'].height}
+          className="absolute top-0 left-0 w-full h-full bg-surface-alt object-cover"
+        />
+      ) : !isVideoEnabled && isScreenSharing ? (
+        <video
+          ref={screenShareRef}
+          autoPlay
+          muted
+          playsInline
+          width={RESOLUTION_OPTIONS['high'].width}
+          height={RESOLUTION_OPTIONS['high'].height}
+          className="absolute top-0 left-0 w-full h-full bg-surface-alt object-cover"
+        />
+      ) : (
+        <div className="absolute top-0 left-0 w-full h-full bg-surface-alt" />
+      )}
     </div>
   );
 }

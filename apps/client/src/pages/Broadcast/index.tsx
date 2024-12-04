@@ -1,8 +1,6 @@
 import BroadcastTitle from './BroadcastTitle';
 import ChatContainer from '@components/ChatContainer';
 import ErrorCharacter from '@components/ErrorCharacter';
-import { useMediaControls } from '@hooks/useMediaControls';
-import { useMediaStream } from '@hooks/useMediaStream';
 import { useProducer } from '@hooks/useProducer';
 import { useRoom } from '@hooks/useRoom';
 import { useSocket } from '@hooks/useSocket';
@@ -22,13 +20,21 @@ import BroadcastPlayer from './BroadcastPlayer';
 import { Tracks } from '@/types/mediasoupTypes';
 import RecordButton from './RecordButton';
 import axiosInstance from '@/services/axios';
+import { useMedia } from '@/hooks/useMedia';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
 function Broadcast() {
   // 미디어 스트림(비디오, 오디오)
-  const { mediaStream, mediaStreamError, isMediastreamReady: _imsr } = useMediaStream();
-  const { isAudioEnabled, isVideoEnabled, toggleAudio, toggleVideo } = useMediaControls(mediaStream);
+  const {
+    mediaStream,
+    mediaStreamError,
+    isMediaStreamReady,
+    isAudioEnabled,
+    isVideoEnabled,
+    toggleAudio,
+    toggleVideo,
+  } = useMedia();
 
   // 화면 공유
   const { screenStream, isScreenSharing, screenShareError, toggleScreenShare } = useScreenShare();
@@ -46,14 +52,64 @@ function Broadcast() {
     producers,
   } = useProducer({
     socket,
-    tracks: tracksRef.current,
-    isStreamReady,
+    mediaStream,
+    isMediaStreamReady,
     transportInfo,
     device,
     roomId,
   });
   // 방송 정보
   const [title, setTitle] = useState<string>('');
+
+  useEffect(() => {
+    tracksRef.current['mediaAudio'] = mediaStream?.getAudioTracks()[0];
+
+    axiosInstance.get('/v1/members/info').then(response => {
+      if (response.data.success) {
+        setTitle(`${response.data.data.camperId}님의 방송`);
+      }
+    });
+
+    window.addEventListener('beforeunload', stopBroadcast);
+    return () => {
+      window.removeEventListener('beforeunload', stopBroadcast);
+    };
+  }, []);
+
+  useEffect(() => {
+    changeTrack();
+  }, [isVideoEnabled, isScreenSharing]);
+
+  const changeTrack = async () => {
+    const currentProducer = producers.get('video');
+    if (!currentProducer) return;
+
+    currentProducer.pause();
+
+    try {
+      let newTrack = null;
+
+      if (isVideoEnabled && isScreenSharing) {
+        // canvas 트랙 사용
+        newTrack = tracksRef.current.video || null;
+      } else if (isVideoEnabled && !isScreenSharing) {
+        // mediaStream 비디오 트랙 사용
+        newTrack = mediaStream?.getVideoTracks()[0] || null;
+      } else if (!isVideoEnabled && isScreenSharing) {
+        // screenStream 비디오 트랙 사용
+        newTrack = screenStream?.getVideoTracks()[0] || null;
+      }
+
+      // clone 없이 직접 트랙 교체
+      await currentProducer.replaceTrack({ track: newTrack });
+
+      if (newTrack) {
+        currentProducer.resume();
+      }
+    } catch (error) {
+      console.error('Failed to replace track:', error);
+    }
+  };
 
   const stopBroadcast = (e?: BeforeUnloadEvent) => {
     if (e) {
@@ -75,21 +131,6 @@ function Broadcast() {
     }
     transport?.close();
   };
-
-  useEffect(() => {
-    tracksRef.current['mediaAudio'] = mediaStream?.getAudioTracks()[0];
-
-    axiosInstance.get('/v1/members/info').then(response => {
-      if (response.data.success) {
-        setTitle(`${response.data.data.camperId}님의 방송`);
-      }
-    });
-
-    window.addEventListener('beforeunload', stopBroadcast);
-    return () => {
-      window.removeEventListener('beforeunload', stopBroadcast);
-    };
-  }, []);
 
   const handleCheckout = () => {
     stopBroadcast();
