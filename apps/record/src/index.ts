@@ -13,6 +13,7 @@ const assetsDirPath = path.join(__dirname, '../assets');
 const thumbnailsDirPath = path.join(__dirname, '../assets/thumbnails');
 const recordsDirPath = path.join(__dirname, '../assets/records');
 const defaultThumbnailPath = path.join(__dirname, '../assets/default-thumbnail.jpg');
+const videosDirPath = path.join(__dirname, '../assets/videos');
 
 app.use(express.json());
 app.use(cors());
@@ -28,6 +29,10 @@ if (!fs.existsSync(thumbnailsDirPath)) {
 
 if (!fs.existsSync(recordsDirPath)) {
   fs.mkdirSync(recordsDirPath, { recursive: true });
+}
+
+if (!fs.existsSync(videosDirPath)) {
+  fs.mkdirSync(videosDirPath, { recursive: true });
 }
 
 app.post('/thumbnail', (req, res) => {

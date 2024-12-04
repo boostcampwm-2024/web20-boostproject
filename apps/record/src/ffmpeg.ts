@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { uploadObjectFromDir } from './object';
+import { addVideoToQueue } from './queue';
 
 export const createFfmpegProcess = (
   videoPort: number,
@@ -11,16 +11,18 @@ export const createFfmpegProcess = (
   audioPort?: number,
 ) => {
   if (type === 'record') {
-    fs.mkdirSync(`${assetsDirPath}/records/${roomId}`, { recursive: true });
+    fs.mkdirSync(`${assetsDirPath}/videos/${roomId}`, { recursive: true });
   }
+  const randomStr = crypto.randomUUID();
   const sdpString = audioPort ? createRecordSdpText(videoPort, audioPort) : createThumbnailSdpText(videoPort);
-  const args = type === 'thumbnail' ? thumbnailArgs(assetsDirPath, roomId) : recordArgs(assetsDirPath, roomId);
+  const args =
+    type === 'thumbnail' ? thumbnailArgs(assetsDirPath, roomId) : recordArgs(assetsDirPath, roomId, randomStr);
   const ffmpegProcess = spawn('ffmpeg', args);
 
   ffmpegProcess.stdin.write(sdpString);
   ffmpegProcess.stdin.end();
 
-  handleFfmpegProcess(ffmpegProcess, type, roomId, assetsDirPath);
+  handleFfmpegProcess(ffmpegProcess, type, roomId, assetsDirPath, randomStr);
 };
 
 const handleFfmpegProcess = (
@@ -28,6 +30,7 @@ const handleFfmpegProcess = (
   type: string,
   roomId: string,
   assetsDirPath: string,
+  uuid: string,
 ) => {
   if (process.stderr) {
     process.stderr.setEncoding('utf-8');
@@ -40,7 +43,7 @@ const handleFfmpegProcess = (
   process.on('error', error => console.error(`[FFmpeg ${type}] error:`, error));
   process.on('close', async code => {
     if (type === 'record') {
-      await stopRecord(assetsDirPath, roomId);
+      await stopRecord(assetsDirPath, roomId, uuid);
     } else {
       await stopMakeThumbnail(assetsDirPath, roomId);
     }
@@ -98,48 +101,66 @@ const thumbnailArgs = (dirPath: string, roomId: string) => {
   return commandArgs;
 };
 
-const recordArgs = (dirPath: string, roomId: string) => {
+const recordArgs = (dirPath: string, roomId: string, randomStr: string) => {
   const commandArgs = [
     '-loglevel',
     'info', // 로그 활성화
     '-protocol_whitelist',
     'pipe,udp,rtp', // 허용할 프로토콜 정의
     '-f',
-    'sdp', // SDP 입력 포맷
+    'sdp', // 입력 포맷
     '-i',
     'pipe:0', // SDP를 파이프로 전달
-    '-c:v',
-    'libx264', // 비디오 코덱
-    '-preset',
-    'superfast',
-    '-profile:v',
-    'high', // H.264 High 프로필
-    '-level:v',
-    '4.1', // H.264 레벨 설정 (4.1)
-    '-crf',
-    '23', // 비디오 품질 설정
-    '-c:a',
-    'libmp3lame', // 오디오 코덱
-    '-b:a',
-    '128k', // 오디오 비트레이트
-    '-ar',
-    '48000', // 오디오 샘플링 레이트
-    '-af',
-    'aresample=async=1', // 오디오 샘플 동기화
-    '-ac',
-    '2',
-    '-f',
-    'hls', // HLS 출력 포맷
-    '-hls_time',
-    '15', // 각 세그먼트 길이 (초)
-    '-hls_list_size',
-    '0', // 유지할 세그먼트 개수
-    '-hls_segment_filename',
-    `${dirPath}/records/${roomId}/segment_%03d.ts`, // HLS 세그먼트 파일 이름
-    `${dirPath}/records/${roomId}/video.m3u8`, // HLS 플레이리스트 파일 이름
+    '-c',
+    'copy', // 코덱 재인코딩 없이 원본 저장
+    '-y', // 파일 덮어쓰기 허용
+    `${dirPath}/videos/${roomId}/${randomStr}.webm`,
   ];
   return commandArgs;
 };
+
+// const recordArgs = (dirPath: string, roomId: string) => {
+//   const commandArgs = [
+//     '-loglevel',
+//     'info', // 로그 활성화
+//     '-protocol_whitelist',
+//     'pipe,udp,rtp', // 허용할 프로토콜 정의
+//     '-f',
+//     'sdp', // SDP 입력 포맷
+//     '-i',
+//     'pipe:0', // SDP를 파이프로 전달
+//     '-c:v',
+//     'libx264', // 비디오 코덱
+//     '-preset',
+//     'superfast',
+//     '-profile:v',
+//     'high', // H.264 High 프로필
+//     '-level:v',
+//     '4.1', // H.264 레벨 설정 (4.1)
+//     '-crf',
+//     '23', // 비디오 품질 설정
+//     '-c:a',
+//     'libmp3lame', // 오디오 코덱
+//     '-b:a',
+//     '128k', // 오디오 비트레이트
+//     '-ar',
+//     '48000', // 오디오 샘플링 레이트
+//     '-af',
+//     'aresample=async=1', // 오디오 샘플 동기화
+//     '-ac',
+//     '2',
+//     '-f',
+//     'hls', // HLS 출력 포맷
+//     '-hls_time',
+//     '15', // 각 세그먼트 길이 (초)
+//     '-hls_list_size',
+//     '0', // 유지할 세그먼트 개수
+//     '-hls_segment_filename',
+//     `${dirPath}/records/${roomId}/segment_%03d.ts`, // HLS 세그먼트 파일 이름
+//     `${dirPath}/records/${roomId}/video.m3u8`, // HLS 플레이리스트 파일 이름
+//   ];
+//   return commandArgs;
+// };
 
 async function stopMakeThumbnail(assetsDirPath: string, roomId: string) {
   const thumbnailPath = path.join(assetsDirPath, 'thumbnails', `${roomId}.jpg`);
@@ -150,29 +171,35 @@ async function stopMakeThumbnail(assetsDirPath: string, roomId: string) {
   });
 }
 
-async function stopRecord(assetsDirPath: string, roomId: string) {
-  const roomDirPath = path.join(assetsDirPath, 'records', roomId);
-  await uploadObjectFromDir(roomId, assetsDirPath);
-  if (fs.existsSync(roomDirPath)) {
-    await deleteAllFiles(roomDirPath);
-    console.log(`All files in ${roomDirPath} deleted successfully.`);
-  }
+async function stopRecord(assetsDirPath: string, roomId: string, uuid: string) {
+  const video = {
+    roomId,
+    randomStr: uuid,
+    title: 'title',
+  };
+  addVideoToQueue(video);
+  // const roomDirPath = path.join(assetsDirPath, 'records', roomId, `${uuid}.webm`);
+  // await uploadObjectFromDir(roomId, assetsDirPath);
+  // if (fs.existsSync(roomDirPath)) {
+  //   await deleteAllFiles(roomDirPath);
+  //   console.log(`All files in ${roomDirPath} deleted successfully.`);
+  // }
 }
 
-async function deleteAllFiles(directoryPath: string): Promise<void> {
-  try {
-    const files = await fs.promises.readdir(directoryPath, { withFileTypes: true });
-    for (const file of files) {
-      const fullPath = path.join(directoryPath, file.name);
-      if (file.isDirectory()) {
-        await deleteAllFiles(fullPath); // 재귀적으로 디렉토리 삭제
-        await fs.promises.rmdir(fullPath); // 빈 디렉토리 삭제
-      } else {
-        await fs.promises.unlink(fullPath); // 파일 삭제
-      }
-    }
-  } catch (error) {
-    console.error(`Error deleting files in directory: ${directoryPath}`, error);
-    throw error;
-  }
-}
+// async function deleteAllFiles(directoryPath: string): Promise<void> {
+//   try {
+//     const files = await fs.promises.readdir(directoryPath, { withFileTypes: true });
+//     for (const file of files) {
+//       const fullPath = path.join(directoryPath, file.name);
+//       if (file.isDirectory()) {
+//         await deleteAllFiles(fullPath); // 재귀적으로 디렉토리 삭제
+//         await fs.promises.rmdir(fullPath); // 빈 디렉토리 삭제
+//       } else {
+//         await fs.promises.unlink(fullPath); // 파일 삭제
+//       }
+//     }
+//   } catch (error) {
+//     console.error(`Error deleting files in directory: ${directoryPath}`, error);
+//     throw error;
+//   }
+// }

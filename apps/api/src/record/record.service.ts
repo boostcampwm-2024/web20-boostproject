@@ -47,13 +47,21 @@ export class RecordService {
       },
     });
 
-    if (!attendance) new CustomException(ErrorStatus.ATTENDANCE_NOT_FOUND);
-
+    if (!attendance) throw new CustomException(ErrorStatus.ATTENDANCE_NOT_FOUND);
+    const record = await this.recordRepository
+      .createQueryBuilder('record')
+      .where('attendanceId = :attendanceId', { attendanceId: attendance.id })
+      .andWhere('video IS NULL')
+      .orderBy('record.id', 'ASC')
+      .getOne();
+    if (!record) throw new CustomException(ErrorStatus.RECORD_NOT_FOUND);
+    console.log('record:', record);
+    record.video = video;
     await this.recordRepository
       .createQueryBuilder('record')
       .update(Record)
       .set({ video })
-      .where('attendanceId = :attendanceId AND video IS NULL', { attendanceId: attendance.id })
+      .where('id = :id', { id: record.id })
       .execute();
   }
 }

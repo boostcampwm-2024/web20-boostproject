@@ -27,12 +27,12 @@ const s3Client = new S3Client({
   },
 });
 
-export const uploadObjectFromDir = async (roomId: string, dirPath: string) => {
-  const folderPath = `${dirPath}/records/${roomId}`;
+export const uploadObjectFromDir = async (roomId: string, recordsDirPath: string) => {
+  const folderPath = `${recordsDirPath}/${roomId}`;
   const files = fs.readdirSync(folderPath);
   const endTime = `${formatDate(new Date())}.${formatTime(new Date())}`;
   const video = `${CDN_URL}/records/${roomId}/${endTime}/video.m3u8`;
-
+  await axios.patch(`${API_SERVER_URL}/v1/records`, { roomId, video });
   for (const file of files) {
     const filePath = path.join(folderPath, file);
     const fileStream = fs.createReadStream(filePath);
@@ -46,7 +46,6 @@ export const uploadObjectFromDir = async (roomId: string, dirPath: string) => {
         ACL: 'public-read',
       });
       await s3Client.send(command);
-      await axios.patch(`${API_SERVER_URL}/v1/records`, { roomId, video });
     } catch (error) {
       console.error('Error uploading file:', error);
       throw error;
