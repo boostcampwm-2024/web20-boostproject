@@ -127,20 +127,20 @@ function BroadcastPlayer({
         autoPlay
         muted
         playsInline
-        className={`absolute top-0 left-0 w-full h-full bg-surface-alt ${isVideoEnabled ? '' : 'hidden'}`}
+        className={`absolute top-0 left-0 w-full h-full bg-black ${isVideoEnabled ? '' : 'hidden'}`}
       />
       <video
         ref={screenShareRef}
         autoPlay
         muted
         playsInline
-        className={`absolute top-0 left-0 w-full h-full bg-surface-alt ${isScreenSharing ? '' : 'hidden'}`}
+        className={`absolute top-0 left-0 w-full h-full bg-black ${isScreenSharing ? '' : 'hidden'}`}
       />
       <canvas
         ref={canvasRef}
         width={RESOLUTION_OPTIONS['high'].width}
         height={RESOLUTION_OPTIONS['high'].height}
-        className={`absolute top-0 left-0 w-full h-full bg-surface-alt object-cover ${
+        className={`absolute top-0 left-0 w-full h-full bg-black object-cover ${
           !isScreenSharing || !isVideoEnabled ? 'hidden' : ''
         }`}
       />

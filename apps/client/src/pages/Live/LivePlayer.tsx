@@ -85,7 +85,7 @@ function LivePlayer({ mediaStream, socket, transportId, errors }: LivePlayerProp
             ref={videoRef}
             autoPlay
             muted={isAudioEnabled ? false : true}
-            className="w-full max-w-[1280px] h-auto"
+            className="absolute top-0 left-0 h-full w-full bg-surface-alt"
           />
           <div className="absolute bottom-4 left-0 right-0 px-6 text-text-default h-6 flex flex-row justify-between items-center">
             <div className="flex flex-row space-x-6 items-center">

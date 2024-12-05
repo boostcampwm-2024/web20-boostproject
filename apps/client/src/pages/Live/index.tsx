@@ -60,14 +60,16 @@ export default function Live() {
         <ErrorCharacter size={400} message="방 정보가 없습니다." />
       ) : (
         <>
-          <div className="flex flex-col flex-grow gap-4 h-full ml-8 mb-5">
+          <div className="flex flex-col flex-1 gap-4 ml-8">
             <LivePlayer
               mediaStream={mediaStream}
               transportId={transportInfo?.transportId}
               socket={socket}
               errors={{ socketError, transportError, consumerError }}
             />
-            <LiveCamperInfo liveId={liveId} />
+            <div className="flex justify-center items-center h-36 w-full">
+              <LiveCamperInfo liveId={liveId} />
+            </div>
           </div>
           <div className="flex h-full w-80 pr-5">
             <ChatContainer roomId={liveId} isProducer={false} />
