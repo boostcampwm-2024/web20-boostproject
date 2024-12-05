@@ -43,7 +43,7 @@ function Broadcast() {
   const [isStreamReady, setIsStreamReady] = useState(false);
   // 방송 송출
   const { socket, isConnected, socketError } = useSocket(mediaServerUrl);
-  const { roomId, roomError } = useRoom(socket, isConnected);
+  const { roomId, roomError } = useRoom(socket, isConnected, isMediaStreamReady);
   const { transportInfo, device, transportError } = useTransport({ socket, roomId, isProducer: true });
   const {
     transport,
