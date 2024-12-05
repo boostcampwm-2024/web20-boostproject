@@ -24,22 +24,29 @@ function BroadcastPlayer({
   const videoRef = useRef<HTMLVideoElement>(null);
   const screenShareRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameRef = useRef<number>();
 
   // 비디오 스트림 설정
   useEffect(() => {
     if (videoRef.current && mediaStream) {
       videoRef.current.srcObject = mediaStream;
     }
-    tracksRef.current['mediaAudio'] = mediaStream?.getAudioTracks()[0];
-  }, [mediaStream, tracksRef.current]);
+  }, [isVideoEnabled, mediaStream]);
 
   // 화면 공유 스트림 설정
   useEffect(() => {
     if (screenShareRef.current && screenStream) {
       screenShareRef.current.srcObject = screenStream;
     }
+  }, [isScreenSharing, screenStream]);
+
+  useEffect(() => {
+    tracksRef.current['mediaAudio'] = mediaStream?.getAudioTracks()[0];
+  }, [mediaStream]);
+
+  useEffect(() => {
     tracksRef.current['screenAudio'] = screenStream?.getAudioTracks()[0];
-  }, [isScreenSharing, screenStream, tracksRef.current]);
+  }, [screenStream]);
 
   // 미디어스트림 캔버스에 넣기
   useEffect(() => {
@@ -73,7 +80,7 @@ function BroadcastPlayer({
         } else {
           // 화면이 더 좁은 경우
           draw.width = canvas.height * screenRatio;
-          console.log('width', canvas.height / screenRatio);
+          // console.log('width', canvas.height / screenRatio);
           draw.x = (canvas.width - draw.width) / 2;
         }
 
@@ -90,46 +97,52 @@ function BroadcastPlayer({
           const pipY = canvas.height - pipHeight;
           context.drawImage(videoRef.current, pipX, pipY, pipWidth, pipHeight);
         }
-      } else if (isVideoEnabled && videoRef.current) {
-        // 화면 공유 off / 캠 on
-        context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      } else {
-        // 화면 공유 off / 캠 off
-        context.fillStyle = '#000000';
-        context.fillRect(0, 0, canvas.width, canvas.height);
       }
-      requestAnimationFrame(draw);
+      animationFrameRef.current = requestAnimationFrame(draw);
     };
 
     const startDrawing = async () => {
       draw();
       tracksRef.current['video'] = canvas.captureStream(30).getVideoTracks()[0];
+      videoRef.current?.play();
+      screenShareRef.current?.play();
       if (!isStreamReady) setIsStreamReady(true);
     };
 
-    if (videoRef.current) {
-      videoRef.current.onloadedmetadata = startDrawing;
-      if (videoRef.current.readyState >= 2) {
-        startDrawing();
-      }
+    if (isVideoEnabled && isScreenSharing && mediaStream && screenStream) {
+      startDrawing();
     }
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
   }, [isVideoEnabled, isScreenSharing, mediaStream, screenStream, isStreamReady]);
 
   return (
     <div className="relative w-full max-h-[310px] aspect-video">
-      <video ref={videoRef} autoPlay muted playsInline className="absolute top-0 left-0 w-full h-full object-cover" />
+      <video
+        ref={videoRef}
+        autoPlay
+        muted
+        playsInline
+        className={`absolute top-0 left-0 w-full h-full bg-black ${isVideoEnabled ? '' : 'hidden'}`}
+      />
       <video
         ref={screenShareRef}
         autoPlay
         muted
         playsInline
-        className="absolute top-0 left-0 w-full h-full object-cover"
+        className={`absolute top-0 left-0 w-full h-full bg-black ${isScreenSharing ? '' : 'hidden'}`}
       />
       <canvas
         ref={canvasRef}
         width={RESOLUTION_OPTIONS['high'].width}
         height={RESOLUTION_OPTIONS['high'].height}
-        className="absolute top-0 left-0 w-full h-full bg-surface-alt object-cover"
+        className={`absolute top-0 left-0 w-full h-full bg-black object-cover ${
+          !isScreenSharing || !isVideoEnabled ? 'hidden' : ''
+        }`}
       />
     </div>
   );

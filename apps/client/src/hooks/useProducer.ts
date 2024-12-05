@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { Transport, Device, Producer } from 'mediasoup-client/lib/types';
-import { ConnectTransportResponse, Tracks, TransportInfo } from '@/types/mediasoupTypes';
+import { ConnectTransportResponse, TransportInfo } from '@/types/mediasoupTypes';
 import { Socket } from 'socket.io-client';
 import { checkDependencies } from '@/utils/utils';
 import { ENCODING_OPTIONS } from '@/constants/videoOptions';
 
 interface UseProducerProps {
   socket: Socket | null;
-  tracks: Tracks;
-  isStreamReady: boolean;
+  // tracks: Tracks;
+  // isStreamReady: boolean;
+  mediaStream: MediaStream | null;
+  isMediaStreamReady: boolean;
   roomId: string;
   device: Device | null;
   transportInfo: TransportInfo | null;
@@ -23,8 +25,8 @@ interface UseProducerReturn {
 
 export const useProducer = ({
   socket,
-  tracks,
-  isStreamReady,
+  mediaStream,
+  isMediaStreamReady,
   roomId,
   device,
   transportInfo,
@@ -70,10 +72,10 @@ export const useProducer = ({
   };
 
   const createProducer = async (socket: Socket, transportInfo: TransportInfo) => {
-    if (!transport.current || !socket || !tracks) {
+    if (!transport.current || !socket || !mediaStream) {
       const dependencyError = checkDependencies('createProducer', {
         socket,
-        tracks,
+        mediaStream,
         transport: transport.current,
       });
       setError(dependencyError);
@@ -99,28 +101,27 @@ export const useProducer = ({
       );
     });
 
-    (Object.keys(tracks) as Array<keyof Tracks>).forEach(kind => {
-      if (tracks[kind]) {
-        const producerConfig: Record<string, unknown> = {
-          track: tracks[kind],
-        };
+    mediaStream.getTracks().forEach(track => {
+      const producerConfig: Record<string, unknown> = {
+        track: track,
+        stopTracks: false,
+      };
 
-        if (kind === 'video') {
-          producerConfig['encodings'] = ENCODING_OPTIONS;
-          producerConfig['codecOptions'] = {
-            videoGoogleStartBitrate: 1000,
-          };
-        }
-        
-        transport
-          .current!.produce(producerConfig)
-          .then(producer => setProducers(prev => new Map(prev).set(kind, producer)));
+      if (track.kind === 'video') {
+        producerConfig['encodings'] = ENCODING_OPTIONS;
+        producerConfig['codecOptions'] = {
+          videoGoogleStartBitrate: 1000,
+        };
       }
+
+      transport.current!.produce(producerConfig).then(producer => {
+        setProducers(prev => new Map(prev).set(track.kind, producer));
+      });
     });
   };
 
   useEffect(() => {
-    if (!socket || !device || !roomId || !tracks || !isStreamReady || !transportInfo) {
+    if (!socket || !device || !roomId || !mediaStream || !isMediaStreamReady || !transportInfo) {
       return;
     }
 
@@ -134,7 +135,7 @@ export const useProducer = ({
         transport.current = null;
       }
     };
-  }, [socket, device, roomId, transportInfo, isStreamReady]);
+  }, [socket, device, roomId, transportInfo, isMediaStreamReady]);
 
   return {
     transport: transport.current,

@@ -19,7 +19,7 @@ function LiveCamperInfo({ liveId }: { liveId: string }) {
       ) : isLoading ? (
         <LoadingCharacter size={100} />
       ) : (
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row h-full w-full justify-between">
           <div className="flex flex-col gap-4 pr-24">
             {/* 제목 */}
             <h1 className="text-text-strong font-bold text-2xl">{data.title}</h1>
