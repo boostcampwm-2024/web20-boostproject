@@ -127,10 +127,9 @@
 <br>
 
 # 🚨 트러블 슈팅
-
-### ❓ [Mediasoup 포트 매핑 문제](https://github.com/boostcampwm-2024/web20-camon/wiki/Mediasoup-%ED%8F%AC%ED%8A%B8-%EB%A7%A4%ED%95%91-%EB%AC%B8%EC%A0%9C)
-- **문제**: Mediasoup의 포트가 올바르게 매핑되지 않아 스트림 연결이 실패
-- **해결**: ACG와 Docker Compose 설정에서 포트를 명시적으로 매핑하여 문제 해결
+### ❓ [FFmpeg를 이용한 실시간 HLS 변환에서 CPU 과부하 발생](https://github.com/boostcampwm-2024/web20-camon/wiki/%EB%B0%A9%EC%86%A1-%EB%85%B9%ED%99%94-%EC%8B%9C-CPU-%EA%B3%BC%EB%B6%80%ED%95%98-%EB%AC%B8%EC%A0%9C%EB%A5%BC-%ED%95%B4%EA%B2%B0%ED%95%B4%EB%B3%B4%EC%9E%90)
+- **문제**: WebM 영상을 HLS로 실시간 변환하면서 CPU 사용량이 급격히 증가해 스트리밍 품질 및 녹화 영상에 문제가 발생.  
+- **해결**: 실시간 변환 대신 WebM 원본 저장 후, CPU 부하가 낮을 때 큐를 통해 순차적으로 HLS 변환을 수행.   
 
 ### ❓ [Chrome 자동 재생 문제](https://github.com/boostcampwm-2024/web20-camon/wiki/Chrome-%EC%9E%90%EB%8F%99-%EC%9E%AC%EC%83%9D%EC%9D%B4-%EC%95%88%EB%90%98%EB%8A%94-%EB%AC%B8%EC%A0%9C)
 - **문제**: Chrome의 정책상 음소거되지 않은 영상은 사용자 상호작용(클릭, 탭 등)이 없으면 자동으로 재생되지 않음
