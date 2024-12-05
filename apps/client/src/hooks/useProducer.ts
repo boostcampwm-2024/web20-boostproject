@@ -101,24 +101,6 @@ export const useProducer = ({
       );
     });
 
-    // (Object.keys(tracks) as Array<keyof Tracks>).forEach(kind => {
-    //   if (tracks[kind]) {
-    //     const producerConfig: Record<string, unknown> = {
-    //       track: tracks[kind],
-    //     };
-
-    //     if (kind === 'video') {
-    //       producerConfig['encodings'] = ENCODING_OPTIONS;
-    //       producerConfig['codecOptions'] = {
-    //         videoGoogleStartBitrate: 1000,
-    //       };
-    //     }
-
-    //     transport
-    //       .current!.produce(producerConfig)
-    //       .then(producer => setProducers(prev => new Map(prev).set(kind, producer)));
-    //   }
-    // });
     mediaStream.getTracks().forEach(track => {
       const producerConfig: Record<string, unknown> = {
         track: track,

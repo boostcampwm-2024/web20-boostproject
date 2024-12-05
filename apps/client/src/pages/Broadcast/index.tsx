@@ -99,6 +99,8 @@ function Broadcast() {
         // screenStream 비디오 트랙 사용
         newTrack = screenStream?.getVideoTracks()[0] || null;
       }
+      if (isVideoEnabled && mediaStream) mediaStream.getVideoTracks()[0].enabled = true;
+      if (isScreenSharing && screenStream) screenStream.getVideoTracks()[0].enabled = true;
 
       // clone 없이 직접 트랙 교체
       await currentProducer.replaceTrack({ track: newTrack });
