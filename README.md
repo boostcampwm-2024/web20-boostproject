@@ -44,7 +44,7 @@
 - [실시간 썸네일과 녹화 기능 구현](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%EC%8B%A4%EC%8B%9C%EA%B0%84-%EC%8D%B8%EB%84%A4%EC%9D%BC%EA%B3%BC-%EB%85%B9%ED%99%94-%EA%B8%B0%EB%8A%A5-%EA%B5%AC%ED%98%84)
   
 [🚨 트러블 슈팅](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85)
-- [Mediasoup 포트 매핑 문제](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-mediasoup-%ED%8F%AC%ED%8A%B8-%EB%A7%A4%ED%95%91-%EB%AC%B8%EC%A0%9C)
+- [FFmpeg를 이용한 실시간 HLS 변환에서 CPU 과부하 발생](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-FFmpeg%EB%A5%BC-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EC%8B%A4%EC%8B%9C%EA%B0%84-HLS-%EB%B3%80%ED%99%98%EC%97%90%EC%84%9C-CPU-%EA%B3%BC%EB%B6%80%ED%95%98-%EB%B0%9C%EC%83%9D)
 - [Chrome 자동 재생 문제](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-chrome-%EC%9E%90%EB%8F%99-%EC%9E%AC%EC%83%9D-%EB%AC%B8%EC%A0%9C)
 - [Git Action에서 도커 이미지 빌드 시간 단축](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-git-action%EC%97%90%EC%84%9C-%EB%8F%84%EC%BB%A4-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%B9%8C%EB%93%9C-%EC%8B%9C%EA%B0%84-%EB%8B%A8%EC%B6%95)
   
