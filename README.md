@@ -28,7 +28,7 @@
 <br/>
 
 # 🗒️ 목차
-[🖼️ 프로젝트 기획 배경](https://github.com/boostcampwm-2024/web20-camon/edit/develop/README.md#%EF%B8%8F-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B8%B0%ED%9A%8D-%EB%B0%B0%EA%B2%BD)
+[🖼️ 프로젝트 기획 배경](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EA%B8%B0%ED%9A%8D-%EB%B0%B0%EA%B2%BD)
 
 [🎯 핵심 기능](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%ED%95%B5%EC%8B%AC-%EA%B8%B0%EB%8A%A5)
 - [실시간 방송](https://github.com/boostcampwm-2024/web20-camon?tab=readme-ov-file#-%EC%8B%A4%EC%8B%9C%EA%B0%84-%EB%B0%A9%EC%86%A1)
