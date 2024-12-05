@@ -17,7 +17,7 @@ interface LivePlayerProps {
   errors: Errors;
 }
 
-type VideoQuality = '480p' | '720p' | '1080p';
+type VideoQuality = 'auto' | '480p' | '720p' | '1080p';
 
 function LivePlayer({ mediaStream, socket, transportId, errors }: LivePlayerProps) {
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
@@ -89,11 +89,14 @@ function LivePlayer({ mediaStream, socket, transportId, errors }: LivePlayerProp
               <button onClick={handleMute}>{isAudioEnabled ? <VolumeOnIcon /> : <VolumeOffIcon />}</button>
             </div>
             <div className="flex flex-row space-x-6 items-center">
-              <Select onValueChange={value => handleVideoQuality(value as VideoQuality)}>
+              <Select onValueChange={value => handleVideoQuality(value as VideoQuality)} defaultValue="auto">
                 <SelectTrigger className="w-[80px]">
                   <SelectValue placeholder={videoQuality} />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="auto" className="hidden">
+                    auto
+                  </SelectItem>
                   <SelectItem value="480p">480p</SelectItem>
                   <SelectItem value="720p">720p</SelectItem>
                   <SelectItem value="1080p">1080p</SelectItem>
