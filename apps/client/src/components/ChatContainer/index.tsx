@@ -36,23 +36,15 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
   const [showModal, setShowModal] = useState(false);
 
   const setUpRoom = async (isProducer: boolean) => {
-    try {
-      if (isProducer) {
-        socket?.emit('createRoom', { roomId: roomId }, (response: { roomId: string }) => {
-          console.log(`채팅룸 생성: ${response.roomId}`);
-        });
-      } else {
-        // 채팅방 입장
-        socket?.emit('joinRoom', { roomId: roomId }, () => {
-          console.log('채팅방 입장');
-        });
-        // 채팅방 종료 이벤트
-        socket?.on('chatClosed', () => {
-          setShowModal(true);
-        });
-      }
-    } catch (err) {
-      console.error(`방 생성/입장 실패: ${err}`);
+    if (isProducer) {
+      socket?.emit('createRoom', { roomId: roomId });
+    } else {
+      // 채팅방 입장
+      socket?.emit('joinRoom', { roomId: roomId }, () => {});
+      // 채팅방 종료 이벤트
+      socket?.on('chatClosed', () => {
+        setShowModal(true);
+      });
     }
     setIsJoinedRoom(true);
   };
@@ -70,9 +62,7 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
 
   const handleSendChat = () => {
     if (inputValue.trim() && socket) {
-      socket.emit('chat', { roomId: roomId, message: inputValue }, (response: Chat) => {
-        console.log('채팅 보내고 받은 응답:', response);
-      });
+      socket.emit('chat', { roomId: roomId, message: inputValue });
     }
     setInputValue('');
   };
@@ -88,7 +78,6 @@ const ChatContainer = ({ roomId, isProducer }: { roomId: string; isProducer: boo
 
   useEffect(() => {
     if (!isConnected || !socket || !roomId || isJoinedRoom) return;
-    console.log(`roomId: ${JSON.stringify(roomId)}`);
     setUpRoom(isProducer);
 
     socket?.on('chat', handleReceiveChat);

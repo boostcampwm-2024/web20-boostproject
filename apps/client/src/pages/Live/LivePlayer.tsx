@@ -66,11 +66,7 @@ function LivePlayer({ mediaStream, socket, transportId, errors }: LivePlayerProp
   };
 
   const handleExpand = async () => {
-    try {
-      await videoRef.current?.requestFullscreen?.();
-    } catch (err) {
-      console.error('Fullscreen error:', err);
-    }
+    await videoRef.current?.requestFullscreen?.();
   };
 
   return (

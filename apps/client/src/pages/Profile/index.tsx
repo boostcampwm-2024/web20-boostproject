@@ -38,7 +38,6 @@ export default function Profile() {
           setUserData(response.data.data);
         } else {
           setError(new Error(response.data.message));
-          console.error('유저 정보 조회 실패:', response.data.status);
         }
       })
       .catch(error => setError(error instanceof Error ? error : new Error(error)))
@@ -72,7 +71,7 @@ export default function Profile() {
         </div>
       ) : error || !userData ? (
         <div className="flex justify-center items-center">
-          <ErrorCharacter size={200} message={`${error ? error.message : ' 유저 데이터가 없습니다.'}`} />
+          <ErrorCharacter size={200} message={`${'프로필 조회 실패'}`} />
         </div>
       ) : isEditing ? (
         <EditUserInfo userData={userData} toggleEditing={toggleEditing} />

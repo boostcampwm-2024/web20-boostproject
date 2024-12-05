@@ -85,7 +85,6 @@ export const useConsumer = ({ socket, device, roomId, transportInfo, isConnected
   };
 
   const createConsumer = async ({ socket, roomId, transportInfo, transport }: CreateConsumerParams) => {
-    console.log('createConsumer 함수 실행');
     if (!transport || !socket) {
       const dependencyError = checkDependencies('createConsumer', { socket, transport });
       setError(dependencyError);
@@ -101,7 +100,6 @@ export const useConsumer = ({ socket, device, roomId, transportInfo, isConnected
         transportId: transportInfo.transportId,
       },
       async ({ consumers }: CreateConsumerResponse) => {
-        console.log('createConsumer emit!');
         const newMediastream = new MediaStream();
         for (const consumerData of consumers) {
           const consumer = await transport.consume({
@@ -114,7 +112,6 @@ export const useConsumer = ({ socket, device, roomId, transportInfo, isConnected
           if (consumer.track.kind === 'video') {
             consumer.track.enabled = true;
           }
-          console.log(consumer);
           newMediastream.addTrack(consumer.track);
           consumer.resume();
         }

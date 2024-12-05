@@ -38,7 +38,6 @@ function Broadcast() {
 
   // 화면 공유
   const { screenStream, isScreenSharing, screenShareError, toggleScreenShare } = useScreenShare();
-
   // 송출 정보
   const tracksRef = useRef<Tracks>({ video: undefined, mediaAudio: undefined, screenAudio: undefined });
   const [isStreamReady, setIsStreamReady] = useState(false);
@@ -86,30 +85,23 @@ function Broadcast() {
 
     currentProducer.pause();
 
-    try {
-      let newTrack = null;
+    let newTrack = null;
 
-      if (isVideoEnabled && isScreenSharing) {
-        // canvas 트랙 사용
-        newTrack = tracksRef.current.video || null;
-      } else if (isVideoEnabled && !isScreenSharing) {
-        // mediaStream 비디오 트랙 사용
-        newTrack = mediaStream?.getVideoTracks()[0] || null;
-      } else if (!isVideoEnabled && isScreenSharing) {
-        // screenStream 비디오 트랙 사용
-        newTrack = screenStream?.getVideoTracks()[0] || null;
-      }
-      if (isVideoEnabled && mediaStream) mediaStream.getVideoTracks()[0].enabled = true;
-      if (isScreenSharing && screenStream) screenStream.getVideoTracks()[0].enabled = true;
+    if (isVideoEnabled && isScreenSharing) {
+      newTrack = tracksRef.current.video || null;
+    } else if (isVideoEnabled && !isScreenSharing) {
+      newTrack = mediaStream?.getVideoTracks()[0] || null;
+    } else if (!isVideoEnabled && isScreenSharing) {
+      newTrack = screenStream?.getVideoTracks()[0] || null;
+    }
 
-      // clone 없이 직접 트랙 교체
-      await currentProducer.replaceTrack({ track: newTrack });
+    if (isVideoEnabled && mediaStream) mediaStream.getVideoTracks()[0].enabled = true;
+    if (isScreenSharing && screenStream) screenStream.getVideoTracks()[0].enabled = true;
 
-      if (newTrack) {
-        currentProducer.resume();
-      }
-    } catch (error) {
-      console.error('Failed to replace track:', error);
+    await currentProducer.replaceTrack({ track: newTrack });
+
+    if (newTrack) {
+      currentProducer.resume();
     }
   };
 
@@ -119,13 +111,7 @@ function Broadcast() {
       e.returnValue = '';
     }
     if (socket) {
-      socket.emit('stopBroadcast', { roomId }, (response: { isCleaned: boolean; roomId: string }) => {
-        if (response.isCleaned) {
-          console.log(`${response.roomId} 방이 정리됐습니다.`);
-        } else {
-          console.error('방 정리 실패');
-        }
-      });
+      socket.emit('stopBroadcast', { roomId });
       socket.disconnect();
       mediaStream?.getTracks().forEach(track => {
         track.stop();
@@ -147,11 +133,9 @@ function Broadcast() {
     if (isAudioEnabled) {
       producers.get('mediaAudio')?.pause();
       if (tracksRef.current.mediaAudio) tracksRef.current.mediaAudio.enabled = false;
-      console.log('오디오 pause');
     } else {
       producers.get('mediaAudio')?.resume();
       if (tracksRef.current.mediaAudio) tracksRef.current.mediaAudio.enabled = true;
-      console.log('오디오 resume');
     }
   };
 

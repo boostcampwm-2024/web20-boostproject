@@ -29,7 +29,6 @@ function Attendance() {
           setAttendanceList(response.data.data.attendances);
         } else {
           setError(new Error(response.data.message));
-          console.error('출석부 조회 실패:', response.data.status);
         }
       })
       .catch(error => setError(error instanceof Error ? error : new Error(error)))

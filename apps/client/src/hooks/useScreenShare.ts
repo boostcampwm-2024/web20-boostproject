@@ -55,7 +55,6 @@ const useScreenShare = () => {
 
   useEffect(() => {
     if (screenStreamRef.current) {
-      console.log('hi');
       screenStreamRef.current.getVideoTracks()[0].onended = () => {
         endScreenShare();
       };

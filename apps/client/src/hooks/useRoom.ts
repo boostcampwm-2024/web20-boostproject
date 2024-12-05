@@ -15,7 +15,6 @@ export const useRoom = (socket: Socket | null, isConnected: boolean) => {
     socket.emit('createRoom', (response: { roomId: string }) => {
       setRoomId(response.roomId);
     });
-    console.log('room 생성: ', roomId);
   };
 
   useEffect(() => {
