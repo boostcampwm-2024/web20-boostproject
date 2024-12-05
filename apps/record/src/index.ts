@@ -5,6 +5,7 @@ import express from 'express';
 import { getPort, releasePort } from './port';
 import cors from 'cors';
 import { createFfmpegProcess } from './ffmpeg';
+import { startProcess } from './queue';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const assetsDirPath = path.join(__dirname, '../assets');
 const thumbnailsDirPath = path.join(__dirname, '../assets/thumbnails');
 const recordsDirPath = path.join(__dirname, '../assets/records');
 const defaultThumbnailPath = path.join(__dirname, '../assets/default-thumbnail.jpg');
+const videosDirPath = path.join(__dirname, '../assets/videos');
 
 app.use(express.json());
 app.use(cors());
@@ -28,6 +30,10 @@ if (!fs.existsSync(thumbnailsDirPath)) {
 
 if (!fs.existsSync(recordsDirPath)) {
   fs.mkdirSync(recordsDirPath, { recursive: true });
+}
+
+if (!fs.existsSync(videosDirPath)) {
+  fs.mkdirSync(videosDirPath, { recursive: true });
 }
 
 app.post('/thumbnail', (req, res) => {
@@ -63,4 +69,6 @@ app.post('/close', (req, res) => {
   res.send({ success: true });
 });
 
-app.listen(3003);
+app.listen(3003, () => {
+  startProcess();
+});

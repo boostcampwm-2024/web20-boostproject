@@ -47,13 +47,16 @@ export class RecordService {
       },
     });
 
-    if (!attendance) new CustomException(ErrorStatus.ATTENDANCE_NOT_FOUND);
+    if (!attendance) throw new CustomException(ErrorStatus.ATTENDANCE_NOT_FOUND);
 
     await this.recordRepository
-      .createQueryBuilder('record')
+      .createQueryBuilder()
       .update(Record)
       .set({ video })
-      .where('attendanceId = :attendanceId AND video IS NULL', { attendanceId: attendance.id })
+      .where('attendanceId = :attendanceId', { attendanceId: attendance.id })
+      .andWhere('video IS NULL')
+      .orderBy('id', 'ASC')
+      .limit(1)
       .execute();
   }
 }
