@@ -48,20 +48,15 @@ export class RecordService {
     });
 
     if (!attendance) throw new CustomException(ErrorStatus.ATTENDANCE_NOT_FOUND);
-    const record = await this.recordRepository
-      .createQueryBuilder('record')
-      .where('attendanceId = :attendanceId', { attendanceId: attendance.id })
-      .andWhere('video IS NULL')
-      .orderBy('record.id', 'ASC')
-      .getOne();
-    if (!record) throw new CustomException(ErrorStatus.RECORD_NOT_FOUND);
-    console.log('record:', record);
-    record.video = video;
+
     await this.recordRepository
-      .createQueryBuilder('record')
+      .createQueryBuilder()
       .update(Record)
       .set({ video })
-      .where('id = :id', { id: record.id })
+      .where('attendanceId = :attendanceId', { attendanceId: attendance.id })
+      .andWhere('video IS NULL')
+      .orderBy('id', 'ASC')
+      .limit(1)
       .execute();
   }
 }
