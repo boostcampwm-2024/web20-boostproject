@@ -5,6 +5,7 @@ import express from 'express';
 import { getPort, releasePort } from './port';
 import cors from 'cors';
 import { createFfmpegProcess } from './ffmpeg';
+import { startProcess } from './queue';
 
 dotenv.config();
 
@@ -68,4 +69,6 @@ app.post('/close', (req, res) => {
   res.send({ success: true });
 });
 
-app.listen(3003);
+app.listen(3003, () => {
+  startProcess();
+});

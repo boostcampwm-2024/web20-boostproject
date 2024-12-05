@@ -32,7 +32,9 @@ export const uploadObjectFromDir = async (roomId: string, recordsDirPath: string
   const files = fs.readdirSync(folderPath);
   const endTime = `${formatDate(new Date())}.${formatTime(new Date())}`;
   const video = `${CDN_URL}/records/${roomId}/${endTime}/video.m3u8`;
+
   await axios.patch(`${API_SERVER_URL}/v1/records`, { roomId, video });
+
   for (const file of files) {
     const filePath = path.join(folderPath, file);
     const fileStream = fs.createReadStream(filePath);

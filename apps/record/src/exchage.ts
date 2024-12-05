@@ -3,68 +3,72 @@ import fs from 'fs';
 import { uploadObjectFromDir } from './object';
 import path from 'path';
 
-export const convertWebMToHLS = async (inputPath: string, recordsDirPath: string, roomId: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    const outputDir = `${recordsDirPath}/${roomId}`;
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
-    console.log('Converting WebM to HLS...');
-    const args = [
-      '-i',
-      inputPath, // Input WebM file
-      '-vf',
-      'scale=trunc(iw/2)*2:trunc(ih/2)*2', // 가로, 세로 해상도를 2의 배수로 조정
-      '-codec:v',
-      'libx264', // Convert video to H.264
-      '-preset',
-      'veryfast', // Faster encoding
-      '-crf',
-      '25', // Quality level (lower is better)
-      '-codec:a',
-      'aac', // Convert audio to AAC
-      '-b:a',
-      '128k', // Audio bitrate
-      '-ac',
-      '1', // Stereo audio
-      '-hls_time',
-      '10', // Duration of each HLS segment (in seconds)
-      '-hls_list_size',
-      '0', // Keep all HLS segments in the playlist
-      '-hls_segment_filename',
-      `${outputDir}/segment_%03d.ts`, // Segment files
-      `${outputDir}/video.m3u8`, // HLS playlist file
-    ];
+export const convertWebMToHLS = (inputPath: string, recordsDirPath: string, roomId: string) => {
+  const outputDir = `${recordsDirPath}/${roomId}`;
 
-    console.log('Starting FFmpeg with arguments:', args.join(' '));
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
 
-    const ffmpeg = spawn('ffmpeg', args);
+  console.log('Converting WebM to HLS...');
 
-    ffmpeg.stdout.on('data', data => console.log(`[FFmpeg stdout]: ${data}`));
-    ffmpeg.stderr.on('data', data => console.error(`[FFmpeg stderr]: ${data}`));
+  const args = exchangeArgs(inputPath, outputDir);
+  const ffmpegProcess = spawn('ffmpeg', args);
 
-    ffmpeg.on('close', async code => {
-      if (code === 0) {
-        try {
-          await deleteFile(inputPath);
-          await uploadRecord(roomId, recordsDirPath);
-          console.log('HLS conversion completed successfully.');
-          resolve(); // 성공적으로 종료
-        } catch (error) {
-          reject(error); // 에러 발생 시 reject 호출
-        }
-      } else {
-        const error = new Error(`FFmpeg exited with code ${code}`);
-        console.error(error.message);
-        reject(error); // FFmpeg 에러 발생 시 reject 호출
-      }
-    });
+  handleFfmpegProcess(ffmpegProcess, inputPath, recordsDirPath, roomId);
+};
 
-    ffmpeg.on('error', error => {
-      console.error('Failed to start FFmpeg process:', error);
-      reject(error); // 프로세스 시작 실패 시 reject 호출
-    });
+const handleFfmpegProcess = (
+  process: ReturnType<typeof spawn>,
+  inputPath: string,
+  recordsDirPath: string,
+  roomId: string,
+) => {
+  if (process.stderr) {
+    process.stderr.on('data', data => console.error(`[FFmpeg stderr]: ${data}`));
+  }
+  if (process.stdout) {
+    process.stdout.on('data', data => console.log(`[FFmpeg stdout]: ${data}`));
+  }
+  process.on('error', error => {
+    console.error('Failed to start FFmpeg process:', error);
   });
+  process.on('close', async code => {
+    if (code === 0) {
+      await deleteFile(inputPath);
+      await uploadRecord(roomId, recordsDirPath);
+      console.log('HLS conversion completed successfully.');
+    }
+  });
+};
+
+const exchangeArgs = (inputPath: string, outputDir: string) => {
+  const commandArgs = [
+    '-i',
+    inputPath, // Input WebM file
+    '-vf',
+    'scale=trunc(iw/2)*2:trunc(ih/2)*2', // 가로, 세로 해상도를 2의 배수로 조정
+    '-codec:v',
+    'libx264', // Convert video to H.264
+    '-preset',
+    'veryfast', // Faster encoding
+    '-crf',
+    '25', // Quality level (lower is better)
+    '-codec:a',
+    'aac', // Convert audio to AAC
+    '-b:a',
+    '128k', // Audio bitrate
+    '-ac',
+    '1', // Stereo audio
+    '-hls_time',
+    '10', // Duration of each HLS segment (in seconds)
+    '-hls_list_size',
+    '0', // Keep all HLS segments in the playlist
+    '-hls_segment_filename',
+    `${outputDir}/segment_%03d.ts`, // Segment files
+    `${outputDir}/video.m3u8`, // HLS playlist file
+  ];
+  return commandArgs;
 };
 
 const uploadRecord = async (roomId: string, recordsDirPath: string) => {
@@ -76,7 +80,7 @@ const uploadRecord = async (roomId: string, recordsDirPath: string) => {
   }
 };
 
-async function deleteAllFiles(directoryPath: string): Promise<void> {
+async function deleteAllFiles(directoryPath: string) {
   try {
     const files = await fs.promises.readdir(directoryPath, { withFileTypes: true });
     for (const file of files) {
@@ -94,7 +98,7 @@ async function deleteAllFiles(directoryPath: string): Promise<void> {
   }
 }
 
-async function deleteFile(filePath: string): Promise<void> {
+async function deleteFile(filePath: string) {
   try {
     await fs.promises.unlink(filePath);
     console.log(`File deleted successfully: ${filePath}`);
