@@ -5,6 +5,7 @@ import { Field } from '@/types/liveTypes';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import axiosInstance from '@/services/axios';
+import { useToast } from '@/hooks/useToast';
 
 interface EditUserInfoProps {
   userData: UserData | undefined;
@@ -38,6 +39,7 @@ function EditUserInfo({ userData, toggleEditing }: EditUserInfoProps) {
       linkedIn: userData?.contacts.linkedIn,
     },
   });
+  const { toast } = useToast();
 
   const handleSelectField = (field: Field) => {
     setSelectedField(selectedField === field ? '' : field);
@@ -62,8 +64,7 @@ function EditUserInfo({ userData, toggleEditing }: EditUserInfoProps) {
       if (response.data.success) {
         toggleEditing();
       } else {
-        alert(`내 정보 수정에 실패했습니다: ${response.data.message}`);
-        console.error(`내 정보 수정 실패: ${response.data.status}`);
+        toast({ variant: 'destructive', title: '유저 정보 수정 실패' });
       }
     });
   };

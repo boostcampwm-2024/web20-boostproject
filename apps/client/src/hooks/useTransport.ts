@@ -33,7 +33,6 @@ export const useTransport = ({ socket, roomId, isProducer = false }: UseTranspor
         }
       });
     });
-    console.log('RTP capabilities 받음');
     return rtpCapabilities;
   };
 
@@ -47,7 +46,6 @@ export const useTransport = ({ socket, roomId, isProducer = false }: UseTranspor
     await newDevice.load({
       routerRtpCapabilities: rtpCapabilities,
     });
-    console.log('Device 생성');
     return newDevice;
   };
 
@@ -59,7 +57,6 @@ export const useTransport = ({ socket, roomId, isProducer = false }: UseTranspor
     }
 
     socket.emit('createTransport', { roomId: roomId, isProducer }, (response: TransportInfo) => {
-      console.log('transport 생성');
       setTransportInfo(response);
     });
   };

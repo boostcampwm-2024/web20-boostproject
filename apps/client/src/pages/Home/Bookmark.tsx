@@ -40,8 +40,7 @@ function Bookmark() {
           const newBookmarkList = [...bookmarkList, addedBookmark];
           setBookmarkList(newBookmarkList);
         } else {
-          toast({ variant: 'destructive', title: '북마크 생성 실패', description: response.data.message });
-          console.error(`북마크 생성 실패: ${response.data.status}`);
+          toast({ variant: 'destructive', title: '북마크 생성 실패' });
         }
       })
       .finally(() => {
@@ -59,8 +58,7 @@ function Bookmark() {
         const newBookmarkList = bookmarkList.filter((data, _) => data.bookmarkId !== bookmarkId);
         setBookmarkList(newBookmarkList);
       } else {
-        toast({ variant: 'destructive', title: '북마크 삭제 실패', description: response.data.message });
-        console.error(`북마크 삭제 실패: ${response.data.status}`);
+        toast({ variant: 'destructive', title: '북마크 삭제 실패' });
       }
     });
   };
@@ -70,8 +68,7 @@ function Bookmark() {
       if (response.data.success) {
         setBookmarkList(response.data.data.bookmarks);
       } else {
-        toast({ variant: 'destructive', title: '북마크 조회 실패', description: response.data.message });
-        console.error(`북마크 조회 실패: ${response.data.status}`);
+        toast({ variant: 'destructive', title: '북마크 조회 실패' });
       }
     });
   }, []);

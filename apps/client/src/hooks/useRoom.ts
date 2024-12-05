@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 
-export const useRoom = (socket: Socket | null, isConnected: boolean) => {
+export const useRoom = (socket: Socket | null, isConnected: boolean, isMediaStreamReady: boolean) => {
   const [roomId, setRoomId] = useState('');
   const [roomError, setRoomError] = useState<Error | null>(null);
 
@@ -15,12 +15,12 @@ export const useRoom = (socket: Socket | null, isConnected: boolean) => {
     socket.emit('createRoom', (response: { roomId: string }) => {
       setRoomId(response.roomId);
     });
-    console.log('room 생성: ', roomId);
   };
 
   useEffect(() => {
+    if (!isMediaStreamReady) return;
     getRooomId();
-  }, [isConnected]);
+  }, [isConnected, isMediaStreamReady]);
 
   return {
     roomId,

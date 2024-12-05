@@ -67,8 +67,7 @@ function BroadcastPlayer({
 
       if (isScreenSharing && screenShareRef.current) {
         const screenVideo = screenShareRef.current;
-        // 화면 공유 on
-        // 화면 비율 계산 및 적용
+
         const screenRatio = screenVideo.videoWidth / screenVideo.videoHeight;
         const canvasRatio = canvas.width / canvas.height;
         const draw = { width: canvas.width, height: canvas.height, x: 0, y: 0 };
@@ -80,16 +79,13 @@ function BroadcastPlayer({
         } else {
           // 화면이 더 좁은 경우
           draw.width = canvas.height * screenRatio;
-          // console.log('width', canvas.height / screenRatio);
           draw.x = (canvas.width - draw.width) / 2;
         }
 
-        // 화면 공유 그리기
         context.fillStyle = '#000000';
         context.fillRect(0, 0, canvas.width, canvas.height);
         context.drawImage(screenVideo, draw.x, draw.y, draw.width, draw.height);
 
-        // 캠 on
         if (isVideoEnabled && videoRef.current) {
           const pipWidth = canvas.width / 4;
           const pipHeight = canvas.height / 4;

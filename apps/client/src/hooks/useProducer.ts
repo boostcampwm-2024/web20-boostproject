@@ -85,7 +85,6 @@ export const useProducer = ({
     setError(null);
 
     transport.current!.on('produce', (parameters, callback) => {
-      console.log('produce 발생');
       socket.emit(
         'createProducer',
         {

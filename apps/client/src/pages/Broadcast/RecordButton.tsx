@@ -30,7 +30,6 @@ function RecordButton({ socket, roomId }: RecordButtonProps) {
     if (!socket?.connected || !roomId) return;
     socket.emit('startRecord', { roomId: roomId }, (response: { success: boolean }) => {
       if (response.success) setIsRecording(true);
-      else console.error('녹화 시작 실패');
     });
   };
 
@@ -41,8 +40,6 @@ function RecordButton({ socket, roomId }: RecordButtonProps) {
         setIsEditing(false);
         setIsRecording(false);
         reset();
-      } else {
-        console.error('녹화 종료 실패');
       }
     });
   };
