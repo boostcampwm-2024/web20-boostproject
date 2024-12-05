@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as mediasoup from 'mediasoup';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
+import { QUALITY, QUALITY_LAYER } from '../constants/quality-layer.constant';
 
 const STREAM_TYPE = {
   RECORD: 'record',
@@ -33,7 +34,7 @@ export class RecordService {
       rtpCapabilities,
       paused: true,
       preferredLayers: {
-        spatialLayer: 2,
+        spatialLayer: QUALITY_LAYER[QUALITY.HIGH],
         temporalLayer: 2,
       },
     });

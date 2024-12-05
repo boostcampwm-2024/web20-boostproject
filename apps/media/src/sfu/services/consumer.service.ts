@@ -19,7 +19,7 @@ export class ConsumerService {
           rtpCapabilities,
           paused: false,
           preferredLayers: {
-            spatialLayer: QUALITY_LAYER[QUALITY.MID], // 0,1,2 순으로 480p,720p,1080p. 기본값은 중간인 720p로 시작.
+            spatialLayer: QUALITY_LAYER[QUALITY.HIGH], // 0,1,2 순으로 480p,720p,1080p. 기본값은 중간인 720p로 시작.
             temporalLayer: 2, // fps: 0,1,2순으로 기본 fps의 1/4, 1/2, 1 로 들어감.
           },
         });
