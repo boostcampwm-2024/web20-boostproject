@@ -60,6 +60,22 @@
     --red-500: #fb4a59;
     --red-500-alt: rgba(251, 74, 89, 0.7);
   }
+
+  html[data-theme='light'] {
+    /* Grayscale */
+    --grayscale-white-alt: rgba(28, 35, 45, 0.7);
+    --grayscale-white: #1c232d;
+    --grayscale-50: #343b47;
+    --grayscale-100: #404752;
+    --grayscale-200: #4d545f;
+    --grayscale-300: #5f6775;
+    --grayscale-400: #777f8c;
+    --grayscale-500: #9198a3;
+    --grayscale-600: #b1b7bf;
+    --grayscale-700: #dce0e5;
+    --grayscale-black: #f5f7fa;
+  }
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -87,6 +103,7 @@
     --chart-5: 340 75% 55%;
   }
 }
+
 @layer base {
   * {
     @apply border-border;
