@@ -70,7 +70,7 @@ function EditUserInfo({ userData, toggleEditing }: EditUserInfoProps) {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center w-full h-full gap-10">
+    <div className="flex flex-col justify-center items-center w-full gap-10">
       <Avatar className="w-64 h-64">
         <AvatarImage src={userData?.profileImage} />
         <AvatarFallback>MY</AvatarFallback>

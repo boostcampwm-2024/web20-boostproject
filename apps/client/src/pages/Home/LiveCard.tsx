@@ -26,7 +26,7 @@ const LiveCard = ({ liveId, title, userId, profileUrl, thumbnailUrl }: LiveCardP
       </div>
 
       {/* LIVE 뱃지 */}
-      <div className="absolute top-3 left-3 bg-surface-danger text-text-strong text-display-medium12 px-2 py-0.5 rounded-sm flex items-center">
+      <div className="absolute top-3 left-3 bg-surface-danger text-white text-display-medium12 px-2 py-0.5 rounded-sm flex items-center">
         <div className="w-2 h-2 rounded-circle bg-white mr-1 animate-pulse" />
         LIVE
       </div>

@@ -26,7 +26,7 @@ function FieldFilter({ onClickFilterButton }: FieldFilterProps) {
           className={`${
             selected === field
               ? 'bg-surface-brand-default hover:bg-surface-point-alt'
-              : 'bg-transparent border border-border-default hover:bg-surface-alt'
+              : 'bg-transparent border border-border-default hover:bg-surface-alt text-text-strong'
           }`}
         >
           {field}
