@@ -82,7 +82,7 @@ function Bookmark() {
               <Button
                 key={data.bookmarkId}
                 onClick={() => handleClickBookmarkButton(data.url)}
-                className="h-14 w-52 bg-surface-alt hover:bg-surface-alt-light relative flex items-center justify-between"
+                className="h-14 w-52 bg-surface-alt text-text-strong hover:bg-surface-alt-light relative flex items-center justify-between"
               >
                 <span className="truncate flex-1">{data.name}</span>
                 <div

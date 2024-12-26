@@ -48,7 +48,7 @@ function UserInfo({ userData, isLoading, error, toggleEditing }: UserInfoProps) 
                 <span className="font-bold text-text-strong text-4xl">
                   {userData?.camperId ? userData.camperId : '???'}
                 </span>
-                <div className="flex justify-center items-center bg-surface-brand-default text-text-strong text-display-bold24 h-full w-24 rounded">
+                <div className="flex justify-center items-center bg-surface-brand-default text-white text-display-bold24 h-full w-24 rounded">
                   {userData?.field ? userData.field : '???'}
                 </div>
                 <button onClick={toggleEditing}>
