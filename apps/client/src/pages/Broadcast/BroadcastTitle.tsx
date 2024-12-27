@@ -63,7 +63,7 @@ function BroadcastTitle({ currentTitle, onTitleChange }: BroadcastTitleProps) {
       ) : (
         <div className="flex flex-row justify-between p-4 h-20">
           <div className="text-text-default text-display-bold24">{currentTitle}</div>
-          <Button className="bg-transparent border border-border-default" onClick={handleEditTitle}>
+          <Button className="bg-transparent border border-border-default text-text-strong" onClick={handleEditTitle}>
             수정
           </Button>
         </div>
