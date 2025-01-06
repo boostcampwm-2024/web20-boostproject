@@ -14,13 +14,14 @@ import {
   ScreenShareIconOff,
 } from '@/components/Icons';
 import { Button } from '@components/ui/button';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import useScreenShare from '@/hooks/useScreenShare';
 import BroadcastPlayer from './BroadcastPlayer';
 import { Tracks } from '@/types/mediasoupTypes';
 import RecordButton from './RecordButton';
 import axiosInstance from '@/services/axios';
 import { useMedia } from '@/hooks/useMedia';
+import { useTheme } from '@/hooks/useTheme';
 
 const mediaServerUrl = import.meta.env.VITE_MEDIASERVER_URL;
 
@@ -59,6 +60,16 @@ function Broadcast() {
   });
   // 방송 정보
   const [title, setTitle] = useState<string>('');
+  // 테마
+  const { theme } = useTheme();
+
+  useLayoutEffect(() => {
+    if (theme === 'light') {
+      document.querySelector('html')?.setAttribute('data-theme', 'light');
+    } else {
+      document.querySelector('html')?.removeAttribute('data-theme');
+    }
+  }, []);
 
   useEffect(() => {
     tracksRef.current['mediaAudio'] = mediaStream?.getAudioTracks()[0];

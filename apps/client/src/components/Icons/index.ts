@@ -20,3 +20,4 @@ export { default as VideoOffIcon } from './VideoOffIcon';
 export { default as VideoOnIcon } from './VideoOnIcon';
 export { default as VolumeOffIcon } from './VolumeOffIcon';
 export { default as VolumeOnIcon } from './VolumeOnIcon';
+export { default as ThemeIcon } from './ThemeIcon';
